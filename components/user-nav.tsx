@@ -1,7 +1,10 @@
 import {
   LogOut,
   User,
+<<<<<<< HEAD
   LayoutDashboard,
+=======
+>>>>>>> b4f88f41c1d58da38834d40882751541699758c9
 } from 'lucide-react';
 import {
   Avatar,
@@ -62,13 +65,18 @@ export default async function UserNav() {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <Link
+<<<<<<< HEAD
               href='/user/profile'
             >
+=======
+              href='/user/profile'>
+>>>>>>> b4f88f41c1d58da38834d40882751541699758c9
               <DropdownMenuItem>
                 <User className="mr-2 h-4 w-4" />
                 Profile
               </DropdownMenuItem>
             </Link>
+<<<<<<< HEAD
             {session?.user.role === 'SUPERADMIN' ? (
               <Link
                 href='/admin'
@@ -81,6 +89,8 @@ export default async function UserNav() {
             ) : (
               <></>
             )}
+=======
+>>>>>>> b4f88f41c1d58da38834d40882751541699758c9
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem className='p-0'>

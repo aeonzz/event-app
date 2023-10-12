@@ -16,9 +16,13 @@
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
+<<<<<<< HEAD
     "@radix-ui/react-hover-card": "^1.0.7",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-popover": "^1.0.7",
+=======
+    "@radix-ui/react-label": "^2.0.2",
+>>>>>>> b4f88f41c1d58da38834d40882751541699758c9
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
@@ -30,7 +34,10 @@
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+<<<<<<< HEAD
     "cmdk": "^0.2.0",
+=======
+>>>>>>> b4f88f41c1d58da38834d40882751541699758c9
     "date-fns": "^2.30.0",
     "eslint": "8.50.0",
     "eslint-config-next": "13.5.2",
