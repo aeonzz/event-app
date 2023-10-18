@@ -24,7 +24,6 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import React from 'react'
-<<<<<<< HEAD
 import {
   Avatar,
   AvatarFallback,
@@ -39,58 +38,40 @@ import {
   ImagePlus,
   Smile
 } from "lucide-react"
-=======
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { Input } from '../ui/input'
-import { Button } from "../ui/button"
-import { Separator } from "../ui/separator"
-import { CalendarDays, ChevronDown } from "lucide-react"
->>>>>>> 213d160d3629129ad79b2e14bd87ad88133619a0
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { toast } from "../ui/use-toast"
 import { Textarea } from "../ui/textarea"
-<<<<<<< HEAD
-=======
-import { Label } from "../ui/label"
->>>>>>> 213d160d3629129ad79b2e14bd87ad88133619a0
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger
 } from "../ui/hover-card"
 import { Skeleton } from "../ui/skeleton"
-<<<<<<< HEAD
 import EmojiPicker, {
   EmojiClickData,
   EmojiStyle,
   SkinTonePickerLocation,
   Theme
 } from 'emoji-picker-react';
-=======
->>>>>>> 213d160d3629129ad79b2e14bd87ad88133619a0
 
 interface PostInput {
   initalletter: string
   username?: string
 }
 
-<<<<<<< HEAD
 interface TextArea {
   username?: string
 }
 
-=======
->>>>>>> 213d160d3629129ad79b2e14bd87ad88133619a0
 const FormSchema = z.object({
   post: z
     .string()
     .min(10, {
       message: "Post must be at least 10 characters.",
     })
-<<<<<<< HEAD
 })
 
 export const TextArea: React.FC<TextArea> = ({ username }) => {
@@ -100,38 +81,6 @@ export const TextArea: React.FC<TextArea> = ({ username }) => {
   const [selectedEmoji, setSelectedEmoji] = React.useState<string>("1f60a");
   const [inputValue, setInputValue] = React.useState<string>("");
 
-=======
-    .max(500, {
-      message: "Post must not be longer than 500 characters.",
-    }),
-})
-
-export const PostSwitcher = () => {
-  const [position, setPosition] = React.useState("events")
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="secondary"
-          className='h-6 px-3 min-w-[50px] rounded-sm text-xs font-light '
-        >
-          {position}
-          <ChevronDown className='w-4 h-4' />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className='w-36 max-w-sm'>
-        <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
-          <DropdownMenuRadioItem value="events">Event</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="announcements">Announcements</DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
-
-export const TextArea = () => {
->>>>>>> 213d160d3629129ad79b2e14bd87ad88133619a0
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -148,7 +97,6 @@ export const TextArea = () => {
     })
   }
 
-<<<<<<< HEAD
   function onClick(emojiData: EmojiClickData, event: MouseEvent) {
     setInputValue(
       (inputValue) =>
@@ -266,41 +214,6 @@ export const TextArea = () => {
 
 const PostInput: React.FC<PostInput> = ({ username }) => {
 
-=======
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
-        <FormField
-          control={form.control}
-          name="post"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Textarea
-                  placeholder="Write your post here..."
-                  className="resize-none border-none"
-                  {...field}
-                />
-              </FormControl>
-              <div className='h-4'>
-                <FormMessage />
-              </div>
-            </FormItem>
-          )}
-        />
-        <Button
-          type="submit"
-          className='w-full'
-        >
-          Post
-        </Button>
-      </form>
-    </Form>
-  )
-}
-
-const PostInput: React.FC<PostInput> = ({ initalletter, username }) => {
->>>>>>> 213d160d3629129ad79b2e14bd87ad88133619a0
   return (
     <div className='flex items-center gap-3'>
       <HoverCard>
@@ -329,15 +242,9 @@ const PostInput: React.FC<PostInput> = ({ initalletter, username }) => {
               <AvatarFallback className='h-9 w-9 bg-stone-900'></AvatarFallback>
             </Avatar>
             <div className="space-y-1">
-<<<<<<< HEAD
               <h4 className="text-sm font-semibold"></h4>
               <p className="text-sm">
                 The React Framework - created and maintained by @vercel.
-=======
-              <h4 className="text-sm font-semibold">@nextjs</h4>
-              <p className="text-sm">
-                The React Framework – created and maintained by @vercel.
->>>>>>> 213d160d3629129ad79b2e14bd87ad88133619a0
               </p>
               <div className="flex items-center pt-2">
                 <CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
@@ -361,29 +268,7 @@ const PostInput: React.FC<PostInput> = ({ initalletter, username }) => {
             <DialogTitle>Create post</DialogTitle>
           </DialogHeader>
           <Separator />
-<<<<<<< HEAD
           <TextArea username={username} />
-=======
-          <div className='flex gap-2'>
-            <Avatar className='h-9 w-9 dark:border relative group'>
-              <Link
-                href='/user/profile'
-                className='relative'
-              >
-                <div className='h-9 w-9 bg-stone-950 absolute z-10 opacity-0 group-hover:opacity-40 transition'></div>
-                <AvatarImage src='https://christian-aeonzz.vercel.app/_next/image?url=%2Fpfp.jpg&w=640&q=75'
-                  className='object-cover'
-                />
-                <AvatarFallback className='h-9 w-9 bg-stone-900'></AvatarFallback>
-              </Link>
-            </Avatar>
-            <div>
-              <p className='text-sm font-normal mb-0.5'>{username}</p>
-              <PostSwitcher />
-            </div>
-          </div>
-          <TextArea />
->>>>>>> 213d160d3629129ad79b2e14bd87ad88133619a0
         </DialogContent>
       </Dialog>
     </div>
