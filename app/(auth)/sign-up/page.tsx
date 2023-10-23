@@ -1,16 +1,16 @@
+import NotFound from '@/app/not-found';
 import SignUpForm from '@/components/Forms/Signup';
+import { authOptions } from '@/lib/auth';
+import { getServerSession } from 'next-auth';
 
-const page = () => {
+const signUp = () => {
+
   return (
-    <div className='w-full h-screen flex items-center'>
-      <div className='flex-1 h-screen bg-zinc-800'>
-        <h2 className='text-2xl text-start font-bold m-7'>Rendezvy</h2>
-      </div>
-      <div className='flex-1 h-screen grid place-items-center border shadow-xl'>
-        <SignUpForm />
-      </div>
+    <div className='w-full h-auto p-16 flex items-center justify-center'>
+      <SignUpForm />
     </div>
   );
+
 };
 
-export default page;
+export default signUp;

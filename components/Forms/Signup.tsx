@@ -34,7 +34,8 @@ const FormSchema = z
     message: 'Password do not match',
   });
 
-const SignUpForm = () => {
+function SignUpForm (props: { open: boolean; updateOpenState: (newOpenState: boolean) => void }) {
+
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
@@ -50,7 +51,7 @@ const SignUpForm = () => {
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
     try {
-      
+
       setIsLoading(true);
 
       const response = await fetch('/api/user', {
@@ -75,7 +76,8 @@ const SignUpForm = () => {
         });
 
         setTimeout(() => {
-          router.push('/sign-in');
+          router.refresh()
+          props.updateOpenState(false);
         }, 2000);
 
       } else if (response.status === 409) {
@@ -112,20 +114,9 @@ const SignUpForm = () => {
   };
 
   return (
-    <div>
-      <Link
-        href='/sign-in'
-      >
-        <Button
-          variant='outline'
-          size='sm'
-          className='absolute top-10 right-10'>
-          Login
-        </Button>
-      </Link>
-      <h2 className='text-center text-2xl font-semibold mb-7'>Create an account.</h2>
+    <div className='flex justify-center items-center w-full'>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className='w-full'>
+        <form onSubmit={form.handleSubmit(onSubmit)} className='w-[300px]'>
           <div className='space-y-2'>
             <FormField
               control={form.control}
@@ -135,7 +126,7 @@ const SignUpForm = () => {
                   <FormLabel>Username</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder='johndoe'
+                      placeholder='christian gwapo'
                       {...field}
                       disabled={isLoading}
                     />
@@ -204,18 +195,11 @@ const SignUpForm = () => {
             disabled={isLoading}
           >
             {isLoading && (
-              <Loader2
-                className='mr-2 h-4 w-4 animate-spin' />
+              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
             )}
             Sign up
           </Button>
         </form>
-        <p className='text-center text-sm text-gray-600 mt-2'>
-          If you don&apos;t have an account, please&nbsp;
-          <Link className='text-blue-500 hover:underline' href='/sign-in'>
-            Sign in
-          </Link>
-        </p>
       </Form>
     </div>
   );

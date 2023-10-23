@@ -19,7 +19,6 @@ model User {
   role      String   @default("USER")
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
-<<<<<<< HEAD
   Post      Post[]
 }
 
@@ -28,10 +27,8 @@ model Post {
   title     String   @db.VarChar(255)
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)
-  content   String?
+  content   String?  @db.Text
   published Boolean  @default(false)
   authorId  Int
   author    User     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-=======
->>>>>>> 213d160d3629129ad79b2e14bd87ad88133619a0
 }

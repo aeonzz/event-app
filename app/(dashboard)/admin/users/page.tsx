@@ -1,3 +1,4 @@
+import { Separator } from "@/components/ui/separator"
 import { User, columns } from "./columns"
 import { DataTable } from "./data-table"
 import { PrismaClient } from '@prisma/client'
@@ -10,12 +11,14 @@ async function getData(): Promise<User[]> {
   return data
 }
 
-export default async function DemoPage() {
+export default async function UsersTable() {
   const data = await getData()
 
   return (
-    <div className="container mx-auto py-10">
+    <>
+      <h1 className='text-3xl font-bold'>Users manager</h1>
+      <p className='text-sm font-normal'>Effortlessly Organizing and Controlling users</p>
       <DataTable columns={columns} data={data} />
-    </div>
+    </>
   )
 }

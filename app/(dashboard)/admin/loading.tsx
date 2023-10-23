@@ -4,23 +4,14 @@ import React from 'react'
 const loading = () => {
   return (
     <>
-      <div className='relative'>
-        <Skeleton className='h-44 w-full' />
-        <Skeleton className='absolute -bottom-20 left-5 h-32 w-32 rounded-full' />
-      </div>
-      <div className='w-full mt-20 p-8'>
-        <div className='mb-10'>
-          <Skeleton className='h-5 w-20 mb-3' />
-          <Skeleton className='h-12 w-full' />
-        </div>
-        <div className='mb-10'>
-          <Skeleton className='h-5 w-20 mb-3' />
-          <Skeleton className='h-12 w-full' />
-        </div>
-        <div className='mb-10'>
-          <Skeleton className='h-5 w-20 mb-3' />
-          <Skeleton className='h-12 w-full' />
-        </div>
+      <Skeleton className='h-12 w-[200px] mb-2' />
+      <Skeleton className='h-5 w-[250px]' />
+      <Skeleton className='h-9 w-[250px] mt-8' />
+      <div className='w-full grid gap-4 md:grid-cols-2 lg:grid-cols-4 mt-5'>
+        <Skeleton className='h-[140px]' />
+        <Skeleton className='h-[140px]' />
+        <Skeleton className='h-[140px]' />
+        <Skeleton className='h-[140px]' />
       </div>
     </>
   )

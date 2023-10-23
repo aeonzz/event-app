@@ -2,6 +2,9 @@
 
 import {
   ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -19,6 +22,26 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
+import { Button, buttonVariants } from "@/components/ui/button"
+import React from "react"
+import { DataTablePagination } from "./data-table-pagination"
+import { ChevronDown, Plus, UserCog } from "lucide-react"
+import { cn } from "@/lib/utils"
+import Link from "next/link"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import SignUpForm from "@/components/Forms/Signup"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Card } from "@/components/ui/card"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -29,23 +52,107 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+
+  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [rowSelection, setRowSelection] = React.useState({})
+  const [open, setOpen] = React.useState(false)
+  const updateOpenState = (newOpenState: boolean) => {
+    setOpen(newOpenState);
+  };
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+
+    onSortingChange: setSorting,
+    onRowSelectionChange: setRowSelection,
+    state: {
+      sorting,
+      rowSelection,
+    }
   })
 
   return (
-    <div>
-      <Input
-        placeholder="Filter emails..."
-        value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-        onChange={(event) =>
-          table.getColumn("email")?.setFilterValue(event.target.value)
-        }
-        className="max-w-sm"
-      />
+    <Card className='p-5 mt-5'>
+      <div className='flex items-center justify-between mb-5'>
+        <div className='flex items-center space-x-4 w-full'>
+          <Input
+            placeholder="Filter emails..."
+            value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("email")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                <UserCog className='h-4 w-4 mr-1' />
+                Roles
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>User roles</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup
+                value={(table.getColumn("role")?.getFilterValue() as string) ?? ""}
+                onValueChange={(newValue) =>
+                  table.getColumn("role")?.setFilterValue(newValue)
+                }
+              >
+                <DropdownMenuRadioItem value="">All</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="user">User</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="admin">Admin</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="superadmin">Superadmin</DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Columns <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  )
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <Button className="px-16 h-8 relative">
+              <Plus className='w-4 h-4 absolute left-[28%]' />
+              Add
+            </Button>
+          </SheetTrigger>
+          <SheetContent>
+            <SignUpForm
+              open={open}
+              updateOpenState={updateOpenState}
+            />
+          </SheetContent>
+        </Sheet>
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -90,6 +197,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-    </div>
+      <DataTablePagination table={table} />
+    </Card>
   )
 }

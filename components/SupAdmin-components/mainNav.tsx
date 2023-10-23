@@ -27,8 +27,8 @@ export function MainNav({
               href={item.link}
               className={cn(
                 pathname === item.link
-                  ? "text-sm text-primary font-medium transition-colors"
-                  : "text-sm font-medium text-accent-foreground transition-colors hover:text-primary",
+                  ? "text-xs underline-offset-4 underline font-medium transition-colors"
+                  : "text-xs font-medium text-accent-foreground transition-colors underline-offset-4 hover:underline",
                 "justify-start"
               )}
             >

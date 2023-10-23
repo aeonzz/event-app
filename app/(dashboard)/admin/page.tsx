@@ -12,12 +12,10 @@ const Admin = async () => {
   if (session?.user.role === 'SUPERADMIN') {
     return (
       <>
-        <div className='relative h-auto w-full py-5'>
-          <h1 className='text-4xl font-bold'>Dashboard</h1>
-          <h2 className='text-1xl font-medium'>Welcome back, <span className='font-bold'>{session?.user.username}</span></h2>
-          <Separator className='mt-5' />
-          <AdminTabs />
-        </div>
+        <h1 className='text-4xl font-bold'>Dashboard</h1>
+        <h2 className='text-1xl font-medium'>Welcome back, <span className='font-bold'>{session?.user.username}</span></h2>
+        <Separator className='mt-5' />
+        <AdminTabs />
       </>
     )
   }
