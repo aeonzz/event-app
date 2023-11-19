@@ -3,7 +3,7 @@ import { Separator } from '@/components/ui/separator'
 import { SidebarNav } from '@/components/Profile-Nav/SideBarNav'
 import { sidebarNavItems } from '@/constants'
 import { Card } from '@/components/ui/card'
-import Provider from '@/components/Provider'
+import Provider from '@/components/Providers/Provider'
 
 export default function ProfileLayout({
   children,

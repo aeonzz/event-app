@@ -9,45 +9,89 @@ import {
 } from "@/components/ui/card";
 import { sidebarNav } from '@/constants/index';
 import Link from "next/link";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import Image from "next/image";
-import { Home } from "lucide-react";
+import { Home, Loader2 } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { User } from "@prisma/client";
+import { Separator } from "../ui/separator";
+import ProfileHover from "../profileHover";
+import { Suspense } from "react";
+import LoadingSpinner from "../Loading/Spinner";
+import AdminsNavLoading from "../Loading/AdminsNavLoading";
 
 
 const LeftSideBar = () => {
 
   const pathname = usePathname();
 
+
+  const { data: dataUser, isLoading } = useQuery<User[]>({
+    queryKey: ['user'],
+    queryFn: async () => {
+      const response = await axios.get('/api/users')
+      return response.data;
+    }
+  })
+
+
   return (
     <>
       {pathname === '/' || pathname === '/events' || pathname === '/announcements' ? (
-        <aside className='sticky top-20 h-fit w-72 flex flex-col gap-4 items-start'>
-          <Card className='py-3 w-full h-auto flex flex-col items-center gap-1'>
+        <aside className='sticky top-20 h-fit w-60 flex flex-col gap-4 items-start'>
+          <div className='w-full h-auto flex flex-col items-center gap-4'>
             {sidebarNav.map((item, index) => (
               <Link
                 key={index}
                 href={item.link}
+                className={cn(
+                  buttonVariants({ variant: "ghost" }),
+                  pathname === item.link
+                    ? 'font-semibold'
+                    : 'font-light',
+                  'w-full flex justify-start text-base py-6'
+                )}
               >
-                <Button
-                  variant='ghost'
-                  className='w-[260px] p-3 rounded-sm justify-start'
-                >
-                  <Image
-                    src={item.icon}
-                    width={20}
-                    height={20}
-                    alt={item.alt}
-                    className='mr-3'
-                  />
-                  <h3 className='text-base font-semibold'>{item.title}</h3>
-                </Button>
+                <Image
+                  src={item.icon}
+                  width={28}
+                  height={28}
+                  alt={item.alt}
+                  className='mr-4'
+                />
+                {item.title}
               </Link>
             ))}
-          </Card>
-          <Card className='w-full h-[200px] mb-3'>
-
-          </Card>
+          </div>
+          <Separator className='ml-4' />
+          <div className='w-full h-auto flex flex-col gap-4'>
+            <h3 className='ml-4 text-sm text-muted-foreground'>Pages</h3>
+            {isLoading ? <AdminsNavLoading />
+              : (
+                <>
+                  {dataUser?.map((user) => (
+                    user.role === 'ADMIN' && (
+                      <div key={user.id}>
+                        <Link
+                          href={`/user/${user.id}`}
+                          className={cn(
+                            buttonVariants({ variant: "ghost" }), 'w-full flex justify-start text-xs py-6 font-normal hover:transition-colors'
+                          )}
+                        >
+                          <div className='mr-4'>
+                            <ProfileHover />
+                          </div>
+                          {user.username}
+                        </Link>
+                      </div>
+                    )
+                  ))}
+                </>
+              )}
+          </div>
         </aside>
       ) : (
         null

@@ -21,7 +21,6 @@ import { Calendar, MapPin } from 'lucide-react';
 import { Separator } from '../ui/separator';
 import Image from 'next/image';
 import gg from '@/public/peakpx (1).jpg'
-import ViewPost from './ViewPost';
 import Linkify from "linkify-react";
 
 
@@ -33,6 +32,9 @@ interface postCardProps {
     author: {
       username: string
     }
+    Tag: {
+      name: string
+    }
   }
 }
 
@@ -41,13 +43,14 @@ const options = {
   className: 'text-blue-500 hover:underline',
 }
 
-const EventCard: FC<postCardProps> = ({ post }) => {
+const PostCard: FC<postCardProps> = ({ post }) => {
 
-  const { id, title, content, author } = post;
+  const { id, title, content, author, Tag } = post;
   const { username } = author;
+  const { name } = Tag;
 
   return (
-    <Card className='relative w-full h-auto py-3 px-5'>
+    <div className='relative w-full h-auto py-3 px-5 mt-10 border-t hover:bg-accent/20 transition-colors rounded-md'>
       <div className='flex items-center gap-2'>
         <ProfileHover />
         <div className='flex flex-col'>
@@ -57,7 +60,7 @@ const EventCard: FC<postCardProps> = ({ post }) => {
           >
             {username}
           </Link>
-          <Badge className='w-fit' variant='secondary'>event</Badge>
+          <Badge className='w-fit' variant='secondary'>{name}</Badge>
         </div>
       </div>
       <div className='mt-4'>
@@ -87,36 +90,29 @@ const EventCard: FC<postCardProps> = ({ post }) => {
           <p className='whitespace-pre-wrap'>{content}</p>
         </Linkify>
         <div className='relative w-full flex overflow-hidden rounded-lg mt-5'>
-          <div className='flex-1'>
-            <Dialog>
-              <DialogTrigger>
-                <div className='flex'>
-                  <div className='flex-1'>
-                    <Image
-                      className='object-cover min-h-[400px] object-center'
-                      src={gg}
-                      alt='post image'
-                    />
-                  </div>
-                  <div className='flex-1'>
-                    <Image
-                      className='object-cover min-h-[400px] object-center'
-                      src={gg}
-                      alt='post image'
-                    />
-                  </div>
-                </div>
-              </DialogTrigger>
-              <DialogContent className='max-w-xl p-0'>
-                <ViewPost image={gg} post={post} />
-              </DialogContent>
-            </Dialog>
-          </div>
+          <Link href={`/post/${id}`}>
+            <div className='flex-1 flex'>
+              <div className='flex-1'>
+                <Image
+                  className='object-cover min-h-[400px] object-center'
+                  src={gg}
+                  alt='post image'
+                />
+              </div>
+              <div className='flex-1'>
+                <Image
+                  className='object-cover min-h-[400px] object-center'
+                  src={gg}
+                  alt='post image'
+                />
+              </div>
+            </div>
+          </Link>
         </div>
-        <Separator className='my-4' />
+        {/* <Separator className='my-4' /> */}
       </div>
-    </Card>
+    </div>
   )
 }
 
-export default EventCard;
+export default PostCard;

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Provider from '@/components/Provider'
+import Provider from '@/components/Providers/Provider'
 import Topbar from '@/components/Navigation/Topbar'
 import LeftSideBar from '@/components/Navigation/LeftSideBar'
 import RightSideBar from '@/components/Navigation/RightSideBar'

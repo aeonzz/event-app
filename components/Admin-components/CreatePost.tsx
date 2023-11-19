@@ -16,12 +16,13 @@ const CreatePost = async () => {
   }
 
   return (
-    <Card className='w-full py-3 px-5 border'>
+    <div className='w-full py-3 px-5'>
       <PostInput 
         initalletter={initialLetter}
         username={session?.user.username}
+        authorId={session!.user.id}
       />
-    </Card>
+    </div>
   )
 }
 

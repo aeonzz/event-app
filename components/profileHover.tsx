@@ -15,7 +15,10 @@ import { CalendarDays } from 'lucide-react'
 
 const ProfileHover = () => {
   return (
-    <HoverCard>
+    <HoverCard
+      openDelay={200}
+      closeDelay={100}
+    >
       <HoverCardTrigger asChild>
         <Avatar className='h-9 w-9 dark:border relative group'>
           <Link
@@ -32,7 +35,7 @@ const ProfileHover = () => {
           </Link>
         </Avatar>
       </HoverCardTrigger>
-      <HoverCardContent className="w-80">
+      <HoverCardContent className="w-80 z-50">
         <div className="flex justify-between space-x-4">
           <Avatar>
             <AvatarImage src='https://christian-aeonzz.vercel.app/_next/image?url=%2Fpfp.jpg&w=640&q=75'

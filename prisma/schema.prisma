@@ -22,6 +22,12 @@ model User {
   Post      Post[]
 }
 
+model Tag {
+  tagId Int    @id @default(autoincrement())
+  name  String @unique
+  Post  Post[]
+}
+
 model Post {
   id        Int      @id @default(autoincrement())
   title     String   @db.VarChar(255)
@@ -31,4 +37,6 @@ model Post {
   published Boolean  @default(false)
   authorId  Int
   author    User     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tagTagId  Int
+  Tag       Tag      @relation(fields: [tagTagId], references: [tagId])
 }

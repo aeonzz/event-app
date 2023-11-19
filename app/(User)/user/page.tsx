@@ -9,7 +9,7 @@ export default async function Profile() {
 
   return (
     <div className="space-y-6 border border-white">
-      <h1>YAWA</h1>
+      <h1>gg</h1>
     </div>
   )
 }

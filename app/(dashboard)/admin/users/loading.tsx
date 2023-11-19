@@ -1,8 +1,9 @@
+import LoadingSpinner from '@/components/Loading/Spinner'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Loader2 } from 'lucide-react'
 import React from 'react'
 
-const loading = () => {
+const UsersTableLoading = () => {
   return (
     <>
       <Skeleton className='h-10 w-[200px] mb-2' />
@@ -15,11 +16,9 @@ const loading = () => {
         </div>
         <Skeleton className='h-8 w-[150px]' />
       </div>
-      <div className='w-full flex justify-center mt-32'>
-        <Loader2 className='h-10 w-10 animate-spin stroke-1' />
-      </div>
+      <LoadingSpinner />
     </>
   )
 }
 
-export default loading
+export default UsersTableLoading

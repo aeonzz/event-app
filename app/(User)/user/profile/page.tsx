@@ -4,6 +4,8 @@ import { Card } from '@/components/ui/card';
 import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
 import Image from 'next/image';
+import { Suspense } from 'react';
+import ProfileLoading from './loading';
 
 const User = async () => {
 
@@ -16,7 +18,7 @@ const User = async () => {
   }
 
   return (
-    <section>
+    <Suspense fallback={<ProfileLoading />}>
       <h1>{session?.user.role}</h1>
       <ProfileHeader
         letter={initialLetter}
@@ -26,7 +28,7 @@ const User = async () => {
       <Card className='mt-24 p-8'>
         <ProfileForm />
       </Card>
-    </section>
+    </Suspense>
   )
 }
 

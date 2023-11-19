@@ -41,7 +41,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import React from "react"
+import React, { useState } from "react"
 import { DialogOverlay } from "@radix-ui/react-dialog"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
@@ -120,8 +120,8 @@ export const columns: ColumnDef<User>[] = [
     enableHiding: false,
     cell: ({ row }) => {
 
-      const [label, setLabel] = React.useState("feature")
-      const [open, setOpen] = React.useState(false)
+      const [label, setLabel] = useState("feature")
+      const [open, setOpen] = useState(false)
 
       return (
         <DropdownMenu open={open} onOpenChange={setOpen}>

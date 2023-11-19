@@ -1,7 +1,7 @@
 import { Skeleton } from '@/components/ui/skeleton'
 import React from 'react'
 
-const loading = () => {
+const ProfileLoading = () => {
   return (
     <>
       <div className='relative'>
@@ -26,4 +26,4 @@ const loading = () => {
   )
 }
 
-export default loading
+export default ProfileLoading

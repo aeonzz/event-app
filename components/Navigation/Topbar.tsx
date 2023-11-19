@@ -6,14 +6,15 @@ import UserNav from '@/components/user-nav';
 import PostTabs from './PostTabs';
 import { MainNav } from '../SupAdmin-components/mainNav';
 
+
 const Topbar = async () => {
 
   const session = await getServerSession(authOptions);
 
   return (
     <>
-      <div className='py-4 z-10 sticky top-0 w-full dark:border-b dark:bg-background bg-card '>
-        <div className='container flex items-center justify-between px-14'>
+      <div className='py-4 z-10 sticky top-0 w-full dark:bg-background/60 backdrop-blur-md backdrop-filter'>
+        <div className='container flex items-center justify-between px-10'>
           <div className='flex items-center gap-6'>
             <Link
               href='/'
@@ -21,7 +22,7 @@ const Topbar = async () => {
               <h2 className='text-xl text-start font-bold'>Rendezvy</h2>
             </Link>
             {session?.user.role === 'SUPERADMIN' && <MainNav />}
-          </div>
+          </div>  
           <PostTabs />
           <div className='flex items-center gap-3'>
             <Toggle />

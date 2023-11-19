@@ -41,16 +41,16 @@ export default function UsersTable() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {users.map((user) => (
-          <Suspense fallback={<Loading />}>
+        <Suspense fallback={<Loading />}>
+          {users.map((user) => (
             <TableRow key={user.id}>
               <TableCell className="font-medium">{user.id}</TableCell>
               <TableCell>{user.username}</TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell className="text-right">{user.role}</TableCell>
             </TableRow>
-          </Suspense>
-        ))}
+          ))}
+        </Suspense>
       </TableBody>
     </Table>
   )

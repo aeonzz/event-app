@@ -13,7 +13,6 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useToast } from '../ui/use-toast';
 import { Loader2 } from 'lucide-react';
@@ -34,11 +33,13 @@ const FormSchema = z
     message: 'Password do not match',
   });
 
-function SignUpForm (props: { open: boolean; updateOpenState: (newOpenState: boolean) => void }) {
+function SignUpForm(props: { open: boolean; updateOpenState: (newOpenState: boolean) => void }) {
 
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+
+  
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -114,94 +115,92 @@ function SignUpForm (props: { open: boolean; updateOpenState: (newOpenState: boo
   };
 
   return (
-    <div className='flex justify-center items-center w-full'>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className='w-[300px]'>
-          <div className='space-y-2'>
-            <FormField
-              control={form.control}
-              name='username'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='christian gwapo'
-                      {...field}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='email'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='mail@example.com'
-                      {...field}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='password'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type='password'
-                      placeholder='Enter your password'
-                      {...field}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='confirmPassword'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Re-Enter your password</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='Re-Enter your password'
-                      type='password'
-                      {...field}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <Button
-            className='w-full mt-6'
-            type='submit'
-            disabled={isLoading}
-          >
-            {isLoading && (
-              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='w-full'>
+        <div className='grid grid-cols-2 gap-4'>
+          <FormField
+            control={form.control}
+            name='username'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder='christian gwapo'
+                    {...field}
+                    disabled={isLoading}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-            Sign up
-          </Button>
-        </form>
-      </Form>
-    </div>
+          />
+          <FormField
+            control={form.control}
+            name='email'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder='mail@example.com'
+                    {...field}
+                    disabled={isLoading}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='password'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type='password'
+                    placeholder='Enter your password'
+                    {...field}
+                    disabled={isLoading}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='confirmPassword'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Re-Enter your password</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder='Re-Enter your password'
+                    type='password'
+                    {...field}
+                    disabled={isLoading}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <Button
+          className='w-full mt-6'
+          type='submit'
+          disabled={isLoading}
+        >
+          {isLoading && (
+            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+          )}
+          Sign up
+        </Button>
+      </form>
+    </Form>
   );
 };
 

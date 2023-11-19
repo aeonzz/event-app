@@ -2,13 +2,14 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Toaster } from "@/components/ui/toaster"
-import Provider from '@/components/Provider'
-import { ThemeProvider } from '@/components/theme-provider'
+import Provider from '@/components/Providers/Provider'
+import { ThemeProvider } from '@/components/Providers/theme-provider'
 import Topbar from '@/components/Navigation/Topbar'
 import LeftSideBar from '@/components/Navigation/LeftSideBar'
 import RightSideBar from '@/components/Navigation/RightSideBar'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import QueryProvider from '@/components/Providers/query-provider'
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -30,31 +31,33 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Provider>
-          <ThemeProvider
-            attribute='class'
-            defaultTheme='system'
-            enableSystem
-            disableTransitionOnChange
-          >
-            {session ? (
-              <>
-                <Topbar />
-                <main className='container h-auto relative flex justify-center gap-3'>
-                  <LeftSideBar />
+          <QueryProvider>
+            <ThemeProvider
+              attribute='class'
+              defaultTheme='system'
+              enableSystem
+              disableTransitionOnChange
+            >
+              {session ? (
+                <>
+                  <Topbar />
+                  <main className='container h-auto relative flex justify-center gap-24 px-0'>
+                    <LeftSideBar />
 
+                    {children}
+
+                    <RightSideBar />
+                  </main>
+                </>
+              ) : (
+                <>
                   {children}
+                </>
+              )}
 
-                  <RightSideBar />
-                </main>
-              </>
-            ) : (
-              <>
-                {children}
-              </>
-            )}
-
-            <Toaster />
-          </ThemeProvider>
+              <Toaster />
+            </ThemeProvider>
+          </QueryProvider>
         </Provider>
       </body>
     </html>

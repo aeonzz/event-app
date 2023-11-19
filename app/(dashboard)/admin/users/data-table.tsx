@@ -38,9 +38,15 @@ import { DataTablePagination } from "./data-table-pagination"
 import { ChevronDown, Plus, UserCog } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog"
 import SignUpForm from "@/components/Forms/Signup"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Card } from "@/components/ui/card"
 
 interface DataTableProps<TData, TValue> {
@@ -138,20 +144,26 @@ export function DataTable<TData, TValue>({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger asChild>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
             <Button className="px-16 h-8 relative">
               <Plus className='w-4 h-4 absolute left-[28%]' />
               Add
             </Button>
-          </SheetTrigger>
-          <SheetContent>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-semibold" >Add user</DialogTitle>
+              <DialogDescription>
+                Please provide the following information to add a new user to the system.
+              </DialogDescription>
+            </DialogHeader>
             <SignUpForm
               open={open}
               updateOpenState={updateOpenState}
             />
-          </SheetContent>
-        </Sheet>
+          </DialogContent>
+        </Dialog>
       </div>
       <div className="rounded-md border">
         <Table>
