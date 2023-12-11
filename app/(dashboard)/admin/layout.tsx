@@ -7,7 +7,6 @@ export default async function RootLayout({
 }) {
 
   return (
-
     <div className='relative h-auto w-full py-5 px-9'>
       {children}
     </div>

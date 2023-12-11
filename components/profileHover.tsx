@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FC } from 'react'
 import {
   HoverCard,
   HoverCardContent,
@@ -13,7 +13,14 @@ import Link from 'next/link'
 import { Skeleton } from './ui/skeleton'
 import { CalendarDays } from 'lucide-react'
 
-const ProfileHover = () => {
+interface ProfileHoverProps {
+  username?: string | null
+  date?: string | null
+}
+
+
+
+const ProfileHover: FC<ProfileHoverProps> = ({ username, date }) => {
   return (
     <HoverCard
       openDelay={200}
@@ -43,15 +50,15 @@ const ProfileHover = () => {
             />
             <AvatarFallback className='h-9 w-9 bg-stone-900'></AvatarFallback>
           </Avatar>
-          <div className="space-y-1">
+          <div className="space-y-1 w-full">
             <h4 className="text-sm font-semibold"></h4>
             <p className="text-sm">
-              The React Framework - created and maintained by @vercel.
+              {username}
             </p>
             <div className="flex items-center pt-2">
               <CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
               <span className="text-xs text-muted-foreground">
-                Joined December 2021
+                {`Joined ${date}`}
               </span>
             </div>
           </div>

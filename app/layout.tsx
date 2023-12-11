@@ -10,6 +10,7 @@ import RightSideBar from '@/components/Navigation/RightSideBar'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import QueryProvider from '@/components/Providers/query-provider'
+import Supabase from '@/components/Providers/supabaseProvider'
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -31,33 +32,35 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Provider>
-          <QueryProvider>
-            <ThemeProvider
-              attribute='class'
-              defaultTheme='system'
-              enableSystem
-              disableTransitionOnChange
-            >
-              {session ? (
-                <>
-                  <Topbar />
-                  <main className='container h-auto relative flex justify-center gap-24 px-0'>
-                    <LeftSideBar />
+          {/* <Supabase> */}
+            <QueryProvider>
+              <ThemeProvider
+                attribute='class'
+                defaultTheme='system'
+                enableSystem
+                disableTransitionOnChange
+              >
+                {session ? (
+                  <>
+                    <Topbar />
+                    <main className='container h-auto relative flex justify-center px-0'>
+                      <LeftSideBar />
 
+                      {children}
+
+                      <RightSideBar />
+                    </main>
+                  </>
+                ) : (
+                  <>
                     {children}
+                  </>
+                )}
 
-                    <RightSideBar />
-                  </main>
-                </>
-              ) : (
-                <>
-                  {children}
-                </>
-              )}
-
-              <Toaster />
-            </ThemeProvider>
-          </QueryProvider>
+                <Toaster />
+              </ThemeProvider>
+            </QueryProvider>
+          {/* </Supabase> */}
         </Provider>
       </body>
     </html>

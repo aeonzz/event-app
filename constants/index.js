@@ -2,6 +2,7 @@ import home from "@/public/icons/home.svg";
 import haha from "@/public/icons/haha.svg";
 import megaphone from "@/public/icons/megaphone.svg";
 import events from "@/public/icons/events.svg";
+import bird from "@/public/icons/bird.svg";
 
 
 export const postTabsNav = [
@@ -44,6 +45,12 @@ export const sidebarNav = [
     link: "/announcements",
     alt: "announcements"
   },
+  {
+    title: "Freedom Wall",
+    icon: bird,
+    link: "/freedom-wall",
+    alt: "Freedom Wall"
+  },
 ]
 
 export const adminNav = [
@@ -82,4 +89,19 @@ export const sidebarNavItems = [
     title: "Display",
     href: "/examples/forms/display",
   },
+]
+
+export const departments = [
+  {
+    title: "None",
+    value: "None",
+  },
+  {
+    title: "Information Technology",
+    value: "BSIT",
+  },
+  {
+    title: "Energy Systems and Management",
+    value: "BSESM"
+  }
 ]

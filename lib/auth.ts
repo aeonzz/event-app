@@ -40,10 +40,18 @@ export const authOptions: NextAuthOptions = {
         if (!existingUser) {
           return null;
         }
-        
-        const passwordMatched = await compare(credentials.password, existingUser.password);
 
-        if (!passwordMatched) {
+        if (existingUser.status === "banned") {
+          throw new Error("Your account has been banned.");
+        }
+        
+        // const passwordMatched = await compare(credentials.password, existingUser.password);
+
+        // if (!passwordMatched) {
+        //   return null;
+        // }
+
+        if (credentials.password !== existingUser.password) {
           return null;
         }
 
@@ -51,7 +59,8 @@ export const authOptions: NextAuthOptions = {
           id: `${existingUser.id}`,
           username: existingUser.username,
           email: existingUser.email,
-          role: existingUser.role
+          role: existingUser.role,
+          createdAt: existingUser.createdAt
         }
       }
     })
@@ -65,7 +74,8 @@ export const authOptions: NextAuthOptions = {
           ...token,
           id: user.id,
           username: user.username,
-          role: user.role
+          role: user.role,
+          createdAt: user.createdAt
         }
       }
       return token
@@ -77,7 +87,8 @@ export const authOptions: NextAuthOptions = {
           ...session.user,
           id: token.id,
           username: token.username,
-          role: token.role
+          role: token.role,
+          createdAt: token.createdAt
         }
       }
     },

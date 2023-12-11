@@ -9,7 +9,7 @@ const Admin = async () => {
 
   const session = await getServerSession(authOptions);
 
-  if (session?.user.role === 'SUPERADMIN') {
+  if (session?.user.role === 'SYSTEMADMIN') {
     return (
       <>
         <h1 className='text-4xl font-bold'>Dashboard</h1>

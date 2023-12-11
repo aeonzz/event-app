@@ -22,6 +22,7 @@ import ProfileHover from "../profileHover";
 import { Suspense } from "react";
 import LoadingSpinner from "../Loading/Spinner";
 import AdminsNavLoading from "../Loading/AdminsNavLoading";
+import { format } from "date-fns";
 
 
 const LeftSideBar = () => {
@@ -32,15 +33,21 @@ const LeftSideBar = () => {
   const { data: dataUser, isLoading } = useQuery<User[]>({
     queryKey: ['user'],
     queryFn: async () => {
-      const response = await axios.get('/api/users')
-      return response.data;
-    }
-  })
-
+      const response = await axios.get('/api/users');
+      const data = response.data.map((user: User) => ({
+        ...user,
+        createdAt: new Date(user.createdAt),
+      }));
+      return data;
+    },
+  });
 
   return (
     <>
-      {pathname === '/' || pathname === '/events' || pathname === '/announcements' ? (
+      {pathname === '/' ||
+        pathname === '/events' ||
+        pathname === '/announcements' || 
+        pathname === '/freedom-wall' ? (
         <aside className='sticky top-20 h-fit w-60 flex flex-col gap-4 items-start'>
           <div className='w-full h-auto flex flex-col items-center gap-4'>
             {sidebarNav.map((item, index) => (
@@ -50,7 +57,7 @@ const LeftSideBar = () => {
                 className={cn(
                   buttonVariants({ variant: "ghost" }),
                   pathname === item.link
-                    ? 'font-semibold'
+                    ? 'font-semibold bg-primary hover:bg-primary'
                     : 'font-light',
                   'w-full flex justify-start text-base py-6'
                 )}
@@ -82,7 +89,10 @@ const LeftSideBar = () => {
                           )}
                         >
                           <div className='mr-4'>
-                            <ProfileHover />
+                            <ProfileHover
+                              username={user.username}
+                              date={format(user.createdAt, 'PP')}
+                            />
                           </div>
                           {user.username}
                         </Link>

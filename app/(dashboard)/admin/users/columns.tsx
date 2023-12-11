@@ -2,60 +2,30 @@
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList
-} from "@/components/ui/command"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
 import {
   ArrowUpDown,
-  Calendar,
-  MoreHorizontal,
-  Tags,
-  Trash,
   User
 } from "lucide-react"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
 import React, { useState } from "react"
-import { DialogOverlay } from "@radix-ui/react-dialog"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import TableActions from "@/components/SupAdmin-components/tableActions"
+import { format } from "date-fns"
+import { Badge, badgeVariants } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
 
 export type User = {
-  id: number
-  email: string
-  username: string
-  role: string
+  id: number;
+  email: string;
+  name: string | null;
+  username: string;
+  department: string | null;
+  status: string
+  deleted: boolean
+  password: string;
+  role: string;
+  createdAt: Date;
+  updateAt: Date;
 }
-
-const roles = [
-  "ADMIN",
-  "USER",
-]
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -82,6 +52,7 @@ export const columns: ColumnDef<User>[] = [
     header: ({ column }) => {
       return (
         <Button
+        className='ml-[-15px]'
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
@@ -93,11 +64,34 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => <div className="lowercase">{row.getValue("id")}</div>,
   },
   {
+    accessorKey: "status",
+    header: "",
+    cell: ({ row }) => {
+
+      const status = row.original.status
+
+      return (
+        <div className='flex gap-3 items-cente'>
+          <Badge
+          variant="outline"
+          className={cn(
+            status === 'banned' && 'text-red-500',
+            'w-16 justify-center text-[10px]'
+          )}
+          >
+            {status}
+          </Badge>
+        </div>
+      )
+    },
+  },
+  {
     accessorKey: "email",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
+          className='ml-[-120px]'
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Email
@@ -105,79 +99,36 @@ export const columns: ColumnDef<User>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    cell: ({ row }) => <div className="ml-[-40px]">{row.getValue("email")}</div>,
   },
   {
     accessorKey: "username",
     header: "Username",
   },
   {
+    accessorKey: "department",
+    header: "Department",
+  },
+  {
     accessorKey: "role",
     header: "Role",
   },
   {
-    id: "actions",
-    enableHiding: false,
+    accessorKey: "updateAt",
+    header: "Last update",
     cell: ({ row }) => {
 
-      const [label, setLabel] = useState("feature")
-      const [open, setOpen] = useState(false)
+      const newDate = new Date(row.original.updateAt)
+      const newUpdate = format(newDate, 'PPpp')
 
       return (
-        <DropdownMenu open={open} onOpenChange={setOpen}>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm">
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-fit">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <Sheet>
-              <SheetTrigger asChild>
-                <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
-                  <User className="mr-2 h-4 w-4" />
-                  Edit
-                </DropdownMenuItem>
-              </SheetTrigger>
-              <SheetContent>
-
-              </SheetContent>
-            </Sheet>
-            <DropdownMenuSeparator />
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
-                <Tags className="mr-2 h-4 w-4" />
-                Roles
-              </DropdownMenuSubTrigger>
-              <DropdownMenuSubContent className="p-0">
-                <Command>
-                  <CommandList>
-                    <CommandEmpty>No roles found.</CommandEmpty>
-                    <CommandGroup>
-                      {roles.map((role) => (
-                        <CommandItem
-                          key={role}
-                          onSelect={(value) => {
-                            setLabel(value)
-                            setOpen(false)
-                          }}
-                        >
-                          {role}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </DropdownMenuSubContent>
-            </DropdownMenuSub>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-600">
-              <Trash className="mr-2 h-4 w-4" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div>{newUpdate}</div>
       )
-    },
+    }
+  },
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => <TableActions row={row.original} />
   },
 ]

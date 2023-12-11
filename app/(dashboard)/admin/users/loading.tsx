@@ -16,7 +16,9 @@ const UsersTableLoading = () => {
         </div>
         <Skeleton className='h-8 w-[150px]' />
       </div>
-      <LoadingSpinner />
+      <div className='mt-32'>
+        <LoadingSpinner />
+      </div>
     </>
   )
 }

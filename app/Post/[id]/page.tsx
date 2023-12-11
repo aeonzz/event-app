@@ -12,6 +12,7 @@ import Link from 'next/link'
 import React, { FC, Suspense } from 'react'
 import ViewPostLoading from './loading'
 import BackButton from '@/components/BackButton'
+import PostReview from '@/components/Post-components/PostReview'
 
 interface PostDetailProps {
   params: {
@@ -28,6 +29,7 @@ async function getPost(id: number) {
       id: true,
       title: true,
       content: true,
+      published: true,
       author: true,
       Tag: true
     },
@@ -91,6 +93,13 @@ const PostDetails: FC<PostDetailProps> = async ({ params }) => {
         <Linkify options={options}>
           <p className='whitespace-pre-wrap text-sm'>{post?.content}</p>
         </Linkify>
+        {post?.published === false && (
+          <div className='mt-5'>
+            <PostReview
+              reviewStyle='hidden'
+            />
+          </div>
+        )}
       </ScrollArea>
     </div>
   )

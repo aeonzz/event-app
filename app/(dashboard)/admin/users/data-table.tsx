@@ -33,9 +33,9 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { Button, buttonVariants } from "@/components/ui/button"
-import React from "react"
+import React, { useState } from "react"
 import { DataTablePagination } from "./data-table-pagination"
-import { ChevronDown, Plus, UserCog } from "lucide-react"
+import { ChevronDown, Plus, UserCog, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import {
@@ -48,6 +48,8 @@ import {
 } from "@/components/ui/dialog"
 import SignUpForm from "@/components/Forms/Signup"
 import { Card } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -59,9 +61,10 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
 
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [rowSelection, setRowSelection] = React.useState({})
-  const [open, setOpen] = React.useState(false)
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [rowSelection, setRowSelection] = useState({})
+  const [open, setOpen] = useState(false)
+
   const updateOpenState = (newOpenState: boolean) => {
     setOpen(newOpenState);
   };
@@ -82,6 +85,14 @@ export function DataTable<TData, TValue>({
     }
   })
 
+  const roleFilter = table.getColumn("role")?.getFilterValue() as string ?? ""
+  const statusFilter = table.getColumn("status")?.getFilterValue() as string ?? ""
+
+  const handleReset = () => {
+    table.getColumn("role")?.setFilterValue("");
+    table.getColumn("status")?.setFilterValue("");
+  }
+
   return (
     <Card className='p-5 mt-5'>
       <div className='flex items-center justify-between mb-5'>
@@ -99,6 +110,24 @@ export function DataTable<TData, TValue>({
               <Button variant="outline">
                 <UserCog className='h-4 w-4 mr-1' />
                 Roles
+                {roleFilter === "" ? (
+                  null
+                ) : (
+                  <>
+                    <Separator
+                      className='ml-2 mr-2'
+                      orientation="vertical" />
+                    {roleFilter === "" ? (
+                      null
+                    ) : (
+                      <Badge
+                        variant="secondary"
+                      >
+                        {roleFilter}
+                      </Badge>
+                    )}
+                  </>
+                )}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
@@ -113,7 +142,47 @@ export function DataTable<TData, TValue>({
                 <DropdownMenuRadioItem value="">All</DropdownMenuRadioItem>
                 <DropdownMenuRadioItem value="user">User</DropdownMenuRadioItem>
                 <DropdownMenuRadioItem value="admin">Admin</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="superadmin">Superadmin</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="systemadmin">SystemAdmin</DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                <UserCog className='h-4 w-4 mr-1' />
+                Status
+                {statusFilter === "" ? (
+                  null
+                ) : (
+                  <>
+                    <Separator
+                      className='ml-2 mr-2'
+                      orientation="vertical" />
+                    {statusFilter === "" ? (
+                      null
+                    ) : (
+                      <Badge
+                        variant="secondary"
+                      >
+                        {statusFilter}
+                      </Badge>
+                    )}
+                  </>
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>User statuses</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup
+                value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
+                onValueChange={(newValue) =>
+                  table.getColumn("status")?.setFilterValue(newValue)
+                }
+              >
+                <DropdownMenuRadioItem value="">All</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="banned">Banned</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="active">Active</DropdownMenuRadioItem>
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -143,6 +212,18 @@ export function DataTable<TData, TValue>({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
+          {roleFilter === "" && statusFilter === "" ? (
+            null
+          ) : (
+            <Button
+              onClick={() => handleReset()}
+              variant="ghost"
+              className="flex items-center"
+            >
+              reset
+              <X className="ml-2 h-4 w-4"  />
+            </Button>
+          )}
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>

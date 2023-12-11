@@ -15,8 +15,24 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 import { useToast } from '../ui/use-toast';
-import { Loader2 } from 'lucide-react';
+import { ChevronDown, Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger
+} from '../ui/dropdown-menu';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import LoadingSpinner from '../Loading/Spinner';
+import { User } from '@prisma/client';
+import { departments } from '@/constants';
+import { ToastAction } from '../ui/toast';
+import { UpdateUser } from '@/types/update-user';
 
 const FormSchema = z
   .object({
@@ -33,74 +49,111 @@ const FormSchema = z
     message: 'Password do not match',
   });
 
-function SignUpForm(props: { open: boolean; updateOpenState: (newOpenState: boolean) => void }) {
+function SignUpForm(props: { open: boolean; updateOpenState: (newOpenState: boolean) => void, userData?: User }) {
 
+  const data = props.userData
+  const roles = props.userData?.role
+  const status = props.userData?.status
+  const deleted = props.userData?.deleted
+  const dep = props.userData?.department
+  const id = props.userData?.id
   const [isLoading, setIsLoading] = useState(false);
+  const [role, setRole] = useState(roles || "USER")
+  const [department, setDepartment] = useState(dep || "None")
   const router = useRouter();
   const { toast } = useToast();
 
-  
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      username: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
+      username: data?.username || '',
+      email: data?.email || '',
+      password: data?.password || '',
+      confirmPassword: data?.password || '',
     },
   });
+
+  const { mutate: updateUser, data: userData } = useMutation({
+    mutationFn: (updateUser: UpdateUser) => {
+      return axios.patch(`/api/users/${id}`, updateUser)
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "Could not update user, Try again later.",
+      })
+    },
+    onSuccess: () => {
+      props.updateOpenState(false);
+      toast({
+        variant: "default",
+        title: "Update Successful",
+        description: "User successfully updated.",
+      })
+      router.refresh()
+    }
+  })
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
     try {
 
       setIsLoading(true);
 
-      const response = await fetch('/api/user', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          username: values.username,
-          email: values.email,
-          password: values.password
-        })
-      })
-
-      if (response.ok) {
-        const data = await response.json();
-
-        toast({
-          variant: "default",
-          title: "Registration Successful",
-          description: data.message,
-        });
-
-        setTimeout(() => {
-          router.refresh()
-          props.updateOpenState(false);
-        }, 2000);
-
-      } else if (response.status === 409) {
-        const data = await response.json();
-
-        setIsLoading(false);
-
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: data.message,
-        });
-
+      if (data) {
+        const userData: UpdateUser = { ...values, role, department, status, deleted };
+        if (userData) {
+          updateUser(userData);
+        }
       } else {
-        setIsLoading(false);
+        const response = await fetch('/api/user', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            username: values.username,
+            email: values.email,
+            password: values.password,
+            role: role,
+            department: department
+          })
+        })
 
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: "There was a problem with your request.",
-        });
+        if (response.ok) {
+          const data = await response.json();
+
+          props.updateOpenState(false);
+          router.refresh()
+          toast({
+            variant: "default",
+            title: "Registration Successful",
+            description: data.message,
+          });
+
+        } else if (response.status === 409) {
+          const data = await response.json();
+
+          setIsLoading(false);
+
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: data.message,
+          });
+
+        } else {
+          setIsLoading(false);
+
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "There was a problem with your request.",
+          });
+        }
       }
+
+
     } catch (error) {
       setIsLoading(false);
 
@@ -188,6 +241,50 @@ function SignUpForm(props: { open: boolean; updateOpenState: (newOpenState: bool
               </FormItem>
             )}
           />
+          <div className='flex flex-col gap-3'>
+            <FormLabel>Department <span className='text-muted-foreground text-xs'>(Optional)</span></FormLabel>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className='h-8 px-3 w-full rounded-sm text-sm text-muted-foreground flex justify-between'
+                >
+                  {department}
+                  <ChevronDown className='w-4 h-4' />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className='w-[220px]'>
+                <DropdownMenuLabel>Departments</DropdownMenuLabel>
+                <DropdownMenuRadioGroup value={department} onValueChange={setDepartment}>
+                  {departments.map((department) => (
+                    <DropdownMenuRadioItem key={department.title} value={department.value}>{department.title}</DropdownMenuRadioItem>
+                  ))}
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <div className='flex flex-col gap-3'>
+            <FormLabel>User role</FormLabel>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className='h-8 px-3 max-w-[150px] rounded-sm text-sm text-muted-foreground flex justify-between'
+                >
+                  {role.charAt(0).toUpperCase() + role.slice(1).toLowerCase()}
+                  <ChevronDown className='w-4 h-4' />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className='w-36 max-w-sm'>
+                <DropdownMenuLabel>Roles</DropdownMenuLabel>
+                <DropdownMenuRadioGroup value={role} onValueChange={setRole}>
+                  <DropdownMenuRadioItem value="USER">User</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="ADMIN">Admin</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="SYSTEMADMIN">Systemadmin</DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
         <Button
           className='w-full mt-6'
@@ -197,7 +294,7 @@ function SignUpForm(props: { open: boolean; updateOpenState: (newOpenState: bool
           {isLoading && (
             <Loader2 className='mr-2 h-4 w-4 animate-spin' />
           )}
-          Sign up
+          {data ? <p>Update</p> : <p>Sign up</p>}
         </Button>
       </form>
     </Form>

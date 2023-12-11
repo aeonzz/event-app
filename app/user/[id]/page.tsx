@@ -25,7 +25,7 @@ const UserDetails: FC<UserDetailsProps> = async ({ params }) => {
   return (
     <div>
       {posts.map((post) => (
-        <h1>{post.title}</h1>
+        <h1 key={post.id}>{post.title}</h1>
       ))}
     </div>
   )

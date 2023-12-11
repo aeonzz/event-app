@@ -17,7 +17,7 @@ export default function FetchDataError() {
   }
 
   return (
-    <div className="flex flex-col w-[45%] h-[400px] items-center justify-center space-y-4">
+    <div className="flex flex-col w-full h-[400px] items-center justify-center space-y-4">
       <svg
         className=" h-8 w-8 text-red-500 dark:text-red-400"
         fill="none"
@@ -44,7 +44,7 @@ export default function FetchDataError() {
         disabled={isLoading}
       >
         {isLoading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
-        Retry
+        {isLoading ? <p>Retrying</p> : <p>Retry</p>}
       </Button>
     </div>
   )

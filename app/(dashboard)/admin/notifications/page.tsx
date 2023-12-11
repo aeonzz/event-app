@@ -1,11 +1,11 @@
 import React from 'react'
 
-const Loading = () => {
+const Notifications = () => {
   return (
     <div>
-      
+
     </div>
   )
 }
 
-export default Loading;
+export default Notifications

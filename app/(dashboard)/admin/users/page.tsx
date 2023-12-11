@@ -9,7 +9,14 @@ import FetchDataError from "@/components/FetchDataError"
 const prisma = new PrismaClient()
 
 async function getData(): Promise<User[]> {
-  const data = await prisma.user.findMany()
+  const data = await prisma.user.findMany({
+    where: {
+      deleted: false
+    },
+    orderBy: {
+      id: 'desc'
+    }
+  })
 
   return data
   // throw new Error('Simulated error in getPost function');

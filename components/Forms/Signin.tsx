@@ -56,14 +56,21 @@ const SignInForm = () => {
     });
 
     if (signInData?.error) {
-
       setIsLoading(false);
-
-      toast({
-        variant: "destructive",
-        title: "Unauthorized",
-        description: "Invalid email or password. Please try again.",
-      })
+    
+      if (signInData.error === "Your account has been banned.") {
+        toast({
+          variant: "destructive",
+          title: "Account Banned",
+          description: "Your account has been banned. Please contact support for assistance.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Unauthorized",
+          description: "Invalid email or password. Please try again.",
+        });
+      }
     } else {
       router.refresh();
       router.push('/');
@@ -119,7 +126,7 @@ const SignInForm = () => {
             {isLoading && (
               <Loader2 className='mr-2 h-4 w-4 animate-spin' />
             )}
-            Sign in
+            {isLoading ? <p>Signing in</p> : <p>Sign in</p>}
           </Button>
         </form>
 

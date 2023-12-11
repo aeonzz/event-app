@@ -41,7 +41,7 @@ export default async function UserNav() {
     const { email } = session.user;
 
     return (
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild className=''>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <Avatar className="h-8 w-8">
@@ -69,7 +69,8 @@ export default async function UserNav() {
                 Profile
               </DropdownMenuItem>
             </Link>
-            {session?.user.role === 'SUPERADMIN' ? (
+            {session?.user.role === 'SYSTEMADMIN' ? (
+              <>
               <Link
                 href='/admin'
               >
@@ -78,6 +79,15 @@ export default async function UserNav() {
                   Admin panel
                 </DropdownMenuItem>
               </Link>
+              <Link
+                href='/pendingpost'
+              >
+                <DropdownMenuItem>
+                  <LayoutDashboard className="mr-2 h-4 w-4" />
+                  Pending
+                </DropdownMenuItem>
+              </Link>
+              </>
             ) : (
               <></>
             )}
