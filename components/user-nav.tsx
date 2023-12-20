@@ -80,7 +80,7 @@ export default async function UserNav() {
                 </DropdownMenuItem>
               </Link>
               <Link
-                href='/pendingpost'
+                href='/pending-post'
               >
                 <DropdownMenuItem>
                   <LayoutDashboard className="mr-2 h-4 w-4" />

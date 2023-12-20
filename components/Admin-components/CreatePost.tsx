@@ -1,5 +1,5 @@
 import { Avatar } from '@radix-ui/react-avatar'
-import React from 'react'
+import React, { FC } from 'react'
 import { AvatarFallback, AvatarImage } from '../ui/avatar'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
@@ -7,7 +7,11 @@ import PostInput from './PostInput'
 import { Card } from '../ui/card'
 import { format } from 'date-fns'
 
-const CreatePost = async () => {
+interface CreatePostProps {
+  tag: string
+}
+
+const CreatePost: FC<CreatePostProps> = async ({ tag }) => {
 
   const session = await getServerSession(authOptions);
 
@@ -19,8 +23,9 @@ const CreatePost = async () => {
   const joined = new Date(session?.user.createdAt!)
 
   return (
-    <div className='w-full py-3 px-5'>
-      <PostInput 
+    <div className='w-full'>
+      <PostInput
+        tag={tag}
         initalletter={initialLetter}
         username={session?.user.username}
         authorId={session!.user.id}

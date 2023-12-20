@@ -12,14 +12,16 @@ import FetchDataError from '../FetchDataError';
 import LoadingSpinner from '../Loading/Spinner';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { Session } from 'next-auth';
 
 interface PostsProps {
   tag?: string | null
   fw?: boolean | null
   published?: boolean | null
+  session?: Session | null
 }
 
-const Posts: FC<PostsProps> = ({ tag, published, fw }) => {
+const Posts: FC<PostsProps> = ({ tag, published, fw, session }) => {
 
   // const { data: dataPosts, isLoading, isError } = useQuery<Posts[]>({
   //   queryKey: ['posts'],
@@ -48,6 +50,7 @@ const Posts: FC<PostsProps> = ({ tag, published, fw }) => {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
+    refetch,
     status,
   } = useInfiniteQuery({
     queryKey: ['posts'],
@@ -57,6 +60,11 @@ const Posts: FC<PostsProps> = ({ tag, published, fw }) => {
     getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
   })
 
+
+  const handleRefetch = () => {
+    refetch();
+  };
+  
   const content = data?.pages.map((group, i) => (
     <React.Fragment key={i}>
       {group.data.length === 0 ? (
@@ -70,6 +78,8 @@ const Posts: FC<PostsProps> = ({ tag, published, fw }) => {
                 tag={tag}
                 key={post.id}
                 post={post}
+                session={session}
+                onMutationSuccess={handleRefetch}
               />
             )
           ))}

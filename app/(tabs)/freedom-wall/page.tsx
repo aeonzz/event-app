@@ -10,14 +10,18 @@ const FreedomWall = async () => {
   const tag = 'fw'
   const published = true
   const fw = true
+  const session = await getServerSession(authOptions);
 
   return (
     <div className='w-[58%] mt-4 px-20 flex flex-col'>
-      <CreatePost />
+      <CreatePost 
+        tag={tag}
+      />
       <Posts
         fw={fw}
         tag={tag}
         published={published}
+        session={session}
       />
     </div>
   )

@@ -5,7 +5,6 @@ import * as z from "zod"
 const PostSchema = z.object({
   title: z
     .string()
-    .min(2)
     .optional(),
   post: z
     .string()
@@ -20,6 +19,15 @@ const PostSchema = z.object({
     .boolean(),
   anonymous: z
     .boolean(),
+  venue: z
+    .string()
+    .optional(),
+  location: z
+    .string()
+    .optional(),
+  date: z
+    .string()
+    .optional(),
 })
 
 export async function GET(req: Request) {
@@ -33,8 +41,13 @@ export async function GET(req: Request) {
         id: true,
         title: true,
         content: true,
+        venue: true,
+        location: true,
+        date: true,
         author: true,
+        images: true,
         published: true,
+        deleted: true,
         anonymous: true,
         Tag: true,
         createdAt: true
@@ -45,7 +58,7 @@ export async function GET(req: Request) {
       orderBy: {
         id: 'desc',
       },
-      take: 10, 
+      take: 10,
     });
     const lastPost = posts[posts.length - 1];
     const nextCursor = lastPost?.id || undefined;
@@ -62,7 +75,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { post, title, authorId, category, published, anonymous } = PostSchema.parse(body);
+    const { post, title, authorId, category, published, anonymous, venue, location, date } = PostSchema.parse(body);
     const parsedAuthorId = parseInt(authorId, 10);
 
     const tag = await prisma.tag.findUnique({
@@ -77,6 +90,9 @@ export async function POST(req: Request) {
         content: post,
         published: published,
         anonymous: anonymous,
+        location: location,
+        venue: venue,
+        date: date,
         author: {
           connect: {
             id: parsedAuthorId,

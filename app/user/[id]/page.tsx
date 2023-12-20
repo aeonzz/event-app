@@ -7,10 +7,10 @@ interface UserDetailsProps {
   }
 }
 
-async function getPost(id: number) {
-  const response = await prisma.post.findMany({
+async function getUser(id: number) {
+  const response = await prisma.user.findFirst({
     where: {
-      authorId: id,
+      id: id,
     }
   })
 
@@ -20,13 +20,11 @@ async function getPost(id: number) {
 const UserDetails: FC<UserDetailsProps> = async ({ params }) => {
 
   const userId = +params.id
-  const posts = await getPost(userId);
+  const user = await getUser(userId);
 
   return (
     <div>
-      {posts.map((post) => (
-        <h1 key={post.id}>{post.title}</h1>
-      ))}
+      <h1>{user?.email}</h1>
     </div>
   )
 }

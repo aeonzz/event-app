@@ -21,12 +21,15 @@ const Event = async () => {
   return (
     <div className='w-[58%] mt-4 px-20 flex flex-col'>
       {session?.user.role === 'ADMIN' || session?.user.role === 'SYSTEMADMIN' ?
-        <CreatePost />
+        <CreatePost 
+          tag={tag}
+        />
         : null
       }
       <Posts
         tag={tag}
         published={published}
+        session={session}
       />
       {/* {session?.user.username}
           <Link href='/admin'>hahahahah</Link>

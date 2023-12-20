@@ -1,4 +1,4 @@
-import ImageSlider from '@/components/Post-components/ImageSlider'
+import ImageSlider from '@/components/Post-components/image-slider'
 import ProfileHover from '@/components/profileHover'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Badge } from '@/components/ui/badge'
@@ -31,6 +31,7 @@ async function getPost(id: number) {
       content: true,
       published: true,
       author: true,
+      images: true,
       Tag: true
     },
   })
@@ -49,10 +50,18 @@ const PostDetails: FC<PostDetailProps> = async ({ params }) => {
   const post = await getPost(postID);
 
   return (
-    <div className='w-full h-[85vh] flex justify-between mt-5 px-7'>
+    <div className='w-full h-[88vh] flex justify-between mt-5 px-7'>
       <div className='flex-1 mr-3'>
         <BackButton style='absolute z-50' />
-        <ImageSlider />
+        {post?.images.length !== 0 ? (
+          <ImageSlider
+            images={post?.images}
+          />
+        ) : (
+          <div className='flex-1w-full h-full flex items-center justify-center'>
+            <h1>No Images Available</h1>
+          </div>
+        )}
       </div>
       <Separator orientation='vertical' />
       <ScrollArea className='w-[350px] h-full px-5'>
@@ -91,15 +100,15 @@ const PostDetails: FC<PostDetailProps> = async ({ params }) => {
           </Accordion>
         </div>
         <Linkify options={options}>
-          <p className='whitespace-pre-wrap text-sm'>{post?.content}</p>
+          <p className='whitespace-pre-wrap break-words text-sm'>{post?.content}</p>
         </Linkify>
-        {post?.published === false && (
+        {/* {post?.published === false && (
           <div className='mt-5'>
             <PostReview
               reviewStyle='hidden'
             />
           </div>
-        )}
+        )} */}
       </ScrollArea>
     </div>
   )

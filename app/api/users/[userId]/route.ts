@@ -71,7 +71,7 @@ export async function PATCH(req: Request, { params }: { params: { userId: string
 
   } catch (error) {
     console.error(error)
-    return NextResponse.json({ message: 'could not delete post' }, { status: 500 })
+    return NextResponse.json({ message: 'could not update post' }, { status: 500 })
   }
 }
 

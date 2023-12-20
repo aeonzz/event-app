@@ -11,7 +11,7 @@ const PendingPosts = async () => {
 
   if (session?.user.role === 'SYSTEMADMIN') {
     return (
-      <div className='w-[45%] mt-4 px-10 flex flex-col'>
+      <div className='w-[50%] mt-4 px-10 flex flex-col'>
         <Posts
           published={published}
         />

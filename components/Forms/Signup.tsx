@@ -106,7 +106,7 @@ function SignUpForm(props: { open: boolean; updateOpenState: (newOpenState: bool
           updateUser(userData);
         }
       } else {
-        const response = await fetch('/api/user', {
+        const response = await fetch('/api/users', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

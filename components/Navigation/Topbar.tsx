@@ -14,7 +14,7 @@ const Topbar = async () => {
 
   return (
     <>
-      <div className='py-4 z-10 sticky top-0 w-full dark:bg-background/50 backdrop-blur-sm backdrop-filter'>
+      <div className='py-4 z-50 sticky top-0 w-full dark:bg-background/50 backdrop-blur-sm backdrop-filter'>
         <div className='container flex items-center justify-between px-10'>
           <div className='flex items-center gap-6'>
             <Link

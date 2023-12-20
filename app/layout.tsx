@@ -10,7 +10,7 @@ import RightSideBar from '@/components/Navigation/RightSideBar'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import QueryProvider from '@/components/Providers/query-provider'
-import Supabase from '@/components/Providers/supabaseProvider'
+import { EdgeStoreProvider } from '@/lib/edgestore'
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -32,7 +32,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Provider>
-          {/* <Supabase> */}
+          <EdgeStoreProvider>
             <QueryProvider>
               <ThemeProvider
                 attribute='class'
@@ -60,7 +60,7 @@ export default async function RootLayout({
                 <Toaster />
               </ThemeProvider>
             </QueryProvider>
-          {/* </Supabase> */}
+          </EdgeStoreProvider>
         </Provider>
       </body>
     </html>

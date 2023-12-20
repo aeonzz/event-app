@@ -1,16 +1,48 @@
 import React, { FC, useState } from 'react'
 import { Button } from '../ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from '../ui/dropdown-menu'
-import { BarChartHorizontalBig, Loader2, MoreHorizontal, Tags, Trash, User2 } from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger
+} from '../ui/dropdown-menu'
+import {
+  BarChartHorizontalBig,
+  Loader2,
+  MoreHorizontal,
+  Tags,
+  Trash,
+  User2
+} from 'lucide-react'
 import { User } from '@prisma/client'
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '../ui/dialog'
 import SignUpForm from '../Forms/Signup'
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { toast } from '../ui/use-toast'
 import { useRouter } from 'next/navigation'
 import { ToastAction } from '../ui/toast'
-import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '../ui/command'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandList
+} from '../ui/command'
 import { UpdateUser } from '@/types/update-user'
 
 interface TableActionProps {
