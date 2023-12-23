@@ -16,7 +16,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
-    console.error('Error creating post:', error);
-    return NextResponse.json({ message: 'could not create post' }, { status: 500 })
+    return NextResponse.json({ message: 'could not create image' }, { status: 500 })
   }
 }

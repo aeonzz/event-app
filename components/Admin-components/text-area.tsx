@@ -83,23 +83,27 @@ import { cn } from "@/lib/utils"
 import { ScrollArea } from "../ui/scroll-area"
 import Image from 'next/image';
 import { DatePickerWithRange } from "../ui/date-range-picker"
+import { Posts } from "@/types/posts"
+import { useMutationSuccess } from "../Context/mutateContext"
 
 interface TextAreaProps {
   tag: string
   username?: string
-  authorId: string
+  authorId: number | undefined | null
   fwall: boolean
   toggleImageInput: boolean
+  editData?: Posts
   updateOpenState: (newOpenState: boolean) => void;
   onChangeOptionState: (newOptionState: boolean) => void;
+  onChangeDropdownState?: (newDropdownState: boolean) => void;
+  onMutationSuccess?: () => void
 }
-
 
 const PostSchema = z.object({
   title: z
     .string()
     .optional(),
-  post: z
+  content: z
     .string()
     .min(10, {
       message: "Description must be at least 10 characters.",
@@ -115,9 +119,11 @@ const PostSchema = z.object({
     .optional(),
 })
 
-const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onChangeOptionState, fwall, tag, toggleImageInput }) => {
+const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onChangeOptionState, fwall, tag, toggleImageInput, editData, onMutationSuccess, onChangeDropdownState }) => {
 
   const router = useRouter()
+  const deleted = false
+  const clicks = 0
   const { edgestore } = useEdgeStore();
   const [category, setCategory] = useState(tag)
   const [isLoading, setIsLoading] = useState(false)
@@ -126,9 +132,13 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
   const [anonymous, setAnonymous] = useState(false)
   const [published, setPublished] = useState(fwall)
   const [urls, setUrls] = useState<string[]>([])
+  const [isEditingUrls, setIsEditingUrls] = useState<string[]>([])
   const [fileStates, setFileStates] = useState<FileState[]>([])
   const [imageInput, setImageInput] = useState(false)
-  const [date, setDate] = useState<string | undefined>(undefined)
+  const [date, setDate] = useState<string | undefined>(editData?.date ?? undefined)
+  const [isEditing, setIsEditing] = useState(false)
+  const [postId, setPostId] = useState(editData?.id)
+  const { setIsMutate } = useMutationSuccess()
 
   const { data: dataTags, isLoading: isLoadingTags } = useQuery<Tag[]>({
     queryKey: ['tags'],
@@ -149,7 +159,6 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
         title: "Uh oh! Something went wrong.",
         description: "Could not create post, Try again later.",
       })
-      console.log(error)
     },
     onSuccess: async (data) => {
       const postId = data.data.id
@@ -163,22 +172,73 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
         })
       );
 
+      if (fwall) {
+        setIsMutate(true)
+        toast({
+          description: "Posted",
+        })
+      } else {
+        toast({
+          description: "Post created. Awaiting admin approval.",
+        })
+      }
+      updateOpenState(false);
+    }
+  })
+
+  const { mutate: updatePost } = useMutation({
+    mutationFn: (updatePost: FormInputPost) => {
+      return axios.patch(`/api/posts/${editData?.id}`, updatePost)
+    },
+    onError: (error) => {
+      setIsLoading(false)
       toast({
-        description: "Post created. Awaiting admin approval.",
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "Could not update post, Try again later.",
+      })
+    },
+    onSuccess: async () => {
+
+      await Promise.all(
+        urls.map(async (url) => {
+          await axios.post('/api/files', {
+            url,
+            postId,
+          });
+        })
+      );
+      onMutationSuccess && onMutationSuccess();
+      toast({
+        variant: "default",
+        title: "Update Successful",
+        description: "Post successfully updated.",
       })
       updateOpenState(false);
-      router.refresh()
+
+      if (onChangeDropdownState) {
+        onChangeDropdownState(false)
+      }
     }
   })
 
   const form = useForm<z.infer<typeof PostSchema>>({
     resolver: zodResolver(PostSchema),
+    defaultValues: {
+      title: editData?.title || '',
+      content: editData?.content || '',
+      location: editData?.location || '',
+      venue: editData?.venue || '',
+    },
   })
 
   function onSubmit(data: z.infer<typeof PostSchema>) {
-    const postData: FormInputPost = { ...data, authorId, category, published, anonymous, date };
-    if (postData) {
-      setIsLoading(true)
+    const postData: FormInputPost = { ...data, authorId, category, published, anonymous, date, deleted, clicks, going: undefined };
+    if (editData) {
+      setIsLoading(true);
+      updatePost(postData);
+    } else {
+      setIsLoading(true);
       createpost(postData);
     }
     // console.log(JSON.stringify(postData))
@@ -196,6 +256,19 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
       return newFileStates;
     });
   }
+
+  useEffect(() => {
+    if (editData?.images && editData.images.length > 0) {
+      const imageUrls = editData.images.map(image => image.url);
+      setIsEditingUrls(imageUrls);
+    }
+
+    if (editData) {
+      setIsEditing(true)
+      setPublished(true)
+    }
+  }, [editData]);
+
 
   function toggleOptions(e: any) {
     e.preventDefault()
@@ -262,6 +335,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                           <Button
                             variant="secondary"
                             className='h-6 px-3 min-w-[50px] rounded-sm text-xs font-light '
+                            disabled={isEditing}
                           >
                             {category}
                             <ChevronDown className='w-4 h-4' />
@@ -324,7 +398,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
               )}
               <FormField
                 control={form.control}
-                name="post"
+                name="content"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -340,7 +414,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                   </FormItem>
                 )}
               />
-              {fwall ? null : (
+              {fwall || category === 'announcement' ? null : (
                 <Accordion type="single" collapsible>
                   <AccordionItem value="item-1">
                     <AccordionTrigger>
@@ -419,6 +493,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                 {fwall || category === 'announcement' ? null : (
                   <DatePickerWithRange
                     onDateChange={dateRange}
+                    dataDate={date}
                   />
                 )}
                 <h3 className='text-sm font-medium'>Add:</h3>
@@ -446,7 +521,9 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                   <p>Processing...</p>
                 </>
               ) : (
-                <p>Post</p>
+                <>
+                  {editData ? <p>Update</p> : <p>Post</p>}
+                </>
               )}
             </Button>
           </div>
@@ -487,42 +564,139 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                     );
                   }}
                 />
-                {urls.length !== 0 ? (
-                  <ScrollArea className='relative w-full h-[328px] mt-1'>
-                    {urls.map((url, index) => (
-                      <Link
-                        key={index}
-                        href={url}
-                        target="_blank"
-                        className="relative"
-                      >
-                        <div className="absolute w-full h-full hover:bg-black/30 group" >
-                          <Button
-                            variant='link'
-                            size='icon'
-                            className='opacity-0 group-hover:opacity-100 text-slate-100'
-                            onClick={(e) => {
-                              e.preventDefault(); // Prevent the Link from navigating
-                              handleClearUrls(index);
-                            }}
+                {isEditing ? (
+                  <>
+                    {isEditingUrls.length !== 0 ? (
+                      <ScrollArea className='relative w-full h-[328px] mt-1'>
+                        {isEditingUrls.map((url, index) => (
+                          <Link
+                            key={index}
+                            href={url}
+                            target="_blank"
+                            className="relative"
                           >
-                            <X />
-                          </Button>
-                        </div>
-                        <Image
-                          key={index}
-                          alt={url}
-                          src={url}
-                          objectFit="cover"
-                          width={400}
-                          height={300}
-                          className='mb-2 rounded-md w-full'
-                        />
-                      </Link>
-                    ))}
-                  </ScrollArea>
+                            <div className="absolute w-full h-full hover:bg-black/30 group" />
+                            <Image
+                              key={index}
+                              alt={url}
+                              src={url}
+                              objectFit="cover"
+                              width={400}
+                              height={300}
+                              className='mb-2 rounded-md w-full'
+                            />
+                          </Link>
+                        ))}
+                        {urls.map((url, index) => (
+                          <Link
+                            key={index}
+                            href={url}
+                            target="_blank"
+                            className="relative"
+                          >
+                            <div className="absolute w-full h-full hover:bg-black/30 group" >
+                              <Button
+                                variant='link'
+                                size='icon'
+                                className='opacity-0 group-hover:opacity-100 text-slate-100'
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  handleClearUrls(index);
+                                }}
+                              >
+                                <X />
+                              </Button>
+                            </div>
+                            <Image
+                              key={index}
+                              alt={url}
+                              src={url}
+                              objectFit="cover"
+                              width={400}
+                              height={300}
+                              className='mb-2 rounded-md w-full'
+                            />
+                          </Link>
+                        ))}
+                      </ScrollArea>
+                    ) : (
+                      <>
+                        {urls.length !== 0 && (
+                          <ScrollArea className='relative w-full h-[328px] mt-1'>
+                            {urls.map((url, index) => (
+                              <Link
+                                key={index}
+                                href={url}
+                                target="_blank"
+                                className="relative"
+                              >
+                                <div className="absolute w-full h-full hover:bg-black/30 group" >
+                                  <Button
+                                    variant='link'
+                                    size='icon'
+                                    className='opacity-0 group-hover:opacity-100 text-slate-100'
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      handleClearUrls(index);
+                                    }}
+                                  >
+                                    <X />
+                                  </Button>
+                                </div>
+                                <Image
+                                  key={index}
+                                  alt={url}
+                                  src={url}
+                                  objectFit="cover"
+                                  width={400}
+                                  height={300}
+                                  className='mb-2 rounded-md w-full'
+                                />
+                              </Link>
+                            ))}
+                          </ScrollArea>
+                        )}
+                      </>
+                    )}
+                  </>
                 ) : (
-                  null
+                  <>
+                    {urls.length !== 0 && (
+                      <ScrollArea className='relative w-full h-[328px] mt-1'>
+                        {urls.map((url, index) => (
+                          <Link
+                            key={index}
+                            href={url}
+                            target="_blank"
+                            className="relative"
+                          >
+                            <div className="absolute w-full h-full hover:bg-black/30 group" >
+                              <Button
+                                variant='link'
+                                size='icon'
+                                className='opacity-0 group-hover:opacity-100 text-slate-100'
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  handleClearUrls(index);
+                                }}
+                              >
+                                <X />
+                              </Button>
+                            </div>
+                            <Image
+                              key={index}
+                              alt={url}
+                              src={url}
+                              objectFit="cover"
+                              width={400}
+                              height={300}
+                              className='mb-2 rounded-md w-full'
+                            />
+                          </Link>
+                        ))}
+                      </ScrollArea>
+                    )}
+                  </>
                 )}
               </div>
             ) : null}

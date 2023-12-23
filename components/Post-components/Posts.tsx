@@ -13,6 +13,7 @@ import LoadingSpinner from '../Loading/Spinner';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Session } from 'next-auth';
+import { useMutationSuccess } from '../Context/mutateContext';
 
 interface PostsProps {
   tag?: string | null
@@ -38,6 +39,7 @@ const Posts: FC<PostsProps> = ({ tag, published, fw, session }) => {
   // console.log(fetchPosts())
 
   const { ref, inView } = useInView();
+  const { isMutate, setIsMutate } = useMutationSuccess()
 
   const fetchPosts = async ({ pageParam = 0 }) => {
     const res = await axios.get(`/api/posts?cursor=${pageParam}`);
@@ -60,9 +62,9 @@ const Posts: FC<PostsProps> = ({ tag, published, fw, session }) => {
     getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
   })
 
-
   const handleRefetch = () => {
     refetch();
+    setIsMutate(false);
   };
   
   const content = data?.pages.map((group, i) => (
@@ -87,6 +89,12 @@ const Posts: FC<PostsProps> = ({ tag, published, fw, session }) => {
       )}
     </React.Fragment>
   ));
+  
+  useEffect(() => {
+    if (isMutate) {
+      handleRefetch();
+    }
+  }, [isMutate, refetch, setIsMutate]);
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -95,7 +103,7 @@ const Posts: FC<PostsProps> = ({ tag, published, fw, session }) => {
   }, [inView, hasNextPage, fetchNextPage])
 
   return (
-    <>
+    <div>
       {status === 'pending' ? (
         <HomeLoading />
       ) : status === "error" ? (
@@ -106,8 +114,8 @@ const Posts: FC<PostsProps> = ({ tag, published, fw, session }) => {
       <div className='h-24 mt-10 flex justify-center'>
         {isFetchingNextPage ? <HomeLoading /> : null}
       </div>
-      <div ref={ref}></div>
-    </>
+       <div ref={ref}></div> 
+    </div>
   )
 }
 

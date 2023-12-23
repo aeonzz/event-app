@@ -5,7 +5,6 @@ import Toggle from '../ui/theme-toggle';
 import UserNav from '@/components/user-nav';
 import PostTabs from './PostTabs';
 import { MainNav } from '../SupAdmin-components/mainNav';
-import Notification from './Notification';
 
 
 const Topbar = async () => {
@@ -24,13 +23,10 @@ const Topbar = async () => {
             </Link>
             {session?.user.role === 'SYSTEMADMIN' && <MainNav />}
           </div>
-          {/* <PostTabs /> */}
           <div className='flex items-center gap-2'>
             <div className='flex items-center gap-1'>
               <Toggle />
-              <Notification />
             </div>
-            <UserNav />
             {/* {session?.user ? (
               <UserNav />
             ) : (

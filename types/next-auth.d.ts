@@ -7,6 +7,7 @@ declare module "next-auth" {
     email: string
     role: string
     createdAt: Date
+    department: string | null
   }
 
   interface Session {
@@ -14,11 +15,13 @@ declare module "next-auth" {
       username: string 
       role: string
       createdAt: Date
+      department: string
     }
     token: {
       username: string
       role: string
       createdAt: Date
+      department: string
     }
   }
 }

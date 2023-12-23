@@ -21,7 +21,7 @@ interface ImageSliderProps {
 const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
   return (
     <div className="relative h-full flex items-center justify-center">
-      <div className="h-full w-[950px] overflow-hidden">
+      <div className="h-full w-[900px] overflow-hidden">
         <Swiper navigation={true} modules={[Navigation]} className='h-full swiper'>
           {images?.map((image) => (
             image.url && (

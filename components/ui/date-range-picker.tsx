@@ -17,17 +17,17 @@ import {
 interface DatePickerWithRangeProps {
   onDateChange: (newDate: string | undefined) => void;
   className?: React.HTMLAttributes<HTMLDivElement> | undefined
+  dataDate?: string | null
 }
 
 export function DatePickerWithRange({
-  className, onDateChange
+  className, onDateChange, dataDate
 }: DatePickerWithRangeProps) {
 
   const [showDate, setShowDate] = React.useState(false)
   const [open, setOpen] = React.useState(false)
   const [date, setDate] = React.useState<DateRange | undefined>()
-  console.log(showDate)
-
+  
   const handleDateSelect = (selectedDate: DateRange, e: any) => {
     e.preventDefault()
     setDate(selectedDate);
@@ -68,10 +68,10 @@ export function DatePickerWithRange({
                   format(date.from, "LLL dd, y")
                 )
               ) : (
-                <span className="text-muted-foreground">Pick a date</span>
+                <span className="text-muted-foreground">{dataDate ? dataDate : <p>Pick a date</p>}</span>
               )
             ) : (
-              <span className="text-muted-foreground">Pick a date</span>
+              <span className="text-muted-foreground">{dataDate ? dataDate : <p>Pick a date</p>}</span>
             )}
           </Button>
         </PopoverTrigger>
@@ -84,7 +84,15 @@ export function DatePickerWithRange({
             onSelect={setDate}
             numberOfMonths={2}
           />
-          <div className='w-full p-3 flex justify-end'>
+          <div className='w-full p-3 flex justify-end gap-2'>
+            <Button
+              size='sm'
+              variant='ghost'
+              className="text-xs"
+              onClick={() => setOpen(false)}
+            >
+              Close
+            </Button>
             <Button
               size='sm'
               className="text-xs"

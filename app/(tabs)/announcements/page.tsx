@@ -23,6 +23,7 @@ const Event = async () => {
       {session?.user.role === 'ADMIN' || session?.user.role === 'SYSTEMADMIN' ?
         <CreatePost
           tag={tag}
+          session={session}
         />
         : null
       }

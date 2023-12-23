@@ -33,10 +33,11 @@ const PostReview: FC<PostReviewProps> = ({ post, onMutationSuccess }) => {
       return axios.patch(`/api/posts/${id}`, approval);
     },
     onError: (error) => {
+      setIsLoading(false)
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
-        description: "Could not delete post, Try again later.",
+        description: "Could not approve post, Try again later.",
         action: <ToastAction altText="Try again" onClick={() => handleApproval()}>Try again</ToastAction>,
       })
     },
@@ -60,8 +61,10 @@ const PostReview: FC<PostReviewProps> = ({ post, onMutationSuccess }) => {
       location: post.location || undefined,
       published: true,
       deleted: post.deleted,
-      category: post.Tag.tagId || undefined,
-      authorId: post.author.id || undefined
+      category: post.Tag.name || undefined,
+      authorId: post.author.id || undefined,
+      clicks: 0,
+      going: undefined
     };
     approval(data)
   }

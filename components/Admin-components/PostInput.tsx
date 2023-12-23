@@ -89,7 +89,7 @@ interface PostInput {
   tag: string
   initalletter: string
   username?: string
-  authorId: string
+  authorId: number | undefined | null
   joined: string
 }
 

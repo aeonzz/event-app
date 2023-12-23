@@ -60,7 +60,8 @@ export const authOptions: NextAuthOptions = {
           username: existingUser.username,
           email: existingUser.email,
           role: existingUser.role,
-          createdAt: existingUser.createdAt
+          createdAt: existingUser.createdAt,
+          department: existingUser.department
         }
       }
     })
@@ -75,7 +76,8 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           username: user.username,
           role: user.role,
-          createdAt: user.createdAt
+          createdAt: user.createdAt,
+          department: user.department
         }
       }
       return token
@@ -88,7 +90,8 @@ export const authOptions: NextAuthOptions = {
           id: token.id,
           username: token.username,
           role: token.role,
-          createdAt: token.createdAt
+          createdAt: token.createdAt,
+          department: token.department
         }
       }
     },

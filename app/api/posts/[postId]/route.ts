@@ -17,7 +17,7 @@ const PostSchema = z.object({
     .string()
     .min(10),
   category: z
-    .number()
+    .string()
     .min(1),
   published: z
     .boolean(),
@@ -33,7 +33,12 @@ const PostSchema = z.object({
     .string()
     .optional(),
   deleted: z
-    .boolean()
+    .boolean(),
+  clicks: z
+    .number(),
+  going: z
+  .boolean()
+  .nullable().or(z.undefined()),
 })
 
 export async function GET(req: Request, context: contextProps) {
@@ -60,9 +65,18 @@ export async function PATCH(req: Request, { params }: { params: { postId: string
 
     const postIdInt = parseInt(params.postId, 10);
     const body = await req.json()
-    const { title, content, category, published, anonymous, venue, location, date, deleted } = PostSchema.parse(body);
+    const { title, content, category, published, anonymous, venue, location, date, deleted, clicks, going} = PostSchema.parse(body);
+
+    const updatedClicks = clicks + 1;
+
+    const tag = await prisma.tag.findUnique({
+      where: {
+        name: category,
+      },
+    });
 
     const updateData: Record<string, unknown> = {};
+
     if (title !== undefined) {
       updateData.title = title;
     }
@@ -70,7 +84,7 @@ export async function PATCH(req: Request, { params }: { params: { postId: string
       updateData.content = content;
     }
     if (category !== undefined) {
-      updateData.tagTagId = category;
+      updateData.tagTagId = tag?.tagId;
     }
     if (published !== undefined) {
       updateData.published = published;
@@ -89,6 +103,12 @@ export async function PATCH(req: Request, { params }: { params: { postId: string
     }
     if (deleted !== undefined) {
       updateData.deleted = deleted;
+    }
+    if (clicks !== undefined) {
+      updateData.clicks = updatedClicks;
+    }
+    if (going !== undefined) {
+      updateData.going = going;
     }
 
     const updatePost = await prisma.post.update({

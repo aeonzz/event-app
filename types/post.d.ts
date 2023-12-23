@@ -8,6 +8,8 @@ export type FormInputPost = {
     venue?: string | undefined
     location?: string | undefined
     date?: string | undefined
-    authorId: string | number | undefined
-    category: string | number | undefined
+    authorId: number | undefined | null
+    category: string | undefined
+    clicks: number | undefined | null
+    going: boolean | undefined
 }

@@ -106,21 +106,8 @@
   } */
 }
 
-.embla {
-  overflow: hidden;
-}
-
-.embla__container {
-  display: flex;
-}
-
-.embla__slide {
-  flex: 0 0 100%;
-  min-width: 0;
-}
-
 .swiper {
-  --swiper-navigation-color: white;
+  --swiper-navigation-color: #4f00bd;
   --swiper-navigation-size: 20px;
   user-select: none;
   -webkit-user-select: none;

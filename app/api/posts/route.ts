@@ -6,11 +6,11 @@ const PostSchema = z.object({
   title: z
     .string()
     .optional(),
-  post: z
+  content: z
     .string()
     .min(10),
   authorId: z
-    .string()
+    .number()
     .min(0),
   category: z
     .string()
@@ -50,7 +50,8 @@ export async function GET(req: Request) {
         deleted: true,
         anonymous: true,
         Tag: true,
-        createdAt: true
+        createdAt: true,
+        clicks: true
       },
       where: {
         id: cursor ? { lt: cursor } : undefined,
@@ -58,7 +59,7 @@ export async function GET(req: Request) {
       orderBy: {
         id: 'desc',
       },
-      take: 10,
+      take: 15,
     });
     const lastPost = posts[posts.length - 1];
     const nextCursor = lastPost?.id || undefined;
@@ -75,8 +76,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { post, title, authorId, category, published, anonymous, venue, location, date } = PostSchema.parse(body);
-    const parsedAuthorId = parseInt(authorId, 10);
+    const { content, title, authorId, category, published, anonymous, venue, location, date } = PostSchema.parse(body);
 
     const tag = await prisma.tag.findUnique({
       where: {
@@ -87,7 +87,7 @@ export async function POST(req: Request) {
     const result = await prisma.post.create({
       data: {
         title: title,
-        content: post,
+        content: content,
         published: published,
         anonymous: anonymous,
         location: location,
@@ -95,7 +95,7 @@ export async function POST(req: Request) {
         date: date,
         author: {
           connect: {
-            id: parsedAuthorId,
+            id: authorId,
           },
         },
         Tag: {

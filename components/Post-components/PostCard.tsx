@@ -1,6 +1,6 @@
 'use client'
 
-import React, { FC, useRef, useState } from 'react'
+import React, { FC, useEffect, useRef, useState } from 'react'
 import {
   Card,
   CardDescription,
@@ -49,7 +49,10 @@ import axios from 'axios';
 import { ToastAction } from '../ui/toast';
 import { Post } from '@prisma/client';
 import { FormInputPost } from '@/types/post';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import TextArea from '../Admin-components/text-area';
+import { useMutationSuccess } from '../Context/mutateContext';
+import { Interactions } from '@/types/interactions';
 
 
 interface PostCardProps {
@@ -58,7 +61,7 @@ interface PostCardProps {
   fw?: boolean | null
   innerRef?: React.Ref<HTMLDivElement>
   session?: Session | null
-  onMutationSuccess? : () => void
+  onMutationSuccess?: () => void
 }
 
 const options = {
@@ -66,27 +69,48 @@ const options = {
   className: 'text-blue-500 hover:underline',
 }
 
-const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutationSuccess }) => {
+const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutationSuccess, }) => {
 
-  const { id, title, content, author, Tag, createdAt, anonymous, images, venue, location, date, published, deleted } = post;
+  const { id, title, content, author, Tag, createdAt, anonymous, images, venue, location, date, published, deleted, clicks, going } = post;
   const { id: authorId, username, email } = author
   const { name, tagId } = Tag
+
+  const userIdString = session?.user.id;
+  const userIdNumber = userIdString ? parseInt(userIdString, 10) : null;
   const router = useRouter()
+  const pathname = usePathname()
+  const click = post.clicks; // Use the current value from the post object
+  const fwall = pathname === '/freedom-wall'
   const textRef = useRef<HTMLInputElement>(null);
   const postedAt = new Date(createdAt)
   const authorCreatedAt = new Date(author.createdAt)
   const [showFullContent, setShowFullContent] = useState(false);
   const [isLoading, setIsLoading] = useState(false)
-  const [goingButtonState, setgoingButtonState] = useState(false)
+  const [goingButtonState, setGoingButtonState] = useState(going || false)
   const [saveButtonState, setsaveButtonState] = useState(false)
   const [actionDropdown, setActionDropdown] = useState(false)
   const [openCopyToClipboard, setOpenCopyToClipboard] = useState(false)
-
+  const [open, setOpen] = useState(false)
+  const [toggleImageInput, setToggleImageInput] = useState(false)
   const contentToDisplay = showFullContent ? content : content?.slice(0, 500);
+
+  const onChangeOptionState = (newChangeOptionState: boolean) => {
+    setToggleImageInput(newChangeOptionState)
+  }
+
+  const onChangeDropdownState = (newChangeDropdownState: boolean) => {
+    setActionDropdown(newChangeDropdownState)
+  }
 
   const toggleContentVisibility = () => {
     setShowFullContent(!showFullContent);
   };
+
+  useEffect(() => {
+    if (!open) {
+      setToggleImageInput(false);
+    }
+  }, [open]);
 
   const copyToClipboard = () => {
     if (textRef.current) {
@@ -99,7 +123,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
         })
       }
     }
-  };
+  }
 
   const { mutate: deletePost, data } = useMutation({
     mutationFn: async (deletePost: FormInputPost) => {
@@ -125,7 +149,23 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
     }
   })
 
-  const handleDelete = () => {
+  const { mutate: updateClicks } = useMutation({
+    mutationFn: async (updateClicks: FormInputPost) => {
+      return axios.patch(`/api/posts/${id}`, updateClicks);
+    },
+  })
+
+  const { mutate: updateGoingStatus } = useMutation({
+    mutationFn: async (updateGoingStatus: Interactions) => {
+      return axios.patch(`/api/interaction/${id}`, updateGoingStatus);
+    },
+    onSuccess: () => {
+      setGoingButtonState((prev) => !prev);
+      onMutationSuccess && onMutationSuccess();
+    },
+  });
+
+  function handleDelete() {
     setIsLoading(true)
     const data: FormInputPost = {
       title: title,
@@ -135,10 +175,38 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
       location: location || undefined,
       published: published,
       deleted: true,
-      category: tagId,
-      authorId: authorId
+      category: name,
+      authorId: authorId,
+      clicks: 1,
+      going: going || undefined
     };
     deletePost(data)
+  }
+
+  const handleGoingClick = () => {
+    const data: Interactions = {
+      postId: id,
+      userId: userIdNumber,
+      going: !goingButtonState,
+    };
+    updateGoingStatus(data);
+  };
+
+  function handleClick() {
+    const data: FormInputPost = {
+      title: title,
+      content: content || undefined,
+      anonymous: anonymous,
+      venue: venue || undefined,
+      location: location || undefined,
+      published: published,
+      deleted: false,
+      category: name,
+      authorId: authorId,
+      clicks: click,
+      going: going || undefined
+    };
+    updateClicks(data)
   }
 
   if (tag && name !== tag) {
@@ -164,6 +232,9 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
         </div>
       ) : (
         <div className='relative flex items-center gap-2'>
+          {going === true && (
+            <h1>yawa</h1>
+          )}
           <DropdownMenu modal={false} open={actionDropdown} onOpenChange={setActionDropdown}>
             <DropdownMenuTrigger
               className='absolute right-0 top-0'>
@@ -188,14 +259,45 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
               </DropdownMenuItem>
               {session?.user.email === email && (
                 <>
-                  <DropdownMenuItem className='text-xs'>
-                    <Pencil className="mr-2 h-4 w-4" />
-                    Edit
-                  </DropdownMenuItem>
+                  <Dialog open={open} onOpenChange={setOpen}>
+                    <DialogTrigger className='w-full'>
+                      <DropdownMenuItem
+                        className='text-xs'
+                        onSelect={(e) => e.preventDefault()}
+                      >
+                        <Pencil className="mr-2 h-4 w-4" />
+                        Edit
+                      </DropdownMenuItem>
+                    </DialogTrigger>
+                    <DialogContent className={cn(
+                      toggleImageInput ? 'sm:max-w-[900px]' : 'sm:max-w-[540px]',
+                      'duration-300'
+                    )}>
+                      <DialogHeader>
+                        <DialogTitle>Edit post</DialogTitle>
+                      </DialogHeader>
+                      <Separator />
+                      <TextArea
+                        tag={name}
+                        editData={post}
+                        username={username}
+                        authorId={userIdNumber}
+                        fwall={fwall}
+                        updateOpenState={setOpen}
+                        onChangeOptionState={onChangeOptionState}
+                        toggleImageInput={toggleImageInput}
+                        onMutationSuccess={onMutationSuccess}
+                        onChangeDropdownState={onChangeDropdownState}
+                      />
+                    </DialogContent>
+                  </Dialog>
                   <DropdownMenuSeparator />
                   <Dialog>
                     <DialogTrigger asChild>
-                      <DropdownMenuItem className="text-red-600 text-xs" onSelect={(e) => e.preventDefault()}>
+                      <DropdownMenuItem
+                        className="text-red-600 text-xs"
+                        onSelect={(e) => e.preventDefault()}
+                      >
                         <Trash className="mr-2 h-4 w-4" />
                         Delete
                       </DropdownMenuItem>
@@ -293,13 +395,18 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
           </div>
         )}
         {fw ? null : (
-          <div className='relative w-full flex overflow-hidden rounded-sm'>
-            <Link href={`/post/${id}`} className='w-full'>
+          <Link
+            href={`/post/${id}`}
+            replace={true}
+            onClick={() => handleClick()}
+          >
+            <div className='relative w-full flex overflow-hidden rounded-sm'>
               <div
                 className={cn(
                   images?.length === 1 ? 'grid-cols-1' : 'grid-cols-2',
-                  'flex-1 grid gap-[1px]'
-                )}>
+                  'flex-1 grid gap-[1px] w-full'
+                )}
+              >
                 {images?.slice(0, 4).map((image, index) => (
                   <div
                     key={image.id}
@@ -325,15 +432,17 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
                   </div>
                 ))}
               </div>
-            </Link>
-          </div>
+            </div>
+          </Link>
         )}
-        <Separator className='mt-4 mb-1' />
+        <h3 className='text-muted-foreground text-xs mt-1 text-right'>{clicks} Views</h3>
+        <Separator className='my-2' />
         <div className='w-full flex p-1'>
           <Button
             variant='ghost'
             size='sm'
-            onClick={() => setgoingButtonState((prev) => !prev)}
+            // onClick={() => setgoingButtonState((prev) => !prev)}
+            onClick={handleGoingClick}
             className={cn(
               goingButtonState ? 'text-primary hover:text-primary' : 'text-muted-foreground',
               'relative flex-1 transition-colors'

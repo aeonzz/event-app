@@ -7,6 +7,8 @@ export type Posts = {
   venue: string | null
   location: string | null
   date: string | null
+  clicks: number
+  going: boolean | null
   images: {
     id: number
     url: string

@@ -11,18 +11,19 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  email      String   @unique
-  name       String?
-  username   String   @unique
-  department String?
-  status     String   @default("active")
-  deleted    Boolean  @default(false)
-  password   String
-  role       String   @default("USER")
-  createdAt  DateTime @default(now())
-  updateAt   DateTime @updatedAt
-  Post       Post[]
+  id                  Int                   @id @default(autoincrement())
+  email               String                @unique
+  name                String?
+  username            String                @unique
+  department          String?
+  status              String                @default("active")
+  deleted             Boolean               @default(false)
+  password            String
+  role                String                @default("USER")
+  createdAt           DateTime              @default(now())
+  updateAt            DateTime              @updatedAt
+  Post                Post[]
+  UserPostInteraction UserPostInteraction[]
 }
 
 model Tag {
@@ -32,22 +33,24 @@ model Tag {
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
-  title     String?  @db.VarChar(255)
-  anonymous Boolean  @default(false)
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @updatedAt @db.Timestamp(6)
-  content   String?  @db.Text
-  venue     String?  @db.VarChar(255)
-  location  String?  @db.VarChar(255)
-  date      String?  @db.VarChar(255)
-  published Boolean  @default(false)
-  deleted    Boolean  @default(false)
-  authorId  Int
-  author    User     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  tagTagId  Int
-  Tag       Tag      @relation(fields: [tagTagId], references: [tagId])
-  images    Image[]
+  id                  Int                   @id @default(autoincrement())
+  title               String?               @db.VarChar(255)
+  anonymous           Boolean               @default(false)
+  createdAt           DateTime              @default(now()) @db.Timestamp(6)
+  updatedAt           DateTime              @updatedAt @db.Timestamp(6)
+  content             String?               @db.Text
+  venue               String?               @db.VarChar(255)
+  location            String?               @db.VarChar(255)
+  date                String?               @db.VarChar(255)
+  published           Boolean               @default(false)
+  deleted             Boolean               @default(false)
+  authorId            Int
+  author              User                  @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tagTagId            Int
+  Tag                 Tag                   @relation(fields: [tagTagId], references: [tagId])
+  images              Image[]
+  clicks              Int                   @default(0)
+  UserPostInteraction UserPostInteraction[]
 }
 
 model Image {
@@ -55,4 +58,16 @@ model Image {
   url    String? @db.VarChar(255)
   postId Int
   post   Post    @relation(fields: [postId], references: [id])
+}
+
+model UserPostInteraction {
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  postId Int
+  post   Post @relation(fields: [postId], references: [id])
+
+  going Boolean
+
+  @@unique([userId, postId])
 }

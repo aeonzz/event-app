@@ -23,9 +23,9 @@ import { Suspense } from "react";
 import LoadingSpinner from "../Loading/Spinner";
 import AdminsNavLoading from "../Loading/AdminsNavLoading";
 import { format } from "date-fns";
+import UserNav from "../user-nav";
 
-
-const LeftSideBar = () => {
+const NavMenu = () => {
 
   const pathname = usePathname();
 
@@ -46,9 +46,12 @@ const LeftSideBar = () => {
     <>
       {pathname === '/' ||
         pathname === '/events' ||
-        pathname === '/announcements' || 
-        pathname === '/freedom-wall' ? (
+        pathname === '/announcements' ||
+        pathname === '/freedom-wall' ||
+        pathname === '/notifications' || 
+        pathname === '/pending-post' ? (
         <aside className='sticky top-20 h-fit w-60 flex flex-col gap-4 items-start'>
+          <UserNav />
           <div className='w-full h-auto flex flex-col items-center gap-4'>
             {sidebarNav.map((item, index) => (
               <Link
@@ -57,24 +60,34 @@ const LeftSideBar = () => {
                 className={cn(
                   buttonVariants({ variant: "ghost" }),
                   pathname === item.link
-                    ? 'font-semibold bg-primary hover:bg-primary'
+                    ? 'font-semibold text-primary hover:text-primary'
                     : 'font-light',
-                  'w-full flex justify-start text-base py-6'
+                  'w-full flex justify-start text-base py-6 group'
                 )}
               >
-                <Image
-                  src={item.icon}
-                  width={28}
-                  height={28}
-                  alt={item.alt}
-                  className='mr-4'
-                />
+                {pathname === item.link ? (
+                  <Image
+                    src={item.active}
+                    width={28}
+                    height={28}
+                    alt={item.alt}
+                    className='mr-4 group-hover:scale-105 transition-all'
+                  />
+                ) : (
+                  <Image
+                    src={item.icon}
+                    width={28}
+                    height={28}
+                    alt={item.alt}
+                    className='mr-4 group-hover:scale-105 transition-all'
+                  />
+                )}
                 {item.title}
               </Link>
             ))}
           </div>
-          <Separator className='ml-4' />
-          <div className='w-full h-auto flex flex-col gap-4'>
+          {/* <Separator className='ml-4' /> */}
+          {/* <div className='w-full h-auto flex flex-col gap-4'>
             <h3 className='ml-4 text-sm text-muted-foreground'>Pages</h3>
             {isLoading ? <AdminsNavLoading />
               : (
@@ -101,7 +114,7 @@ const LeftSideBar = () => {
                   ))}
                 </>
               )}
-          </div>
+          </div> */}
         </aside>
       ) : (
         null
@@ -110,4 +123,4 @@ const LeftSideBar = () => {
   )
 }
 
-export default LeftSideBar
+export default NavMenu

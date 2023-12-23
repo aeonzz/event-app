@@ -6,20 +6,23 @@ import { authOptions } from '@/lib/auth'
 import PostInput from './PostInput'
 import { Card } from '../ui/card'
 import { format } from 'date-fns'
+import { Session } from 'next-auth'
 
 interface CreatePostProps {
   tag: string
+  session?: Session | null
 }
 
-const CreatePost: FC<CreatePostProps> = async ({ tag }) => {
+const CreatePost: FC<CreatePostProps> = ({ session, tag }) => {
 
-  const session = await getServerSession(authOptions);
+  const userIdString = session?.user.id;
+  const userIdNumber = userIdString ? parseInt(userIdString, 10) : null;
 
   let initialLetter = '';
   if (session && session?.user.username) {
     initialLetter = session?.user.username.charAt(0).toUpperCase();
   }
-
+  
   const joined = new Date(session?.user.createdAt!)
 
   return (
@@ -28,7 +31,7 @@ const CreatePost: FC<CreatePostProps> = async ({ tag }) => {
         tag={tag}
         initalletter={initialLetter}
         username={session?.user.username}
-        authorId={session!.user.id}
+        authorId={userIdNumber}
         joined={format(joined, 'PP')}
       />
     </div>

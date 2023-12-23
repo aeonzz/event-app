@@ -3,6 +3,12 @@ import haha from "@/public/icons/haha.svg";
 import megaphone from "@/public/icons/megaphone.svg";
 import events from "@/public/icons/events.svg";
 import bird from "@/public/icons/bird.svg";
+import homeSecondary from "@/public/icons/home-secondary.svg";
+import eventsSecondary from "@/public/icons/events-secondary.svg";
+import megaphoneSecondary from "@/public/icons/megaphone-secondary.svg";
+import birdSecondary from "@/public/icons/bird-secondary.svg";
+import bell from "@/public/icons/bell.svg";
+import bellSecondary from "@/public/icons/bell-secondary.svg";
 
 
 export const postTabsNav = [
@@ -30,26 +36,37 @@ export const sidebarNav = [
   {
     title: "Home",
     icon: home,
+    active: homeSecondary,
     link: "/",
     alt: 'home'
   },
   {
-    title: "Events",
+    title: "Event",
     icon: events,
+    active: eventsSecondary,
     link: "/events",
     alt: 'events'
   },
   {
-    title: "Announcements",
+    title: "Announcement",
     icon: megaphone,
+    active: megaphoneSecondary,
     link: "/announcements",
     alt: "announcements"
   },
   {
     title: "Freedom Wall",
     icon: bird,
+    active: birdSecondary,
     link: "/freedom-wall",
-    alt: "Freedom Wall"
+    alt: "freedom-wall"
+  },
+  {
+    title: "Notifications",
+    icon: bell,
+    active: bellSecondary,
+    link: "/notifications",
+    alt: "notifications"
   },
 ]
 
