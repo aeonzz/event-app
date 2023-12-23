@@ -8,7 +8,6 @@ export type Posts = {
   location: string | null
   date: string | null
   clicks: number
-  going: boolean | null
   images: {
     id: number
     url: string
@@ -25,5 +24,8 @@ export type Posts = {
     tagId: number
     name: string
   }
+  UserPostInteraction: {
+    going: boolean;
+  }[]
   createdAt: Date
 }

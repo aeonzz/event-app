@@ -1,4 +1,6 @@
+import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/db";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import * as z from "zod"
 
@@ -31,6 +33,11 @@ const PostSchema = z.object({
 })
 
 export async function GET(req: Request) {
+
+  const session = await getServerSession(authOptions);
+  const userId = session!.user.id;
+  const userIdInt = parseInt(userId, 10);
+
   try {
     const url = new URL(req.url);
     const cursorParam = url.searchParams.get("cursor");
@@ -51,7 +58,15 @@ export async function GET(req: Request) {
         anonymous: true,
         Tag: true,
         createdAt: true,
-        clicks: true
+        clicks: true,
+        UserPostInteraction: {
+          where: {
+            userId: userIdInt,
+          },
+          select: {
+            going: true,
+          },
+        },
       },
       where: {
         id: cursor ? { lt: cursor } : undefined,

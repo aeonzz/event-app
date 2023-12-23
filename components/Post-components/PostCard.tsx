@@ -71,29 +71,30 @@ const options = {
 
 const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutationSuccess, }) => {
 
-  const { id, title, content, author, Tag, createdAt, anonymous, images, venue, location, date, published, deleted, clicks, going } = post;
+  const { id, title, content, author, Tag, createdAt, anonymous, images, venue, location, date, published, deleted, clicks, UserPostInteraction } = post;
   const { id: authorId, username, email } = author
   const { name, tagId } = Tag
-
+  const going = UserPostInteraction.length > 0 ? UserPostInteraction[0].going : false;
+  
   const userIdString = session?.user.id;
   const userIdNumber = userIdString ? parseInt(userIdString, 10) : null;
   const router = useRouter()
   const pathname = usePathname()
-  const click = post.clicks; // Use the current value from the post object
+  const click = post.clicks;
   const fwall = pathname === '/freedom-wall'
   const textRef = useRef<HTMLInputElement>(null);
   const postedAt = new Date(createdAt)
   const authorCreatedAt = new Date(author.createdAt)
   const [showFullContent, setShowFullContent] = useState(false);
   const [isLoading, setIsLoading] = useState(false)
-  const [goingButtonState, setGoingButtonState] = useState(going || false)
+  const [goingButtonState, setGoingButtonState] = useState(going)
   const [saveButtonState, setsaveButtonState] = useState(false)
   const [actionDropdown, setActionDropdown] = useState(false)
   const [openCopyToClipboard, setOpenCopyToClipboard] = useState(false)
   const [open, setOpen] = useState(false)
   const [toggleImageInput, setToggleImageInput] = useState(false)
   const contentToDisplay = showFullContent ? content : content?.slice(0, 500);
-
+  console.log(going)
   const onChangeOptionState = (newChangeOptionState: boolean) => {
     setToggleImageInput(newChangeOptionState)
   }
@@ -111,6 +112,10 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
       setToggleImageInput(false);
     }
   }, [open]);
+
+  useEffect(() => {
+    setGoingButtonState(going);
+  }, [going]);
 
   const copyToClipboard = () => {
     if (textRef.current) {
@@ -232,9 +237,6 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
         </div>
       ) : (
         <div className='relative flex items-center gap-2'>
-          {going === true && (
-            <h1>yawa</h1>
-          )}
           <DropdownMenu modal={false} open={actionDropdown} onOpenChange={setActionDropdown}>
             <DropdownMenuTrigger
               className='absolute right-0 top-0'>
