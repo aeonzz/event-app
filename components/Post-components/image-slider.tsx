@@ -8,7 +8,14 @@ import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
 import { Expand } from 'lucide-react';
 import Link from 'next/link';
-
+import { Card, CardContent } from "@/components/ui/card"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 
 interface ImageSliderProps {
   images?: {
@@ -20,33 +27,60 @@ interface ImageSliderProps {
 
 const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
   return (
-    <div className="relative h-full flex items-center justify-center">
-      <div className="h-full w-[900px] overflow-hidden">
-        <Swiper navigation={true} modules={[Navigation]} className='h-full swiper'>
-          {images?.map((image) => (
-            image.url && (
-              <SwiperSlide
-                key={image.id}
-                className='relative'>
-                <Link
-                  href={image.url}
-                  target='_blank'
-                >
-                  <Expand className='absolute bottom-9 right-1' />
-                </Link>
-                <Image
-                  className='h-full w-full object-contain'
-                  src={image.url}
-                  alt='post image'
-                  width={1000}
-                  height={1000}
-                  quality={100}
-                />
-              </SwiperSlide>
-            )))}
-        </Swiper>
-      </div>
-    </div>
+    <Carousel className="w-full max-w-xs">
+      <CarouselContent>
+        {images?.map((image) => (
+          image.url && (
+            <CarouselItem
+              key={image.id}
+            >
+              <Link
+                href={image.url}
+                target='_blank'
+              >
+                <Expand className='bottom-9 right-1' />
+              </Link>
+              <Image
+                className='h-full w-full object-contain'
+                src={image.url}
+                alt='post image'
+                width={1000}
+                height={1000}
+                quality={100}
+              />
+            </CarouselItem>
+          )))}
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+    // <div className="relative h-full flex items-center justify-center">
+    //   <div className="h-full w-[900px] overflow-hidden">
+    //     <Swiper navigation={true} modules={[Navigation]} className='h-full swiper'>
+    //       {images?.map((image) => (
+    //         image.url && (
+    //           <SwiperSlide
+    //             key={image.id}
+    //             className='relative'>
+    //             <Link
+    //               href={image.url}
+    //               target='_blank'
+    //             >
+    //               <Expand className='absolute bottom-9 right-1' />
+    //             </Link>
+    //             <Image
+    //               className='h-full w-full object-contain'
+    //               src={image.url}
+    //               alt='post image'
+    //               width={1000}
+    //               height={1000}
+    //               quality={100}
+    //             />
+    //           </SwiperSlide>
+    //         )))}
+    //     </Swiper>
+    //   </div>
+    // </div>
   )
 }
 

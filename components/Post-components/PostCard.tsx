@@ -75,7 +75,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
   const { id: authorId, username, email } = author
   const { name, tagId } = Tag
   const going = UserPostInteraction.length > 0 ? UserPostInteraction[0].going : false;
-  
+
   const userIdString = session?.user.id;
   const userIdNumber = userIdString ? parseInt(userIdString, 10) : null;
   const router = useRouter()
@@ -90,6 +90,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
   const [goingButtonState, setGoingButtonState] = useState(going)
   const [saveButtonState, setsaveButtonState] = useState(false)
   const [actionDropdown, setActionDropdown] = useState(false)
+  const [attendModal, setAttendModal] = useState(false)
   const [openCopyToClipboard, setOpenCopyToClipboard] = useState(false)
   const [open, setOpen] = useState(false)
   const [toggleImageInput, setToggleImageInput] = useState(false)
@@ -165,6 +166,8 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
       return axios.patch(`/api/interaction/${id}`, updateGoingStatus);
     },
     onSuccess: () => {
+      setIsLoading(false)
+      setAttendModal(false)
       setGoingButtonState((prev) => !prev);
       onMutationSuccess && onMutationSuccess();
     },
@@ -189,6 +192,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
   }
 
   const handleGoingClick = () => {
+    setIsLoading(true)
     const data: Interactions = {
       postId: id,
       userId: userIdNumber,
@@ -306,7 +310,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
-                        <DialogTitle className="text-1xl font-semibold" >Are you absolutely sure?</DialogTitle>
+                        <DialogTitle className="text-xl font-semibold" >Are you absolutely sure?</DialogTitle>
                         <DialogDescription>
                           This action cannot be undone. This will permanently delete the post from our servers.
                         </DialogDescription>
@@ -440,24 +444,69 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
         <h3 className='text-muted-foreground text-xs mt-1 text-right'>{clicks} Views</h3>
         <Separator className='my-2' />
         <div className='w-full flex p-1'>
-          <Button
-            variant='ghost'
-            size='sm'
-            // onClick={() => setgoingButtonState((prev) => !prev)}
-            onClick={handleGoingClick}
-            className={cn(
-              goingButtonState ? 'text-primary hover:text-primary' : 'text-muted-foreground',
-              'relative flex-1 transition-colors'
-            )}
-          >
-            <ThumbsUp
-              className={cn(
-                goingButtonState ? 'fill-primary stroke-primary' : 'stroke-muted-foreground',
-                'absolute left-[29%] h-4 w-4 transition-colors'
-              )}
-            />
-            Going
-          </Button>
+          {tag === 'event' && (
+            <Dialog open={attendModal} onOpenChange={setAttendModal}>
+              <DialogTrigger asChild>
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  className={cn(
+                    goingButtonState ? 'text-primary hover:text-primary' : 'text-muted-foreground',
+                    'relative flex-1 transition-colors'
+                  )}
+                >
+                  <ThumbsUp
+                    className={cn(
+                      goingButtonState ? 'fill-primary stroke-primary' : 'stroke-muted-foreground',
+                      'absolute left-[27%] bottom-[30%] h-4 w-4 transition-colors'
+                    )}
+                  />
+                  Attend
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle className="text-xl font-semibold" >Confirmation</DialogTitle>
+                  <DialogDescription>
+                    {goingButtonState ? (
+                      <p>Are you sure you want to ditch this event? Aren&apos;t you ashamed that you joined the event and now you've changed your mind?</p>
+                    ) : (
+                      <p>Are you sure you want to attend this event?.</p>
+                    )}
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline">
+                      Close
+                    </Button>
+                  </DialogClose>
+                  {goingButtonState ? (
+                    <Button
+                      variant='destructive'
+                      onClick={handleGoingClick}
+                      disabled={isLoading}
+                    >
+                      {isLoading && (
+                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                      )}
+                      Ditch
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={handleGoingClick}
+                      disabled={isLoading}
+                    >
+                      {isLoading && (
+                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                      )}
+                      Confirm
+                    </Button>
+                  )}
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
           <Button
             variant='ghost'
             size='sm'

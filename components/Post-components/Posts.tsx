@@ -42,7 +42,7 @@ const Posts: FC<PostsProps> = ({ tag, published, fw, session }) => {
   const { isMutate, setIsMutate } = useMutationSuccess()
 
   const fetchPosts = async ({ pageParam = 0 }) => {
-    const res = await axios.get(`/api/posts?cursor=${pageParam}`);
+    const res = await axios.get(`/api/posts/fwall?cursor=${pageParam}`);
     return res.data;
   };
 
@@ -111,10 +111,10 @@ const Posts: FC<PostsProps> = ({ tag, published, fw, session }) => {
       ) : (
         content
       )}
-      <div className='h-24 mt-10 flex justify-center'>
-        {isFetchingNextPage ? <HomeLoading /> : null}
+      <div className='h-24 mt-10 flex justify-center' ref={ref}>
+        {isFetchingNextPage ? <LoadingSpinner /> : null}
       </div>
-       <div ref={ref}></div> 
+       {/* <div ref={ref}></div>  */}
     </div>
   )
 }

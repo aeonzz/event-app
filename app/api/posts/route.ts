@@ -39,10 +39,6 @@ export async function GET(req: Request) {
   const userIdInt = parseInt(userId, 10);
 
   try {
-    const url = new URL(req.url);
-    const cursorParam = url.searchParams.get("cursor");
-    const cursor = cursorParam ? parseInt(cursorParam, 10) : undefined;
-
     const posts = await prisma.post.findMany({
       select: {
         id: true,
@@ -68,21 +64,12 @@ export async function GET(req: Request) {
           },
         },
       },
-      where: {
-        id: cursor ? { lt: cursor } : undefined,
-      },
       orderBy: {
         id: 'desc',
       },
-      take: 15,
     });
-    const lastPost = posts[posts.length - 1];
-    const nextCursor = lastPost?.id || undefined;
-
-    return NextResponse.json({
-      data: posts,
-      nextCursor,
-    }, { status: 200 });
+    
+    return NextResponse.json(posts, { status: 200 })
   } catch (error) {
     return NextResponse.json({ message: 'could not fetch posts' }, { status: 500 });
   }

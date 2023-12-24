@@ -4,6 +4,7 @@ import HomeLoading from '@/components/Loading/PostsLoading';
 import NoPostMessage from '@/components/NoPostMessage';
 import PostCard from '@/components/Post-components/PostCard';
 import EventCard from '@/components/Post-components/PostCard';
+import PostGrid from '@/components/Post-components/PostGrid';
 import Posts from '@/components/Post-components/Posts';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/db';
@@ -19,18 +20,23 @@ const Event = async () => {
   const session = await getServerSession(authOptions);
 
   return (
-    <div className='w-[58%] mt-4 px-20 flex flex-col'>
+    <div className='w-[58%] px-5 mt-4 flex flex-col'>
       {session?.user.role === 'ADMIN' || session?.user.role === 'SYSTEMADMIN' &&
         <CreatePost
           tag={tag}
           session={session}
         />
       }
-      <Posts
+      <PostGrid
         tag={tag}
         published={published}
         session={session}
       />
+      {/* <Posts
+        tag={tag}
+        published={published}
+        session={session}
+      /> */}
       {/* {session?.user.username}
           <Link href='/admin'>hahahahah</Link>
           <h2>Client session</h2>

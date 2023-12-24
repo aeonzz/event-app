@@ -105,13 +105,3 @@
     @apply underline
   } */
 }
-
-.swiper {
-  --swiper-navigation-color: #4f00bd;
-  --swiper-navigation-size: 20px;
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -khtml-user-select: none;
-}

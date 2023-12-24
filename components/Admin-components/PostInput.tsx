@@ -120,7 +120,7 @@ const PostInput: React.FC<PostInput> = ({ username, authorId, joined, tag }) => 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger className='w-full'>
           <Input
-            placeholder={fwall ? 'Write your thoughts here...' : 'Write your post here...'}
+            placeholder={fwall ? 'Write your thoughts here...' : tag === 'event' ? 'Create event...' : 'Post announcement...'}
             className='focus-visible:ring-0 border-b border-t-0 border-l-0 border-r-0 rounded-none focus-visible:ring-black bg-transparent transition'
           />
         </DialogTrigger>
