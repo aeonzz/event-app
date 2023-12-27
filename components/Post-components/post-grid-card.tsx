@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { Card } from '../ui/card'
 import Image from 'next/image'
 import ProfileHover from '../profileHover'
@@ -23,9 +23,10 @@ interface PostGridCard {
 
 const PostGridCard: FC<PostGridCard> = ({ post }) => {
 
+  const { UserPostInteraction } = post
   const authorCreatedAt = new Date(post.author.createdAt)
   const postedAt = new Date(post.createdAt)
-
+  const going = UserPostInteraction.length > 0 ? UserPostInteraction[0].going : false;
 
   const { mutate: updateClicks } = useMutation({
     mutationFn: async (updateClicks: FormInputPost) => {
@@ -51,6 +52,10 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
     updateClicks(data)
   }
 
+  if (post.deleted) {
+    return null
+  }
+
   return (
     <Link
       href={`/post/${post.id}`}
@@ -58,8 +63,12 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
       onClick={() => handleClick()}
       className='group'
     >
-      <Card className='h-[400px] flex border-none justify-center flex-col gap-3 p-5 bg-[#161312]'>
-        <div className='w-full h-44 overflow-hidden rounded-md flex justify-center items-center border'>
+      <Card className='h-[400px] flex justify-center flex-col gap-3 p-5 bg-[#161312]'>
+        <div className='relative w-full h-44 overflow-hidden rounded-md flex justify-center items-center border'>
+          <div className='absolute w-full h-full z-10 group-hover:bg-black/20 transition-colors' />
+          {post.Tag.name === 'event' && post.status === 'upcoming' && (
+            <Badge className='absolute z-20 w-fit text-[#3498db] top-1 right-1' variant='secondary'>Upcoming</Badge>
+          )}
           {post.images && post.images.length > 0 ? (
             <Image
               src={post.images[0].url}
@@ -68,7 +77,7 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
               height={400}
               objectFit="cover"
               objectPosition='center'
-              className='group-hover:scale-105 transition-transform duration-300 ease-in-out'
+              className='group-hover:scale-[1.03] transition-transform duration-300 ease-in-out'
             />
           ) : (
             <Image
@@ -78,12 +87,12 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
               height={56}
               objectFit="cover"
               objectPosition='center'
-              className='group-hover:scale-105 transition-transform duration-300 ease-in-out'
+              className='group-hover:scale-[1.03] transition-transform duration-300 ease-in-out'
             />
           )}
         </div>
         <div className='flex-1 flex flex-col gap-1'>
-          <h2 className='whitespace-pre-wrap break-words font-semibold text-2xl'>{post.title === '' ? post.title : <span>---</span>}</h2>
+          <h2 className='whitespace-pre-wrap break-words font-semibold text-2xl'>{post.title === '' ? <span>---</span> : post.title}</h2>
           <div className='relative h-14 overflow-hidden'>
             <div className='absolute w-full h-full z-50 bg-gradient-to-t from-[#161312] to-transparent' />
             <p className='whitespace-pre-wrap break-words text-xs text-muted-foreground'>{post.content}</p>
@@ -103,10 +112,13 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
                 </Link>
                 <div className='flex items-center'>
                   <p className='text-xs font-light text-muted-foreground'>
-                    {formatDistanceToNow(postedAt, { addSuffix: true })}
+                    On {post.date}
                   </p>
                   <Dot />
                   <Badge className='w-fit' variant='secondary'>{post.Tag.name}</Badge>
+                  {going && (
+                    <Badge className='w-fit ml-1 text-green-500 animate-pulse' variant='secondary'>joined</Badge>
+                  )}
                 </div>
               </div>
             </div>
@@ -119,7 +131,7 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
                     <>
                       <TooltipTrigger>
                         <Badge variant='secondary' className='flex items-center px-2'>
-                          <Calendar className='stroke-primary h-4 w-4' />
+                          <Calendar className='stroke-muted-foreground h-4 w-4' />
                         </Badge>
                       </TooltipTrigger>
                       <TooltipContent side='bottom' sideOffset={5}>
@@ -133,7 +145,7 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
                     <>
                       <TooltipTrigger>
                         <Badge variant='secondary' className='flex items-center px-2'>
-                          <MapPin className='stroke-primary h-4 w-4' />
+                          <MapPin className='stroke-muted-foreground h-4 w-4' />
                         </Badge>
                       </TooltipTrigger>
                       <TooltipContent side='bottom' sideOffset={5}>
@@ -147,7 +159,7 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
                     <>
                       <TooltipTrigger>
                         <Badge variant='secondary' className='flex items-center px-2'>
-                          <Theater className='stroke-primary h-4 w-4' />
+                          <Theater className='stroke-muted-foreground h-4 w-4' />
                         </Badge>
                       </TooltipTrigger>
                       <TooltipContent side='bottom' sideOffset={5}>

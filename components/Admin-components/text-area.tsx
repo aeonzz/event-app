@@ -54,7 +54,6 @@ import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { toast } from "../ui/use-toast"
 import { Textarea } from "../ui/textarea"
 import { Skeleton } from "../ui/skeleton"
 import EmojiPicker, {
@@ -85,6 +84,7 @@ import Image from 'next/image';
 import { DatePickerWithRange } from "../ui/date-range-picker"
 import { Posts } from "@/types/posts"
 import { useMutationSuccess } from "../Context/mutateContext"
+import { toast } from "sonner"
 
 interface TextAreaProps {
   tag: string
@@ -123,7 +123,6 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
 
   const router = useRouter()
   const deleted = false
-  const clicks = 0
   const { edgestore } = useEdgeStore();
   const [category, setCategory] = useState(tag)
   const [isLoading, setIsLoading] = useState(false)
@@ -154,9 +153,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
     },
     onError: (error) => {
       setIsLoading(false)
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+      toast.error("Uh oh! Something went wrong.", {
         description: "Could not create post, Try again later.",
       })
     },
@@ -174,12 +171,14 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
 
       if (fwall) {
         setIsMutate(true)
-        toast({
-          description: "Posted",
+        toast("Posted.")
+      } else if (category === 'event') {
+        toast("Event Created", {
+          description: "Awaiting admin approval."
         })
       } else {
-        toast({
-          description: "Post created. Awaiting admin approval.",
+        toast("Announcement Created", {
+          description: "Awaiting admin approval."
         })
       }
       updateOpenState(false);
@@ -192,9 +191,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
     },
     onError: (error) => {
       setIsLoading(false)
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+      toast.error("Uh oh! Something went wrong.", {
         description: "Could not update post, Try again later.",
       })
     },
@@ -209,9 +206,8 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
         })
       );
       onMutationSuccess && onMutationSuccess();
-      toast({
-        variant: "default",
-        title: "Update Successful",
+      router.refresh()
+      toast.success("Update Successful", {
         description: "Post successfully updated.",
       })
       updateOpenState(false);
@@ -233,7 +229,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
   })
 
   function onSubmit(data: z.infer<typeof PostSchema>) {
-    const postData: FormInputPost = { ...data, authorId, category, published, anonymous, date, deleted, clicks, going: undefined };
+    const postData: FormInputPost = { ...data, authorId, category, published, anonymous, date, deleted, clicks: editData?.clicks, going: undefined };
     if (editData) {
       setIsLoading(true);
       updatePost(postData);
@@ -369,6 +365,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                       checked={anonymous}
                       onCheckedChange={setAnonymous}
                       id="airplane-mode"
+                      disabled={isLoading}
                     />
                   </Card>
                 )}
@@ -387,6 +384,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                           <Input
                             className='border-none text-lg placeholder:font-medium focus-visible:ring-transparent'
                             placeholder="Title"
+                            disabled={isLoading}
                             {...field}
                           />
                         </div>
@@ -405,6 +403,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                       <Textarea
                         placeholder={fwall ? "Write your thoughts here..." : "Write your description here..."}
                         className="h-[150px] resize-none border-none border-white placeholder:font-medium"
+                        disabled={isLoading}
                         {...field}
                       />
                     </FormControl>
@@ -431,6 +430,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                                 <Input
                                   className='mt-1 border-none text-sm focus-visible:ring-transparent'
                                   placeholder="Location"
+                                  disabled={isLoading}
                                   {...field}
                                 />
                               </div>
@@ -449,6 +449,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                                 <Input
                                   className='mt-1 border-none text-sm focus-visible:ring-transparent'
                                   placeholder="Venue"
+                                  disabled={isLoading}
                                   {...field}
                                 />
                               </div>
@@ -503,6 +504,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                     size='sm'
                     onClick={(e) => toggleOptions(e)}
                     className='flex items-center gap-2 text-xs'
+                    disabled={isLoading}
                   >
                     <ImagePlus className='h-4 w-4' />
                     images
@@ -539,6 +541,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                   onChange={(files) => {
                     setFileStates(files);
                   }}
+                  disabled={isLoading}
                   onFilesAdded={async (addedFiles) => {
                     setFileStates([...fileStates, ...addedFiles]);
                     await Promise.all(

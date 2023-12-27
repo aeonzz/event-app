@@ -1,7 +1,6 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { Toaster } from "@/components/ui/toaster"
 import Provider from '@/components/Providers/Provider'
 import { ThemeProvider } from '@/components/Providers/theme-provider'
 import Topbar from '@/components/Navigation/Topbar'
@@ -11,6 +10,7 @@ import { authOptions } from '@/lib/auth'
 import QueryProvider from '@/components/Providers/query-provider'
 import { EdgeStoreProvider } from '@/lib/edgestore'
 import LeftSideBar from '@/components/Navigation/LeftSideBar'
+import { Toaster } from '@/components/ui/sonner'
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -56,7 +56,7 @@ export default async function RootLayout({
                   </>
                 )}
 
-                <Toaster />
+                <Toaster richColors expand={true} />
               </ThemeProvider>
             </QueryProvider>
           </EdgeStoreProvider>

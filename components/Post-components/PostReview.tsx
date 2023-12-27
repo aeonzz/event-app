@@ -13,20 +13,30 @@ import { cn } from '@/lib/utils';
 import { FormInputPost } from '@/types/post';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { toast } from '../ui/use-toast';
 import { ToastAction } from '../ui/toast';
 import { Posts } from '@/types/posts';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { useMutationSuccess } from '../Context/mutateContext';
+
 
 interface PostReviewProps {
   post: Posts
-  onMutationSuccess?: () => void
+  style?: boolean
 }
 
-const PostReview: FC<PostReviewProps> = ({ post, onMutationSuccess }) => {
+const PostReview: FC<PostReviewProps> = ({ post, style }) => {
 
   const id = post?.id
-  console.log(post?.title)
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const { setIsMutate } = useMutationSuccess()
 
   const { mutate: approval } = useMutation({
     mutationFn: async (approval: FormInputPost) => {
@@ -34,20 +44,21 @@ const PostReview: FC<PostReviewProps> = ({ post, onMutationSuccess }) => {
     },
     onError: (error) => {
       setIsLoading(false)
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+      toast.error("Uh oh! Something went wrong.", {
         description: "Could not approve post, Try again later.",
-        action: <ToastAction altText="Try again" onClick={() => handleApproval()}>Try again</ToastAction>,
+        action: {
+          label: "Try again",
+          onClick: () => handleApproval(),
+        },
       })
     },
     onSuccess: () => {
-      onMutationSuccess && onMutationSuccess();
-      toast({
-        variant: "default",
-        title: "Successful",
-        description: "Post successfully approved.",
-      })
+      style ? router.refresh() : router.back();
+      const successMsg = post.Tag.name === 'event' ? 'Event' : 'Announcement';
+      toast.success("Successful", {
+        description: `${successMsg} successfully approved.`,
+      });
+      setIsMutate(true)
     }
   })
 
@@ -63,42 +74,83 @@ const PostReview: FC<PostReviewProps> = ({ post, onMutationSuccess }) => {
       deleted: post.deleted,
       category: post.Tag.name || undefined,
       authorId: post.author.id || undefined,
-      clicks: 0,
+      clicks: post.clicks,
       going: undefined
     };
     approval(data)
   }
 
   return (
-    <Card className='w-[100%] mt-1'>
-      <CardHeader className='flex flex-row items-center p-2 space-y-0'>
-        <CardDescription className='flex-1 ml-3'>Approve this post?</CardDescription>
-        <div className='flex-1 flex justify-end items-center'>
-          <Button
-            variant='ghost'
-            size='sm'
-            className='text-green-600 hover:text-green-500 text-xs'
-            onClick={() => handleApproval()}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-            ) : (
-              <Check className='mt-0.5 h-[1.2rem] w-[1.2rem]' />
-            )}
-            Approve
-          </Button>
-          <Button
-            variant='ghost'
-            size='sm'
-            className='text-red-600 hover:text-red-500 hover:bg-red-500/20 text-xs'
-          >
-            <X className='h-[1.2rem] w-[1.2rem]' />
-            Reject
-          </Button>
-        </div>
-      </CardHeader>
-    </Card >
+    <>
+      {style ? (
+        <TooltipProvider delayDuration={300}>
+          <Tooltip>
+            <TooltipTrigger>
+              <Button
+                variant='secondary'
+                size='icon'
+                className='text-green-600 hover:text-green-500 text-xs'
+                onClick={() => handleApproval()}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <Loader2 className='h-4 w-4 animate-spin' />
+                ) : (
+                  <Check className='mt-0.5 h-[1.2rem] w-[1.2rem]' />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side='left' sideOffset={5}>
+              <p className='text-xs'>Approve</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger>
+              <Button
+                variant='secondary'
+                size='icon'
+                className='text-red-600 hover:text-red-500 hover:bg-red-500/20 text-xs'
+              >
+                <X className='h-[1.2rem] w-[1.2rem]' />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side='left' sideOffset={5}>
+              <p className='text-xs'>Reject</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ) : (
+        <Card className='w-[100%] mt-1'>
+          <CardHeader className='flex flex-row items-center p-2 space-y-0'>
+            <CardDescription className='flex-1 ml-3'>Approve this post?</CardDescription>
+            <div className='flex-1 flex justify-end items-center'>
+              <Button
+                variant='ghost'
+                size='sm'
+                className='text-green-600 hover:text-green-500 text-xs'
+                onClick={() => handleApproval()}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                ) : (
+                  <Check className='mt-0.5 h-[1.2rem] w-[1.2rem]' />
+                )}
+                Approve
+              </Button>
+              <Button
+                variant='ghost'
+                size='sm'
+                className='text-red-600 hover:text-red-500 hover:bg-red-500/20 text-xs'
+              >
+                <X className='h-[1.2rem] w-[1.2rem]' />
+                Reject
+              </Button>
+            </div>
+          </CardHeader>
+        </Card >
+      )}
+    </>
   )
 }
 

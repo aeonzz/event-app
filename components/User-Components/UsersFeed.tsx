@@ -92,7 +92,7 @@ const UsersFeed = async () => {
           <TabsTrigger value="about" className='w-[100px] text-xs data-[state=active]:bg-stone-900'>About</TabsTrigger>
         </TabsList>
         <TabsContent value="department" className='h-auto mb-3'>
-          <h1 className='text-xl font-semibold mb-2'>Your Feed.</h1>
+          <h1 className='text-3xl font-semibold mb-2'>Your Feed.</h1>
           <div className='mt-5 w-full h-[550px] grid grid-cols-2 grid-rows-2 gap-3'>
             <Link
               className='row-span-2'

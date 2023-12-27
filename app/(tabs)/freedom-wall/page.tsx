@@ -9,7 +9,6 @@ const FreedomWall = async () => {
   const session = await getServerSession(authOptions);
   const tag = 'fw'
   const published = true
-  const fw = true
 
 
   return (
@@ -19,7 +18,6 @@ const FreedomWall = async () => {
         session={session}
       />
       <Posts
-        fw={fw}
         tag={tag}
         published={published}
         session={session}

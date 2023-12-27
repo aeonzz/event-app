@@ -7,6 +7,7 @@ import PostInput from './PostInput'
 import { Card } from '../ui/card'
 import { format } from 'date-fns'
 import { Session } from 'next-auth'
+import { PlusCircle } from 'lucide-react'
 
 interface CreatePostProps {
   tag: string
@@ -26,7 +27,7 @@ const CreatePost: FC<CreatePostProps> = ({ session, tag }) => {
   const joined = new Date(session?.user.createdAt!)
 
   return (
-    <div className='w-full'>
+    <div className='flex-1'>
       <PostInput
         tag={tag}
         initalletter={initialLetter}

@@ -3,6 +3,7 @@ export type Posts = {
   title: string
   content: string | null
   published: boolean
+  status: string
   deleted: boolean
   venue: string | null
   location: string | null

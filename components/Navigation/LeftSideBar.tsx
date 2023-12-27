@@ -49,7 +49,8 @@ const NavMenu = () => {
         pathname === '/announcements' ||
         pathname === '/freedom-wall' ||
         pathname === '/notifications' || 
-        pathname === '/pending-post' ? (
+        pathname === '/pending-post' ||
+        pathname.startsWith('/post/') ? (
         <aside className='sticky top-20 h-fit w-60 flex flex-col gap-4 items-start'>
           <UserNav />
           <div className='w-full h-auto flex flex-col items-center gap-4'>

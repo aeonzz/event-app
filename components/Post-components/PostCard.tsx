@@ -58,7 +58,6 @@ import { Interactions } from '@/types/interactions';
 interface PostCardProps {
   post: Posts
   tag?: string | null
-  fw?: boolean | null
   innerRef?: React.Ref<HTMLDivElement>
   session?: Session | null
   onMutationSuccess?: () => void
@@ -69,7 +68,7 @@ const options = {
   className: 'text-blue-500 hover:underline',
 }
 
-const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutationSuccess, }) => {
+const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationSuccess, }) => {
 
   const { id, title, content, author, Tag, createdAt, anonymous, images, venue, location, date, published, deleted, clicks, UserPostInteraction } = post;
   const { id: authorId, username, email } = author
@@ -241,9 +240,10 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
         </div>
       ) : (
         <div className='relative flex items-center gap-2'>
-          <DropdownMenu modal={false} open={actionDropdown} onOpenChange={setActionDropdown}>
+          <DropdownMenu open={actionDropdown} onOpenChange={setActionDropdown}>
             <DropdownMenuTrigger
-              className='absolute right-0 top-0'>
+              className='absolute right-0 top-0'
+            >
               <Button
                 variant='ghost'
                 size='icon'
@@ -353,12 +353,12 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
               <p className='text-xs font-light text-muted-foreground'>
                 {formatDistanceToNow(postedAt, { addSuffix: true })}
               </p>
-              {fw ? null : (
+              {/* {fw ? null : (
                 <>
                   <Dot />
                   <Badge className='w-fit' variant='secondary'>{name}</Badge>
                 </>
-              )}
+              )} */}
             </div>
           </div>
         </div>
@@ -378,7 +378,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
             )}
           </p>
         </Linkify>
-        {fw ? null : (
+        {/* {fw ? null : (
           <div className='flex w-full items-center my-5 gap-3'>
             {date && (
               <Badge variant='secondary' className='flex items-center p-2'>
@@ -399,8 +399,8 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
               </Badge>
             )}
           </div>
-        )}
-        {fw ? null : (
+        )} */}
+        {/* {fw ? null : (
           <Link
             href={`/post/${id}`}
             replace={true}
@@ -440,7 +440,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
               </div>
             </div>
           </Link>
-        )}
+        )} */}
         <h3 className='text-muted-foreground text-xs mt-1 text-right'>{clicks} Views</h3>
         <Separator className='my-2' />
         <div className='w-full flex p-1'>
@@ -469,7 +469,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, fw, session, onMutat
                   <DialogTitle className="text-xl font-semibold" >Confirmation</DialogTitle>
                   <DialogDescription>
                     {goingButtonState ? (
-                      <p>Are you sure you want to ditch this event? Aren&apos;t you ashamed that you joined the event and now you've changed your mind?</p>
+                      <p>Are you sure you want to ditch this event? Aren&apos;t you ashamed that you joined the event and now you&apos;ve changed your mind?</p>
                     ) : (
                       <p>Are you sure you want to attend this event?.</p>
                     )}

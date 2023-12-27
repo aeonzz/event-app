@@ -17,26 +17,12 @@ import { useMutationSuccess } from '../Context/mutateContext';
 
 interface PostsProps {
   tag?: string | null
-  fw?: boolean | null
   published?: boolean | null
   session?: Session | null
 }
 
-const Posts: FC<PostsProps> = ({ tag, published, fw, session }) => {
+const Posts: FC<PostsProps> = ({ tag, published, session }) => {
 
-  // const { data: dataPosts, isLoading, isError } = useQuery<Posts[]>({
-  //   queryKey: ['posts'],
-  //   queryFn: async () => {
-  //     const response = await axios.get('/api/posts');
-  //     return response.data
-  //   },
-  // });
-
-  // const fetchPosts = async () => {
-  //   const res = await axios.get('/api/posts')
-  //   return res.data
-  // }
-  // console.log(fetchPosts())
 
   const { ref, inView } = useInView();
   const { isMutate, setIsMutate } = useMutationSuccess()
@@ -76,7 +62,6 @@ const Posts: FC<PostsProps> = ({ tag, published, fw, session }) => {
           {group.data.map((post: Posts) => (
             post.published === published && (
               <PostCard
-                fw={fw}
                 tag={tag}
                 key={post.id}
                 post={post}

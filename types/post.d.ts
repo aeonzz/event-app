@@ -1,7 +1,7 @@
 export type FormInputPost = {
     title?: string | undefined
-    published: boolean
-    anonymous: boolean
+    published: boolean | undefined
+    anonymous: boolean | undefined
     deleted?: boolean | undefined
     image?: string | undefined
     content?: string | undefined

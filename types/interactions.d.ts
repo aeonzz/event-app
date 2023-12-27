@@ -1,5 +1,5 @@
 export type Interactions = {
     userId: number | null
-    postId: number
+    postId: number | undefined
     going: boolean
 }

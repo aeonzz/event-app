@@ -50,6 +50,7 @@ export async function GET(req: Request) {
         author: true,
         images: true,
         published: true,
+        status: true,
         deleted: true,
         anonymous: true,
         Tag: true,

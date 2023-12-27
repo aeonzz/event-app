@@ -44,12 +44,15 @@ const PostSchema = z.object({
 export async function GET(req: Request, context: contextProps) {
   try {
     const { params } = context
+    const postId = +params.postId;
+
     const post = await prisma.post.findFirst({
       where: {
-        id: params.postId
+        id: postId
       },
       include: {
-        Tag: true
+        Tag: true,
+        images: true
       }
     })
 

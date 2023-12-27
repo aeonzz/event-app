@@ -27,18 +27,20 @@ interface ImageSliderProps {
 
 const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
   return (
-    <Carousel className="w-full max-w-xs">
+    <Carousel className="w-full flex items-center">
       <CarouselContent>
         {images?.map((image) => (
           image.url && (
             <CarouselItem
               key={image.id}
+              className='relative'
             >
               <Link
                 href={image.url}
                 target='_blank'
+                className='absolute bottom-1 right-1'
               >
-                <Expand className='bottom-9 right-1' />
+                <Expand />
               </Link>
               <Image
                 className='h-full w-full object-contain'
@@ -51,8 +53,8 @@ const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
             </CarouselItem>
           )))}
       </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
+      <CarouselPrevious className='h-14 w-14 -left-[15%]' />
+      <CarouselNext className='h-14 w-14 -right-[15%]' />
     </Carousel>
     // <div className="relative h-full flex items-center justify-center">
     //   <div className="h-full w-[900px] overflow-hidden">
