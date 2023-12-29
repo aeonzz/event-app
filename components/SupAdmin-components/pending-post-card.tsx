@@ -14,10 +14,28 @@ interface PendingPostCardProps {
   post: Posts
 }
 
+function convertTimeTo12HourFormat(timeString: string): string {
+  const [hours, minutes] = timeString.split(':');
+  const timeIn12HourFormat = `${(parseInt(hours, 10) % 12) || 12}:${minutes} ${parseInt(hours, 10) >= 12 ? 'PM' : 'AM'}`;
+  return timeIn12HourFormat;
+}
+
 const PendingPostCard: FC<PendingPostCardProps> = ({ post }) => {
 
   const authorCreatedAt = new Date(post.author.createdAt)
   const postedAt = new Date(post.createdAt)
+  const dateFrom = post.dateFrom ? new Date(post.dateFrom) : undefined;
+  const dateTo = post.dateTo ? new Date(post.dateTo) : undefined;
+  const date =
+    dateTo
+      ? dateFrom
+        ? `from ${format(dateFrom, 'PP')} to ${format(dateTo, 'PP')}` +
+        (post.timeFrom ? `, ${convertTimeTo12HourFormat(post.timeFrom)}` : '')
+        : 'No date available'
+      : dateFrom
+        ? `On ${format(dateFrom, 'PP')}` +
+        (post.timeTo ? `, ${convertTimeTo12HourFormat(post.timeTo)}` : '')
+        : 'No date available';
 
   return (
     <Card className='w-full h-40 flex py-3 px-4 group'>
@@ -67,7 +85,7 @@ const PendingPostCard: FC<PendingPostCardProps> = ({ post }) => {
               </p>
               <div className='border h-5 mx-2' />
               <p className='text-xs font-light text-muted-foreground'>
-                On {post.date}
+                {date}
               </p>
               <Dot />
               <Badge className='w-fit' variant='secondary'>{post.Tag.name}</Badge>

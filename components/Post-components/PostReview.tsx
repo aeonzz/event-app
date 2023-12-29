@@ -53,12 +53,12 @@ const PostReview: FC<PostReviewProps> = ({ post, style }) => {
       })
     },
     onSuccess: () => {
+      setIsMutate(true)
       style ? router.refresh() : router.back();
       const successMsg = post.Tag.name === 'event' ? 'Event' : 'Announcement';
       toast.success("Successful", {
         description: `${successMsg} successfully approved.`,
       });
-      setIsMutate(true)
     }
   })
 
@@ -71,11 +71,14 @@ const PostReview: FC<PostReviewProps> = ({ post, style }) => {
       venue: post.venue || undefined,
       location: post.location || undefined,
       published: true,
+      status: post.status,
       deleted: post.deleted,
       category: post.Tag.name || undefined,
       authorId: post.author.id || undefined,
       clicks: post.clicks,
-      going: undefined
+      going: undefined,
+      timeFrom: post.timeFrom,
+      timeTo: post.timeTo
     };
     approval(data)
   }

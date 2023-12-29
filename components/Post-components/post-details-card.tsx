@@ -82,6 +82,25 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [goingButtonState, setGoingButtonState] = useState(going)
   const contentToDisplay = showFullContent ? post.content : post.content?.slice(0, 500);
+  const dateFrom = post.dateFrom ? new Date(post.dateFrom) : undefined;
+  const dateTo = post.dateTo ? new Date(post.dateTo) : undefined;
+
+  const date =
+    dateTo
+      ? dateFrom
+        ? `from ${format(dateFrom, 'PP')} to ${format(dateTo, 'PP')}` +
+        (post.timeTo ? `, ${convertTimeTo12HourFormat(post.timeFrom)} - ${convertTimeTo12HourFormat(post.timeTo)}` : `, ${convertTimeTo12HourFormat(post.timeFrom)}`)
+        : 'No date available'
+      : dateFrom
+        ? `On ${format(dateFrom, 'PP')}` +
+        (post.timeTo ? `, ${convertTimeTo12HourFormat(post.timeFrom)} - ${convertTimeTo12HourFormat(post.timeTo)}` : `, ${convertTimeTo12HourFormat(post.timeFrom)}`)
+        : 'No date available';
+
+  function convertTimeTo12HourFormat(timeString: string): string {
+    const [hours, minutes] = timeString.split(':');
+    const timeIn12HourFormat = `${(parseInt(hours, 10) % 12) || 12}:${minutes} ${parseInt(hours, 10) >= 12 ? 'PM' : 'AM'}`;
+    return timeIn12HourFormat;
+  }
 
   const onChangeOptionState = (newChangeOptionState: boolean) => {
     setToggleImageInput(newChangeOptionState)
@@ -157,6 +176,11 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
       setIsLoading(false)
       setAttendModal(false)
       setGoingButtonState((prev) => !prev);
+      if (!goingButtonState) {
+        toast("Participated", {
+          description: date,
+        })
+      }
     },
   });
 
@@ -173,7 +197,10 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
       category: post.Tag.name,
       authorId: post.author.id,
       clicks: post.clicks,
-      going: going || undefined
+      status: post.status,
+      going: going || undefined,
+      timeFrom: post.timeFrom,
+      timeTo: post.timeTo
     };
     deletePost(data)
   }
@@ -210,7 +237,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
             <Badge className='w-fit' variant='secondary'>{post.Tag.name}</Badge>
           </div>
         </div>
-        <DropdownMenu open={actionDropdown} onOpenChange={setActionDropdown}>
+        <DropdownMenu open={actionDropdown} onOpenChange={setActionDropdown} modal={false}>
           <DropdownMenuTrigger
             className={cn(
               buttonVariants({ variant: 'ghost', size: 'icon' }),
@@ -218,7 +245,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
             )}>
             <MoreHorizontal />
           </DropdownMenuTrigger>
-          <DropdownMenuContent className='min-w-[80px]'>
+          <DropdownMenuContent className='min-w-[80px]' onCloseAutoFocus={(e) => e.preventDefault()}>
             <DropdownMenuItem
               onClick={() => setsaveButtonState((prev) => !prev)}
               className='text-xs'>
@@ -321,10 +348,12 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
           </p>
         </Linkify>
         <div className='flex w-full items-center my-5 gap-3'>
-          {post.date && (
+          {post.dateFrom && (
             <Badge variant='secondary' className='flex items-center p-2'>
               <Calendar className='stroke-primary h-4 w-4 mr-2' />
-              <p className='text-xs text-muted-foreground'>{post.date}</p>
+              <p className='text-xs text-muted-foreground'>
+                {date}
+              </p>
             </Badge>
           )}
           {post.location && (
@@ -395,6 +424,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                     goingButtonState ? 'text-primary hover:text-primary' : 'text-muted-foreground',
                     'relative flex-1 transition-colors'
                   )}
+
                 >
                   <ThumbsUp
                     className={cn(
@@ -405,7 +435,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                   Attend
                 </Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent forceMount={true}>
                 <DialogHeader>
                   <DialogTitle className="text-xl font-semibold" >Confirmation</DialogTitle>
                   <DialogDescription>

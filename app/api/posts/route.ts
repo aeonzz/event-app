@@ -1,5 +1,6 @@
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/db";
+import { format } from "date-fns";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import * as z from "zod"
@@ -27,9 +28,18 @@ const PostSchema = z.object({
   location: z
     .string()
     .optional(),
-  date: z
+  dateFrom: z
     .string()
     .optional(),
+  dateTo: z
+    .string()
+    .optional(),
+  status: z
+    .string(),
+  timeFrom: z
+    .string(),
+  timeTo: z
+    .string()
 })
 
 export async function GET(req: Request) {
@@ -46,7 +56,10 @@ export async function GET(req: Request) {
         content: true,
         venue: true,
         location: true,
-        date: true,
+        dateFrom: true,
+        dateTo: true,
+        timeFrom: true,
+        timeTo: true,
         author: true,
         images: true,
         published: true,
@@ -69,7 +82,7 @@ export async function GET(req: Request) {
         id: 'desc',
       },
     });
-    
+
     return NextResponse.json(posts, { status: 200 })
   } catch (error) {
     return NextResponse.json({ message: 'could not fetch posts' }, { status: 500 });
@@ -79,7 +92,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { content, title, authorId, category, published, anonymous, venue, location, date } = PostSchema.parse(body);
+    const { content, title, authorId, category, published, anonymous, venue, status, location, dateFrom, dateTo, timeFrom, timeTo } = PostSchema.parse(body);
 
     const tag = await prisma.tag.findUnique({
       where: {
@@ -92,10 +105,14 @@ export async function POST(req: Request) {
         title: title,
         content: content,
         published: published,
+        status: status,
         anonymous: anonymous,
         location: location,
         venue: venue,
-        date: date,
+        dateFrom: dateFrom,
+        dateTo: dateTo,
+        timeFrom: timeFrom,
+        timeTo: timeTo,
         author: {
           connect: {
             id: authorId,

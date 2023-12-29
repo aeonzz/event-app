@@ -11,9 +11,9 @@ const Logout = () => {
         redirect: true,
         callbackUrl: `${window.location.origin}/`
       })}
-      className='flex items-center w-full'
+      className='flex items-center w-full text-red-600'
     >
-      <LogOut className="mr-2 h-4 w-4" />
+      <LogOut className="mr-2 h-4 w-4 stroke-red-600" />
       Sign out
     </div>
   )

@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react'
 import { Card } from '../ui/card'
 import Image from 'next/image'
 import ProfileHover from '../profileHover'
-import { format, formatDistanceToNow } from 'date-fns';
+import { format, formatDistanceToNow, formatDuration, intervalToDuration, isAfter, isBefore, isEqual, parse, startOfDay } from 'date-fns';
 import { Posts } from '@/types/posts';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
@@ -16,24 +16,60 @@ import {
 import { FormInputPost } from '@/types/post';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
+import PostStatus from './post-status';
 
 interface PostGridCard {
   post: Posts
 }
 
-const PostGridCard: FC<PostGridCard> = ({ post }) => {
+function convertTimeTo12HourFormat(timeString: string): string {
+  const [hours, minutes] = timeString.split(':');
+  const timeIn12HourFormat = `${(parseInt(hours, 10) % 12) || 12}:${minutes} ${parseInt(hours, 10) >= 12 ? 'PM' : 'AM'}`;
+  return timeIn12HourFormat;
+}
 
+const PostGridCard: FC<PostGridCard> = ({ post }) => {
   const { UserPostInteraction } = post
   const authorCreatedAt = new Date(post.author.createdAt)
   const postedAt = new Date(post.createdAt)
-  const going = UserPostInteraction.length > 0 ? UserPostInteraction[0].going : false;
+
+  // date functions hhahhhahahah fuck this 
+
+  const dateFrom = post.dateFrom ? new Date(post.dateFrom) : undefined;
+  const dateTo = post.dateTo ? new Date(post.dateTo) : undefined;
+  const currentDate = new Date()
+  const currentTime = new Date();
+  const startOfCurrentDay = startOfDay(currentDate)
+  const formattedCurrentTime = format(currentTime, 'h:mm a')
+  const formattedTimeFrom = convertTimeTo12HourFormat(post.timeFrom)
+  const formattedTimeTo = convertTimeTo12HourFormat(post.timeTo)
+  const isTimeAfterTimeFrom = isAfter(currentTime, parse(formattedTimeFrom, 'h:mm a', new Date()));
+  const isTimeBeforeTimeTo = isBefore(currentTime, parse(formattedTimeTo, 'h:mm a', new Date()));
+  const isDateEqual = dateFrom !== undefined && isEqual(dateFrom, startOfCurrentDay)
+  const currentEventTime = isTimeAfterTimeFrom && isTimeBeforeTimeTo;
+  const isCurrentTimeAfterEventTime = isTimeAfterCurrentTime(post.timeTo)
+  const eventDay = isDateEqual && currentEventTime && !isCurrentTimeAfterEventTime
+  const date =
+    dateTo
+      ? dateFrom
+        ? `from ${format(dateFrom, 'PP')} to ${format(dateTo, 'PP')}` +
+        (post.timeTo ? `, ${convertTimeTo12HourFormat(post.timeFrom)} - ${convertTimeTo12HourFormat(post.timeTo)}` : `, ${convertTimeTo12HourFormat(post.timeFrom)}`)
+        : 'No date available'
+      : dateFrom
+        ? `On ${format(dateFrom, 'PP')}` +
+        (post.timeTo ? `, ${convertTimeTo12HourFormat(post.timeFrom)} - ${convertTimeTo12HourFormat(post.timeTo)}` : `, ${convertTimeTo12HourFormat(post.timeFrom)}`)
+        : 'No date available';
+
+  function isTimeAfterCurrentTime(eventTime: string): boolean {
+    const currentHourMinute = format(currentTime, 'HH:mm');
+    return currentHourMinute > eventTime;
+  }
 
   const { mutate: updateClicks } = useMutation({
     mutationFn: async (updateClicks: FormInputPost) => {
       return axios.patch(`/api/posts/${post.id}`, updateClicks);
     },
   })
-
 
   function handleClick() {
     const data: FormInputPost = {
@@ -47,7 +83,10 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
       category: post.Tag.name,
       authorId: post.author.id,
       clicks: post.clicks,
-      going: undefined
+      status: post.status,
+      going: undefined,
+      timeFrom: post.timeFrom,
+      timeTo: post.timeTo
     };
     updateClicks(data)
   }
@@ -66,9 +105,7 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
       <Card className='h-[400px] flex justify-center flex-col gap-3 p-5 bg-[#161312]'>
         <div className='relative w-full h-44 overflow-hidden rounded-md flex justify-center items-center border'>
           <div className='absolute w-full h-full z-10 group-hover:bg-black/20 transition-colors' />
-          {post.Tag.name === 'event' && post.status === 'upcoming' && (
-            <Badge className='absolute z-20 w-fit text-[#3498db] top-1 right-1' variant='secondary'>Upcoming</Badge>
-          )}
+          <PostStatus post={post} className='top-1 right-1' />
           {post.images && post.images.length > 0 ? (
             <Image
               src={post.images[0].url}
@@ -112,13 +149,12 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
                 </Link>
                 <div className='flex items-center'>
                   <p className='text-xs font-light text-muted-foreground'>
-                    On {post.date}
+                    {post.Tag.name === 'event' ? (
+                      date
+                    ) : (
+                      `Posted ${formatDistanceToNow(postedAt, { addSuffix: true })}`
+                    )}
                   </p>
-                  <Dot />
-                  <Badge className='w-fit' variant='secondary'>{post.Tag.name}</Badge>
-                  {going && (
-                    <Badge className='w-fit ml-1 text-green-500 animate-pulse' variant='secondary'>joined</Badge>
-                  )}
                 </div>
               </div>
             </div>
@@ -127,7 +163,7 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
             <div className='flex w-fit items-center gap-2'>
               <TooltipProvider delayDuration={300}>
                 <Tooltip>
-                  {post.date && (
+                  {post.dateFrom && (
                     <>
                       <TooltipTrigger>
                         <Badge variant='secondary' className='flex items-center px-2'>
@@ -135,7 +171,7 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
                         </Badge>
                       </TooltipTrigger>
                       <TooltipContent side='bottom' sideOffset={5}>
-                        <p className='text-xs'>{post.date}</p>
+                        <p className='text-xs'>{date}</p>
                       </TooltipContent>
                     </>
                   )}

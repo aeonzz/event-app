@@ -85,6 +85,8 @@ import { DatePickerWithRange } from "../ui/date-range-picker"
 import { Posts } from "@/types/posts"
 import { useMutationSuccess } from "../Context/mutateContext"
 import { toast } from "sonner"
+import { DateRange } from "react-day-picker"
+import { format } from "date-fns"
 
 interface TextAreaProps {
   tag: string
@@ -117,6 +119,10 @@ const PostSchema = z.object({
   image: z
     .string()
     .optional(),
+  timeFrom: z
+    .string(),
+  timeTo: z
+    .string(),
 })
 
 const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onChangeOptionState, fwall, tag, toggleImageInput, editData, onMutationSuccess, onChangeDropdownState }) => {
@@ -134,7 +140,20 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
   const [isEditingUrls, setIsEditingUrls] = useState<string[]>([])
   const [fileStates, setFileStates] = useState<FileState[]>([])
   const [imageInput, setImageInput] = useState(false)
-  const [date, setDate] = useState<string | undefined>(editData?.date ?? undefined)
+  const [date, setDate] = useState<DateRange | undefined>(() => {
+    if (editData) {
+      const from = editData.dateFrom ? new Date(editData.dateFrom) : undefined;
+      const to = editData.dateTo ? new Date(editData.dateTo) : undefined;
+
+      return { from, to };
+    }
+
+    return undefined;
+  });
+
+  // const formatFrom = date?.from ? format(date.from, "LLL dd, y") : undefined
+  // const formatTo = date?.to ? format(date.to, "LLL dd, y") : undefined
+
   const [isEditing, setIsEditing] = useState(false)
   const [postId, setPostId] = useState(editData?.id)
   const { setIsMutate } = useMutationSuccess()
@@ -225,11 +244,25 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
       content: editData?.content || '',
       location: editData?.location || '',
       venue: editData?.venue || '',
+      timeFrom: editData?.timeFrom || '',
+      timeTo: editData?.timeTo || '',
     },
   })
 
   function onSubmit(data: z.infer<typeof PostSchema>) {
-    const postData: FormInputPost = { ...data, authorId, category, published, anonymous, date, deleted, clicks: editData?.clicks, going: undefined };
+    const postData: FormInputPost = {
+      ...data,
+      authorId,
+      category,
+      published,
+      anonymous,
+      dateFrom: date?.from,
+      dateTo: date?.to,
+      deleted,
+      clicks: editData?.clicks,
+      status: 'upcoming',
+      going: undefined
+    };
     if (editData) {
       setIsLoading(true);
       updatePost(postData);
@@ -272,9 +305,14 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
     onChangeOptionState(!toggleImageInput);
   }
 
-  function dateRange(newDate: string | undefined) {
+  function dateRange(newDate: DateRange | undefined) {
+    if (date?.to !== undefined && newDate?.to === undefined) {
+      // @ts-ignore
+      newDate = { ...newDate, to: null };
+    }
     setDate(newDate)
   }
+
 
   function handleClearUrls(indexToRemove: number) {
     setUrls((prevUrls) => prevUrls.filter((_, index) => index !== indexToRemove));
@@ -492,24 +530,73 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
               </div> */}
               <div className='w-full flex pb-2 items-center gap-3 rounded-sm mt-5'>
                 {fwall || category === 'announcement' ? null : (
-                  <DatePickerWithRange
-                    onDateChange={dateRange}
-                    dataDate={date}
-                  />
+                  <>
+                    <div className='flex-1'>
+                      <Label className='text-xs'>Date:</Label>
+                      <DatePickerWithRange
+                        onDateChange={dateRange}
+                        dataDate={date}
+                      />
+                    </div>
+                    <FormField
+                      control={form.control}
+                      name="timeFrom"
+                      render={({ field }) => (
+                        <FormItem className='relative'>
+                          <FormControl>
+                            <div className='relative'>
+                              <Label className='text-xs'>From:</Label>
+                              <Input
+                                type="time"
+                                className='h-9 text-xs focus-visible:ring-transparent appearance-none'
+                                placeholder="Venue"
+                                disabled={isLoading}
+                                {...field}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage className='absolute -bottom-4' />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="timeTo"
+                      render={({ field }) => (
+                        <FormItem className='relative'>
+                          <FormControl>
+                            <div className='relative'>
+                              <Label className='text-xs'>To:</Label>
+                              <Input
+                                type="time"
+                                className='h-9 text-xs focus-visible:ring-transparent appearance-none'
+                                placeholder="Venue"
+                                disabled={isLoading}
+                                {...field}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage className='absolute -bottom-4' />
+                        </FormItem>
+                      )}
+                    />
+                  </>
                 )}
-                <h3 className='text-sm font-medium'>Add:</h3>
-                {fwall ? null : (
-                  <Button
-                    variant='outline'
-                    size='sm'
-                    onClick={(e) => toggleOptions(e)}
-                    className='flex items-center gap-2 text-xs'
-                    disabled={isLoading}
-                  >
-                    <ImagePlus className='h-4 w-4' />
-                    images
-                  </Button>
-                )}
+                <div>
+                  <h3 className='text-xs font-medium'>Add:</h3>
+                  {fwall ? null : (
+                    <Button
+                      variant='outline'
+                      size='sm'
+                      onClick={(e) => toggleOptions(e)}
+                      className='flex items-center gap-2 text-xs'
+                      disabled={isLoading}
+                    >
+                      <ImagePlus className='h-4 w-4' />
+                      image
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
             <Button

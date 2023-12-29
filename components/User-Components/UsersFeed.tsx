@@ -103,14 +103,28 @@ const UsersFeed = async () => {
                   'relative h-full overflow-hidden flex flex-col justify-between group'
                 )}
               >
-                {event?.images.map((image) => (
-                  image.url && (
-                    <RecentImage
-                      key={image.id}
-                      image={image.url}
-                    />
-                  )
-                ))}
+                {event?.images && event.images.length > 0 ? (
+                  <>
+                    {event?.images.map((image) => (
+                      image.url && (
+                        <RecentImage
+                          key={image.id}
+                          image={image.url}
+                        />
+                      )
+                    ))}
+                  </>
+                ) : (
+                  <Image
+                    src='https://cmsskornpjjalwhyjtgg.supabase.co/storage/v1/object/public/images/carbon_no-image.png'
+                    alt='post image'
+                    width={120}
+                    height={120}
+                    objectFit="cover"
+                    objectPosition='center'
+                    className='absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] group-hover:scale-[1.03] transition-transform duration-300 ease-in-out'
+                  />
+                )}
                 <CardHeader className='z-10'>
                   <CardTitle className='text-xl'>Recent Event</CardTitle>
                 </CardHeader>
@@ -126,14 +140,28 @@ const UsersFeed = async () => {
                   'relative h-full overflow-hidden flex flex-col justify-between group'
                 )}
               >
-                {announcement?.images.map((image) => (
-                  image.url && (
-                    <RecentImage
-                      key={image.id}
-                      image={image.url}
-                    />
-                  )
-                ))}
+                {announcement?.images && announcement.images.length > 0 ? (
+                  <>
+                    {announcement?.images.map((image) => (
+                      image.url && (
+                        <RecentImage
+                          key={image.id}
+                          image={image.url}
+                        />
+                      )
+                    ))}
+                  </>
+                ) : (
+                  <Image
+                    src='https://cmsskornpjjalwhyjtgg.supabase.co/storage/v1/object/public/images/carbon_no-image.png'
+                    alt='post image'
+                    width={80}
+                    height={80}
+                    objectFit="cover"
+                    objectPosition='center'
+                    className='absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] group-hover:scale-[1.03] transition-transform duration-300 ease-in-out'
+                  />
+                )}
                 <CardHeader className='z-10'>
                   <CardTitle className='text-xl'>Recent Announcement</CardTitle>
                 </CardHeader>

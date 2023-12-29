@@ -21,6 +21,8 @@ const PostSchema = z.object({
     .min(1),
   published: z
     .boolean(),
+  status: z
+    .string(),
   anonymous: z
     .boolean(),
   venue: z
@@ -29,16 +31,23 @@ const PostSchema = z.object({
   location: z
     .string()
     .optional(),
-  date: z
+  dateFrom: z
     .string()
     .optional(),
+  dateTo: z
+    .string()
+    .nullable().or(z.undefined()),
   deleted: z
     .boolean(),
   clicks: z
     .number(),
   going: z
-  .boolean()
-  .nullable().or(z.undefined()),
+    .boolean()
+    .nullable().or(z.undefined()),
+  timeFrom: z
+    .string(),
+  timeTo: z
+    .string()
 })
 
 export async function GET(req: Request, context: contextProps) {
@@ -68,7 +77,7 @@ export async function PATCH(req: Request, { params }: { params: { postId: string
 
     const postIdInt = parseInt(params.postId, 10);
     const body = await req.json()
-    const { title, content, category, published, anonymous, venue, location, date, deleted, clicks, going} = PostSchema.parse(body);
+    const { title, content, category, published, status, anonymous, venue, location, dateFrom, dateTo, deleted, clicks, going, timeFrom, timeTo } = PostSchema.parse(body);
 
     const updatedClicks = clicks + 1;
 
@@ -92,14 +101,26 @@ export async function PATCH(req: Request, { params }: { params: { postId: string
     if (published !== undefined) {
       updateData.published = published;
     }
+    if (status !== undefined) {
+      updateData.status = status;
+    }
     if (anonymous !== undefined) {
       updateData.anonymous = anonymous;
     }
     if (venue !== undefined) {
       updateData.venue = venue;
     }
-    if (date !== undefined) {
-      updateData.date = date;
+    if (dateFrom !== undefined) {
+      updateData.dateFrom = dateFrom;
+    }
+    if (dateTo !== undefined) {
+      updateData.dateTo = dateTo;
+    }
+    if (timeFrom !== undefined) {
+      updateData.timeFrom = timeFrom;
+    }
+    if (timeTo !== undefined) {
+      updateData.timeTo = timeTo;
     }
     if (location !== undefined) {
       updateData.location = location;

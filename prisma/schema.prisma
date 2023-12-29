@@ -41,7 +41,10 @@ model Post {
   content             String?               @db.Text
   venue               String?               @db.VarChar(255)
   location            String?               @db.VarChar(255)
-  date                String?               @db.VarChar(255)
+  dateFrom            DateTime?
+  dateTo              DateTime?
+  timeFrom            String                @db.VarChar(255)
+  timeTo              String                @db.VarChar(255)
   published           Boolean               @default(false)
   status              String                @default("upcoming")
   deleted             Boolean               @default(false)

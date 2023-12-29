@@ -7,7 +7,10 @@ export type Posts = {
   deleted: boolean
   venue: string | null
   location: string | null
-  date: string | null
+  dateFrom: Date 
+  dateTo: Date 
+  timeTo: string
+  timeFrom: string
   clicks: number
   images: {
     id: number

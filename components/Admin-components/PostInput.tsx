@@ -72,7 +72,7 @@ const PostInput: React.FC<PostInput> = ({ username, authorId, joined, tag }) => 
           <PlusCircle className='h-8 w-8' />
         </DialogTrigger>
         <DialogContent className={cn(
-          toggleImageInput ? 'sm:max-w-[900px]' : 'sm:max-w-[540px]',
+          toggleImageInput ? 'max-w-[1000px]' : 'max-w-[600px]',
           'duration-300'
         )}>
           <DialogHeader>
