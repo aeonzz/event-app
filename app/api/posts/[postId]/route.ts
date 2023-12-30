@@ -79,7 +79,6 @@ export async function PATCH(req: Request, { params }: { params: { postId: string
     const body = await req.json()
     const { title, content, category, published, status, anonymous, venue, location, dateFrom, dateTo, deleted, clicks, going, timeFrom, timeTo } = PostSchema.parse(body);
 
-    const updatedClicks = clicks + 1;
 
     const tag = await prisma.tag.findUnique({
       where: {
@@ -129,7 +128,7 @@ export async function PATCH(req: Request, { params }: { params: { postId: string
       updateData.deleted = deleted;
     }
     if (clicks !== undefined) {
-      updateData.clicks = updatedClicks;
+      updateData.clicks = clicks;
     }
     if (going !== undefined) {
       updateData.going = going;

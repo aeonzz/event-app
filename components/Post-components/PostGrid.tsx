@@ -4,7 +4,7 @@ import { Posts } from '@/types/posts';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Session } from 'next-auth';
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import NoPostMessage from '../NoPostMessage';
 import { Card, CardHeader } from '../ui/card';
 import Image from 'next/image';
@@ -12,6 +12,7 @@ import ProfileHover from '../profileHover';
 import PostGridCard from './post-grid-card';
 import PostGridLoading from '../Loading/PostGridLoading';
 import FetchDataError from '../FetchDataError';
+import { useMutationSuccess } from '../Context/mutateContext';
 
 interface PostsProps {
   tag?: string | null
@@ -21,8 +22,9 @@ interface PostsProps {
 
 const PostGrid: FC<PostsProps> = ({ tag, fw, published }) => {
 
+  const { isMutate, setIsMutate } = useMutationSuccess()
 
-  const { data: dataPosts, status } = useQuery<Posts[]>({
+  const { data: dataPosts, status , refetch } = useQuery<Posts[]>({
     queryKey: ['posts'],
     queryFn: async () => {
       const response = await axios.get('/api/posts');
@@ -30,13 +32,27 @@ const PostGrid: FC<PostsProps> = ({ tag, fw, published }) => {
     },
   });
 
+  const handleRefetch = () => {
+    refetch();
+    setIsMutate(false);
+  };
+
+
+  useEffect(() => {
+    if (isMutate) {
+      handleRefetch();
+    }
+  }, [isMutate, refetch, setIsMutate]);
+
   const filteredPosts = dataPosts?.filter(
     post => post.published === published && post.Tag.name === tag
   );
 
+  const allPostsDeleted = filteredPosts?.every(post => post.deleted)
+
   return (
     <div>
-      {filteredPosts?.length === 0 ? (
+      {filteredPosts?.length === 0 || allPostsDeleted ? (
         <NoPostMessage />
       ) : (
         <>

@@ -224,6 +224,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
           });
         })
       );
+      setIsMutate(true)
       onMutationSuccess && onMutationSuccess();
       router.refresh()
       toast.success("Update Successful", {
@@ -528,7 +529,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                   </DialogContent>
                 </Dialog>
               </div> */}
-              <div className='w-full flex pb-2 items-center gap-3 rounded-sm mt-5'>
+              <div className='w-full flex items-center gap-3 mt-5'>
                 {fwall || category === 'announcement' ? null : (
                   <>
                     <div className='flex-1'>
@@ -582,8 +583,8 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                     />
                   </>
                 )}
-                <div>
-                  <h3 className='text-xs font-medium'>Add:</h3>
+                <div className="pt-1">
+                  <h3 className='text-xs font-medium mb-1'>Add:</h3>
                   {fwall ? null : (
                     <Button
                       variant='outline'
@@ -593,7 +594,6 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                       disabled={isLoading}
                     >
                       <ImagePlus className='h-4 w-4' />
-                      image
                     </Button>
                   )}
                 </div>

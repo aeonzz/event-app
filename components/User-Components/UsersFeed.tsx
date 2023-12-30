@@ -32,6 +32,7 @@ import { ChevronRightCircle } from 'lucide-react';
 import { Button, buttonVariants } from '../ui/button';
 import { cn } from '@/lib/utils';
 import RecentImage from './recent-image';
+import PostStatus from '../Post-components/post-status';
 
 
 async function getRecentEventPost() {
@@ -103,6 +104,7 @@ const UsersFeed = async () => {
                   'relative h-full overflow-hidden flex flex-col justify-between group'
                 )}
               >
+                
                 {event?.images && event.images.length > 0 ? (
                   <>
                     {event?.images.map((image) => (

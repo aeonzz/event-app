@@ -46,7 +46,9 @@ export function DatePickerWithRange({
 
   React.useEffect(() => {
     if (status === 'success') {
-      const newDisabledDays = dataPosts.map((post) => {
+      const upcomingPosts = dataPosts.filter((post) => post.status === 'upcoming' || post.status === 'ongoing')
+
+      const newDisabledDays = upcomingPosts.map((post) => {
         if (post.dateFrom && post.dateTo) {
           return {
             from: new Date(post.dateFrom as Date),
@@ -162,6 +164,20 @@ export function DatePickerWithRange({
               >
                 Close
               </Button>
+              {showDate && (
+                date?.from && (
+                  <>
+                    <Button
+                      size='sm'
+                      onClick={(e) => handleDateSelect({ from: undefined, to: undefined }, e)}
+                      variant={'destructive'}
+                      className="text-xs"
+                    >
+                      Clear
+                    </Button>
+                  </>
+                )
+              )}
               <Button
                 size='sm'
                 className="text-xs"
@@ -173,20 +189,6 @@ export function DatePickerWithRange({
           </div>
         </PopoverContent>
       </Popover>
-      {showDate && (
-        date?.from && (
-          <>
-            <Button
-              size='sm'
-              onClick={(e) => handleDateSelect({ from: undefined, to: undefined }, e)}
-              variant={'destructive'}
-              className="text-xs"
-            >
-              Clear
-            </Button>
-          </>
-        )
-      )}
     </div>
   )
 }

@@ -30,11 +30,11 @@ const PendingPostCard: FC<PendingPostCardProps> = ({ post }) => {
     dateTo
       ? dateFrom
         ? `from ${format(dateFrom, 'PP')} to ${format(dateTo, 'PP')}` +
-        (post.timeFrom ? `, ${convertTimeTo12HourFormat(post.timeFrom)}` : '')
+        (post.timeTo ? `, ${convertTimeTo12HourFormat(post.timeFrom)} - ${convertTimeTo12HourFormat(post.timeTo)}` : `, ${convertTimeTo12HourFormat(post.timeFrom)}`)
         : 'No date available'
       : dateFrom
         ? `On ${format(dateFrom, 'PP')}` +
-        (post.timeTo ? `, ${convertTimeTo12HourFormat(post.timeTo)}` : '')
+        (post.timeTo ? `, ${convertTimeTo12HourFormat(post.timeFrom)} - ${convertTimeTo12HourFormat(post.timeTo)}` : `, ${convertTimeTo12HourFormat(post.timeFrom)}`)
         : 'No date available';
 
   return (

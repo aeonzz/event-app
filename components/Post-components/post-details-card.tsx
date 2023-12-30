@@ -181,6 +181,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
           description: date,
         })
       }
+      router.refresh()
     },
   });
 
@@ -204,7 +205,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
     };
     deletePost(data)
   }
-
+  
   const handleGoingClick = () => {
     setIsLoading(true)
     const data: Interactions = {
@@ -235,6 +236,26 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
             </p>
             <Dot />
             <Badge className='w-fit' variant='secondary'>{post.Tag.name}</Badge>
+            {post.Tag.name === 'event' && (
+              <Badge
+                className={cn(
+                  post.status === 'eventDay' && 'text-[#FFA500]',
+                  post.status === 'upcoming' && 'text-[#3498db]',
+                  post.status === 'ongoing' && 'text-[#2ecc71] animate-pulse',
+                  post.status === 'completed' && 'text-[#27ae60]',
+                  post.status === 'cancelled' && 'text-[#e74c3c]',
+                  post.status === 'postponed' && 'text-[#f39c12]',
+                  'w-fit ml-2'
+                )}
+                variant='secondary'>
+                {post.status === 'eventDay' && <p>Upcoming</p>}
+                {post.status === 'upcoming' && <p>Upcoming</p>}
+                {post.status === 'ongoing' && <p>Ongoing</p>}
+                {post.status === 'completed' && <p>Completed</p>}
+                {post.status === 'cancelled' && <p>Cancelled</p>}
+                {post.status === 'postponed' && <p>Postponed</p>}
+              </Badge>
+            )}
           </div>
         </div>
         <DropdownMenu open={actionDropdown} onOpenChange={setActionDropdown} modal={false}>
@@ -270,7 +291,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                     </DropdownMenuItem>
                   </DialogTrigger>
                   <DialogContent className={cn(
-                    toggleImageInput ? 'sm:max-w-[900px]' : 'sm:max-w-[540px]',
+                    toggleImageInput ? 'max-w-[1000px]' : 'max-w-[600px]',
                     'duration-300'
                   )}>
                     <DialogHeader>
@@ -424,7 +445,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                     goingButtonState ? 'text-primary hover:text-primary' : 'text-muted-foreground',
                     'relative flex-1 transition-colors'
                   )}
-
+                    disabled={post.status !== 'upcoming'}
                 >
                   <ThumbsUp
                     className={cn(

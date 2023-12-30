@@ -33,6 +33,7 @@ async function getPost(id: number): Promise<Posts | null> {
       dateTo: true,
       timeFrom: true,
       timeTo: true,
+      status: true,
       deleted: true,
       clicks: true,
       anonymous: true,
