@@ -3,14 +3,17 @@ import { Card } from '../ui/card';
 import Image from 'next/image';
 import gg from '@/public/peakpx (1).jpg'
 import { Skeleton } from '../ui/skeleton';
+import { FC } from 'react';
+import { Session } from 'next-auth';
+import { User } from '@prisma/client';
+import ActiveStatus from '../active-status';
 
 interface ProfileHeaderProps {
   letter: string;
-  username?: string;
-  email?: string;
+  user: User
 }
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ letter, username, email }) => {
+const ProfileHeader: FC<ProfileHeaderProps> = ({ user }) => {
   return (
     <>
       <Card className='relative h-44 w-full'>
@@ -27,9 +30,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ letter, username, email }
               <Skeleton />
             </AvatarFallback>
           </Avatar>
+          <ActiveStatus isActive={user.isActive} className='bottom-2.5 left-[30%]' />
           <div className='mb-5'>
-            <h2 className='text-4xl font-semibold'>{username}</h2>
-            <h4 className='text-muted-foreground text-xs'>{email}</h4>
+            <h2 className='text-4xl font-semibold'>{user.username}</h2>
+            <h4 className='text-muted-foreground text-sm'>{user.department}</h4>
+            <h4 className='text-muted-foreground text-xs'>{user.email}</h4>
           </div>
         </div>
       </Card>

@@ -16,11 +16,12 @@ import { CalendarDays } from 'lucide-react'
 interface ProfileHoverProps {
   username?: string | null
   date?: string | null
+  userId?: number | null
 }
 
 
-
-const ProfileHover: FC<ProfileHoverProps> = ({ username, date }) => {
+const ProfileHover: FC<ProfileHoverProps> = ({ username, date, userId }) => {
+  
   return (
     <HoverCard
       openDelay={200}
@@ -29,7 +30,7 @@ const ProfileHover: FC<ProfileHoverProps> = ({ username, date }) => {
       <HoverCardTrigger asChild>
         <Avatar className='h-9 w-9 dark:border relative group'>
           <Link
-            href='/user/profile'
+            href={`user/${userId}`}
             className='relative'
           >
             <div className='h-9 w-9 bg-stone-950 absolute z-10 opacity-0 group-hover:opacity-40 transition'></div>

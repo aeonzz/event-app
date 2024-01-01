@@ -15,8 +15,9 @@ import UsersFeed from "@/components/User-Components/UsersFeed";
 export default async function Home() {
 
   const session = await getServerSession(authOptions);
+  console.log(session)
   const published = true
-
+  console.log(session)
   return (
     <div className='w-[58%] h-[500px] mt-4 px-10 flex flex-col'>
       {/* {session?.user.role === 'ADMIN' || session?.user.role === 'SYSTEMADMIN' ?

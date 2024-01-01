@@ -26,7 +26,7 @@ import {
   DialogContent2
 } from '../ui/dialog'
 import { Button, buttonVariants } from '../ui/button'
-import { Bookmark, Calendar, Copy, Dot, Forward, Loader2, MapPin, MoreHorizontal, Pencil, Theater, ThumbsUp, Trash } from 'lucide-react'
+import { Ban, Bookmark, Calendar, Copy, Dot, Forward, Loader2, MapPin, MonitorPause, MoreHorizontal, Pencil, Theater, ThumbsUp, Trash } from 'lucide-react'
 import { Separator } from '@radix-ui/react-dropdown-menu'
 import TextArea from '../Admin-components/text-area'
 import { format, formatDistance, formatDistanceToNow } from 'date-fns';
@@ -76,6 +76,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
   const [saveButtonState, setsaveButtonState] = useState(false)
   const [showFullContent, setShowFullContent] = useState(false);
   const [openCopyToClipboard, setOpenCopyToClipboard] = useState(false)
+  const [status, setStatus] = useState(post.status)
   const [open, setOpen] = useState(false)
   const [toggleImageInput, setToggleImageInput] = useState(false)
   const [attendModal, setAttendModal] = useState(false)
@@ -138,7 +139,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
   }
 
 
-  const { mutate: deletePost, data } = useMutation({
+  const { mutate: deletePost } = useMutation({
     mutationFn: async (deletePost: FormInputPost) => {
       return axios.patch(`/api/posts/${post?.id}`, deletePost);
     },
@@ -165,6 +166,28 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
           description: "Announcement successfully deleted.",
         })
       }
+    }
+  })
+
+  const { mutate: updateStatus } = useMutation({
+    mutationFn: async (updateStatus: FormInputPost) => {
+      return axios.patch(`/api/posts/${post?.id}`, updateStatus);
+    },
+    onError: (error) => {
+      setIsLoading(false)
+      toast.error("Uh oh! Something went wrong.", {
+        description: "Please Try again later.",
+        action: {
+          label: "Try again",
+          onClick: () => handleStatusUpdate(),
+        },
+      })
+    },
+    onSuccess: () => {
+      setIsLoading(false)
+      setAttendModal(false)
+      router.refresh()
+      toast("Event Postponed")
     }
   })
 
@@ -205,7 +228,28 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
     };
     deletePost(data)
   }
-  
+
+  function handleStatusUpdate() {
+    setIsLoading(true)
+    const data: FormInputPost = {
+      title: post.title,
+      content: post.content || undefined,
+      anonymous: post.anonymous,
+      venue: post.venue || undefined,
+      location: post.location || undefined,
+      published: post.published,
+      deleted: post.deleted,
+      category: post.Tag.name,
+      authorId: post.author.id,
+      clicks: post.clicks,
+      status: status,
+      going: going || undefined,
+      timeFrom: post.timeFrom,
+      timeTo: post.timeTo
+    };
+    updateStatus(data)
+  }
+
   const handleGoingClick = () => {
     setIsLoading(true)
     const data: Interactions = {
@@ -281,13 +325,17 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
             {session!.user.email === post.author.email && (
               <>
                 <Dialog open={open} onOpenChange={setOpen}>
-                  <DialogTrigger className='w-full'>
+                  <DialogTrigger
+                    className='w-full'
+                    disabled={post.status !== 'upcoming' && post.status !== 'postponed'}
+                  >
                     <DropdownMenuItem
                       className='text-xs'
                       onSelect={(e) => e.preventDefault()}
+                      disabled={post.status !== 'upcoming' && post.status !== 'postponed'}
                     >
                       <Pencil className="mr-2 h-4 w-4" />
-                      Edit
+                      {post.status === 'postponed' ? <p>Reschedule</p> : <p>Edit</p>}
                     </DropdownMenuItem>
                   </DialogTrigger>
                   <DialogContent className={cn(
@@ -435,7 +483,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
         <h3 className='text-muted-foreground text-xs mt-1 text-right'>{post.clicks} Views</h3>
         <Separator className='my-2' />
         <div className='w-full flex p-1'>
-          {post.Tag.name === 'event' && (
+          {post.Tag.name === 'event' && post.author.email !== session?.user.email ? (
             <Dialog open={attendModal} onOpenChange={setAttendModal}>
               <DialogTrigger asChild>
                 <Button
@@ -445,7 +493,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                     goingButtonState ? 'text-primary hover:text-primary' : 'text-muted-foreground',
                     'relative flex-1 transition-colors'
                   )}
-                    disabled={post.status !== 'upcoming'}
+                  disabled={post.status !== 'upcoming'}
                 >
                   <ThumbsUp
                     className={cn(
@@ -498,24 +546,104 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
+          ) : (
+            <Dialog open={attendModal} onOpenChange={setAttendModal}>
+              <DialogTrigger asChild>
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  className='relative flex-1 transition-colors text-muted-foreground'
+                  onClick={() => setStatus('postponed')}
+                  disabled={post.status === 'postponed' || post.status === 'cancelled'}
+                >
+                  <MonitorPause className='absolute left-[25%] h-4 w-4 transition-colors stroke-muted-foreground' />
+                  {post.status === 'postponed' ? <p>Postponed</p> : <p>Postpone</p>}
+                </Button>
+              </DialogTrigger>
+              <DialogContent forceMount={true}>
+                <DialogHeader>
+                  <DialogTitle className="text-xl font-semibold" >Confirmation</DialogTitle>
+                  <DialogDescription>
+                    <p>Are you certain you wish to postpone this event? This action is irreversible.</p>
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline">
+                      Close
+                    </Button>
+                  </DialogClose>
+                  <Button
+                    onClick={handleStatusUpdate}
+                    disabled={isLoading}
+                  >
+                    {isLoading && (
+                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                    )}
+                    Confirm
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           )}
-          <Button
-            variant='ghost'
-            size='sm'
-            onClick={() => setsaveButtonState((prev) => !prev)}
-            className={cn(
-              saveButtonState ? 'text-primary hover:text-primary' : 'text-muted-foreground',
-              'relative flex-1 transition-colors'
-            )}
-          >
-            <Bookmark
+          {post.Tag.name === 'event' && post.author.email !== session?.user.email ? (
+            <Button
+              variant='ghost'
+              size='sm'
+              onClick={() => setsaveButtonState((prev) => !prev)}
               className={cn(
-                saveButtonState ? 'fill-primary stroke-primary' : 'stroke-muted-foreground',
-                'absolute left-[29%] h-4 w-4 transition-colors'
+                saveButtonState ? 'text-primary hover:text-primary' : 'text-muted-foreground',
+                'relative flex-1 transition-colors'
               )}
-            />
-            {saveButtonState ? <p>Saved</p> : <p>Save</p>}
-          </Button>
+            >
+              <Bookmark
+                className={cn(
+                  saveButtonState ? 'fill-primary stroke-primary' : 'stroke-muted-foreground',
+                  'absolute left-[29%] h-4 w-4 transition-colors'
+                )}
+              />
+              {saveButtonState ? <p>Saved</p> : <p>Save</p>}
+            </Button>
+          ) : (
+            <Dialog open={attendModal} onOpenChange={setAttendModal}>
+              <DialogTrigger asChild>
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  className='relative flex-1 transition-colors text-muted-foreground'
+                  onClick={() => setStatus('cancelled')}
+                  disabled={post.status === 'cancelled'}
+                >
+                  <Ban className='absolute left-[29%] h-4 w-4 transition-colors stroke-muted-foreground' />
+                  {post.status === 'cancelled' ? <p>Cancelled</p> : <p>Cancel</p>}
+                </Button>
+              </DialogTrigger>
+              <DialogContent forceMount={true}>
+                <DialogHeader>
+                  <DialogTitle className="text-xl font-semibold" >Confirmation</DialogTitle>
+                  <DialogDescription>
+                    <p>Are you certain you wish to postpone this event? This action is irreversible.</p>
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline">
+                      Close
+                    </Button>
+                  </DialogClose>
+                  <Button
+                    onClick={handleStatusUpdate}
+                    disabled={isLoading}
+                  >
+                    {isLoading && (
+                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                    )}
+                    Confirm
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
           <Dialog open={openCopyToClipboard} onOpenChange={setOpenCopyToClipboard}>
             <DialogTrigger asChild>
               <Button

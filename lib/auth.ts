@@ -44,6 +44,17 @@ export const authOptions: NextAuthOptions = {
         if (existingUser.status === "banned") {
           throw new Error("Your account has been banned.");
         }
+
+        const isActive = true;
+        
+        const updatedUser = await prisma.user.update({
+          where: { id: existingUser.id },
+          data: { isActive: true },
+        });
+
+        if (!updatedUser) {
+          throw new Error("Failed to update user's isActive status.");
+        }
         
         // const passwordMatched = await compare(credentials.password, existingUser.password);
 
@@ -61,7 +72,8 @@ export const authOptions: NextAuthOptions = {
           email: existingUser.email,
           role: existingUser.role,
           createdAt: existingUser.createdAt,
-          department: existingUser.department
+          department: existingUser.department,
+          isActive: isActive
         }
       }
     })
@@ -77,7 +89,8 @@ export const authOptions: NextAuthOptions = {
           username: user.username,
           role: user.role,
           createdAt: user.createdAt,
-          department: user.department
+          department: user.department,
+          isActive: user.isActive
         }
       }
       return token
@@ -91,7 +104,8 @@ export const authOptions: NextAuthOptions = {
           username: token.username,
           role: token.role,
           createdAt: token.createdAt,
-          department: token.department
+          department: token.department,
+          isActive: token.isActive
         }
       }
     },

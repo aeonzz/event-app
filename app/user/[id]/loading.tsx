@@ -2,7 +2,9 @@ import React from 'react'
 
 const loading = () => {
   return (
-    <div>loading</div>
+    <div className='w-[79.1%] mt-4 min-h-[400px]'>
+      
+    </div>
   )
 }
 

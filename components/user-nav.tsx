@@ -46,14 +46,14 @@ export default function UserNav() {
     initialLetter = session.user.username.charAt(0).toUpperCase();
   }
 
-  const { username, email, department } = session?.user || {}
+  const { username, email, department, id } = session?.user || {}
 
   if (status === 'loading') {
     return <ProfileLoading />
   }
 
   return (
-    <div className='flex gap-3 items-center'>
+    <div className='flex gap-3 items-center fixed bottom-[7%]'>
       {/* <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className='py-8 w-fit justify-start gap-3 rounded-xl hover:bg-transparent group'>
@@ -121,9 +121,9 @@ export default function UserNav() {
             <ChevronRight className='group-hover:ml-1 transition-all' />
           </Button>
         </HoverCardTrigger>
-        <HoverCardContent className='w-[200px] p-1' align='end'>
+        <HoverCardContent className='w-[180px] p-1' align='center'>
           <Link
-            href='/user/profile'
+            href={`/user/${id}`}
           >
             <div className='relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground hover:bg-accent/50'>
               <User className="mr-2 h-4 w-4" />
@@ -145,7 +145,7 @@ export default function UserNav() {
               >
                 <div className='relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground hover:bg-accent/50'>
                   <Loader className="mr-2 h-4 w-4" />
-                  Pending
+                  Pending posts
                 </div>
               </Link>
             </>

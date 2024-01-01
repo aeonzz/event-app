@@ -62,6 +62,7 @@ const PostInput: React.FC<PostInput> = ({ username, authorId, joined, tag }) => 
       <ProfileHover
         username={username}
         date={joined}
+        userId={authorId}
       />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger className='w-full flex items-center gap-3'>

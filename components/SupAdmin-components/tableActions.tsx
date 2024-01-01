@@ -192,7 +192,7 @@ const TableActions: FC<TableActionProps> = ({ row }) => {
 
   return (
     <>
-      <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="sm">
             <MoreHorizontal />

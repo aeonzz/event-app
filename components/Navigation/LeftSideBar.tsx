@@ -50,10 +50,10 @@ const NavMenu = () => {
         pathname === '/freedom-wall' ||
         pathname === '/notifications' || 
         pathname === '/pending-post' ||
+        pathname.startsWith('/user')  || 
         pathname.startsWith('/post/') ? (
-        <aside className='sticky top-20 h-fit w-60 flex flex-col gap-4 items-start'>
-          <UserNav />
-          <div className='w-full h-auto flex flex-col items-center gap-4'>
+        <aside className='sticky top-20 h-fit w-60 flex flex-col gap-4 items-start pt-7'>
+          <div className='w-full h-auto flex flex-col items-start gap-4'>
             {sidebarNav.map((item, index) => (
               <Link
                 key={index}
@@ -63,7 +63,7 @@ const NavMenu = () => {
                   pathname === item.link
                     ? 'font-semibold text-primary hover:text-primary'
                     : 'font-light',
-                  'w-full flex justify-start text-base py-6 group'
+                  'w-[90%] flex justify-start text-base py-6 group'
                 )}
               >
                 {pathname === item.link ? (
@@ -86,6 +86,7 @@ const NavMenu = () => {
                 {item.title}
               </Link>
             ))}
+            <UserNav />
           </div>
           {/* <Separator className='ml-4' /> */}
           {/* <div className='w-full h-auto flex flex-col gap-4'>

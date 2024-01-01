@@ -16,7 +16,9 @@ model User {
   name                String?
   username            String                @unique
   department          String?
+  bio                 String?               @db.Text
   status              String                @default("active")
+  isActive            Boolean               @default(false)
   deleted             Boolean               @default(false)
   password            String
   role                String                @default("USER")

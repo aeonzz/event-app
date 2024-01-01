@@ -594,6 +594,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                       disabled={isLoading}
                     >
                       <ImagePlus className='h-4 w-4' />
+                      {category !== 'event' && <p>Image</p>}
                     </Button>
                   )}
                 </div>
@@ -611,7 +612,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                 </>
               ) : (
                 <>
-                  {editData ? <p>Update</p> : <p>Post</p>}
+                  {editData ? <p>Confirm</p> : <p>Post</p>}
                 </>
               )}
             </Button>

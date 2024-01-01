@@ -39,34 +39,34 @@ const PendingPostCard: FC<PendingPostCardProps> = ({ post }) => {
 
   return (
     <Card className='w-full h-40 flex py-3 px-4 group'>
-      <Card className='h-full w-32 flex items-center justify-center overflow-hidden'>
-        {post.images && post.images.length > 0 ? (
-          <Image
-            src={post.images[0].url}
-            alt={`${post.Tag.name} image`}
-            width={400}
-            height={400}
-            objectFit="cover"
-            objectPosition='center'
-            className='group-hover:scale-[1.03] transition-transform duration-300 ease-in-out'
-          />
-        ) : (
-          <Image
-            src='https://cmsskornpjjalwhyjtgg.supabase.co/storage/v1/object/public/images/carbon_no-image.png'
-            alt={`${post.Tag.name} image`}
-            width={32}
-            height={32}
-            objectFit="cover"
-            objectPosition='center'
-            className='group-hover:scale-[1.03] transition-transform duration-300 ease-in-out'
-          />
-        )}
-      </Card>
       <Link
         href={`/post/${post.id}`}
-        key={post.id}
-        className='flex-1 px-3'
       >
+        <Card className='h-full w-32 flex items-center justify-center overflow-hidden'>
+          {post.images && post.images.length > 0 ? (
+            <Image
+              src={post.images[0].url}
+              alt={`${post.Tag.name} image`}
+              width={400}
+              height={400}
+              objectFit="cover"
+              objectPosition='center'
+              className='group-hover:scale-[1.03] transition-transform duration-300 ease-in-out'
+            />
+          ) : (
+            <Image
+              src='https://cmsskornpjjalwhyjtgg.supabase.co/storage/v1/object/public/images/carbon_no-image.png'
+              alt={`${post.Tag.name} image`}
+              width={32}
+              height={32}
+              objectFit="cover"
+              objectPosition='center'
+              className='group-hover:scale-[1.03] transition-transform duration-300 ease-in-out'
+            />
+          )}
+        </Card>
+      </Link>
+      <div className='flex-1 px-3'>
         <div className='flex items-center gap-2'>
           <ProfileHover
             username={post.author.username}
@@ -101,7 +101,7 @@ const PendingPostCard: FC<PendingPostCardProps> = ({ post }) => {
           <p>Description:</p>
           <p className='whitespace-pre-wrap break-words text-xs text-muted-foreground'>{post.content}</p>
         </div>
-      </Link>
+      </div>
       <div className='w-fit flex flex-col items-center justify-center gap-2'>
         <PostReview
           post={post}

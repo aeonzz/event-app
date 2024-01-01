@@ -46,7 +46,7 @@ export function DatePickerWithRange({
 
   React.useEffect(() => {
     if (status === 'success') {
-      const upcomingPosts = dataPosts.filter((post) => post.status === 'upcoming' || post.status === 'ongoing')
+      const upcomingPosts = dataPosts.filter((post) => (post.status === 'upcoming' || post.status === 'ongoing') && !post.deleted)
 
       const newDisabledDays = upcomingPosts.map((post) => {
         if (post.dateFrom && post.dateTo) {

@@ -1,4 +1,6 @@
+import { authOptions } from "@/lib/auth"
 import prisma from "@/lib/db"
+import { getServerSession } from "next-auth"
 import { NextResponse } from "next/server"
 import * as z from "zod"
 
@@ -75,6 +77,9 @@ export async function GET(req: Request, context: contextProps) {
 export async function PATCH(req: Request, { params }: { params: { postId: string } }) {
   try {
 
+    const session = await getServerSession(authOptions);
+
+    const userIdInt = parseInt(session!.user.id, 10);
     const postIdInt = parseInt(params.postId, 10);
     const body = await req.json()
     const { title, content, category, published, status, anonymous, venue, location, dateFrom, dateTo, deleted, clicks, going, timeFrom, timeTo } = PostSchema.parse(body);
@@ -95,7 +100,11 @@ export async function PATCH(req: Request, { params }: { params: { postId: string
       updateData.content = content;
     }
     if (category !== undefined) {
-      updateData.tagTagId = tag?.tagId;
+      updateData.Tag = {
+        connect: {
+          tagId: tag?.tagId,
+        },
+      };
     }
     if (published !== undefined) {
       updateData.published = published;
@@ -131,8 +140,21 @@ export async function PATCH(req: Request, { params }: { params: { postId: string
       updateData.clicks = clicks;
     }
     if (going !== undefined) {
-      updateData.going = going;
+      updateData.UserPostInteraction = {
+        update: {
+          data: {
+            going: going,
+          },
+          where: {
+            userId_postId: {
+              userId: userIdInt,
+              postId: postIdInt,
+            },
+          },
+        },
+      };
     }
+    
 
     const updatePost = await prisma.post.update({
       where: { id: postIdInt },
