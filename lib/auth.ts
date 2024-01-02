@@ -73,7 +73,8 @@ export const authOptions: NextAuthOptions = {
           role: existingUser.role,
           createdAt: existingUser.createdAt,
           department: existingUser.department,
-          isActive: isActive
+          isActive: isActive,
+          imageUrl: existingUser.imageUrl
         }
       }
     })
@@ -90,7 +91,8 @@ export const authOptions: NextAuthOptions = {
           role: user.role,
           createdAt: user.createdAt,
           department: user.department,
-          isActive: user.isActive
+          isActive: user.isActive,
+          imageUrl: user.imageUrl
         }
       }
       return token
@@ -105,7 +107,8 @@ export const authOptions: NextAuthOptions = {
           role: token.role,
           createdAt: token.createdAt,
           department: token.department,
-          isActive: token.isActive
+          isActive: token.isActive,
+          imageUrl: token.imageUrl
         }
       }
     },

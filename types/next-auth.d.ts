@@ -9,6 +9,7 @@ declare module "next-auth" {
     createdAt: Date
     department: string | null
     isActive: boolean
+    imageUrl: string | null
   }
 
   interface Session {
@@ -18,6 +19,7 @@ declare module "next-auth" {
       createdAt: Date
       department: string
       isActive: boolean
+      imageUrl: string | undefined
     }
     token: {
       username: string
@@ -25,6 +27,7 @@ declare module "next-auth" {
       createdAt: Date
       department: string
       isActive: boolean
+      imageUrl: string | undefined
     }
   }
 }

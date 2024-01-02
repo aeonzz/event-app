@@ -71,6 +71,7 @@ const PendingPostCard: FC<PendingPostCardProps> = ({ post }) => {
           <ProfileHover
             username={post.author.username}
             date={format(authorCreatedAt, 'PP')}
+            imageUrl={post.author.imageUrl}
           />
           <div className='flex flex-col'>
             <Link

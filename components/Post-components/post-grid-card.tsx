@@ -185,7 +185,7 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
                   'w-fit'
                 )}
                 variant='secondary'>
-                {post.status === 'eventDay' && <p>Upcoming</p>}
+                {post.status === 'eventDay' && <p>Today</p>}
                 {post.status === 'upcoming' && <p>Upcoming</p>}
                 {post.status === 'ongoing' && <p>Ongoing</p>}
                 {post.status === 'completed' && <p>Completed</p>}
@@ -231,6 +231,7 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
                 username={post.author.username}
                 date={format(authorCreatedAt, 'PP')}
                 userId={post.author.id}
+                imageUrl={post.author.imageUrl}
               />
               <div className='flex flex-col'>
                 <Link

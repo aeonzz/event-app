@@ -17,6 +17,7 @@ const userSchema = z
     deleted: z.boolean(),
     bio: z.string().optional().nullable(),
     isActive: z.boolean(),
+    imageUrl: z.string(),
   })
 
 export async function DELETE(req: Request, { params }: { params: { userId: string } }) {
@@ -40,7 +41,7 @@ export async function PATCH(req: Request, { params }: { params: { userId: string
 
     const userIdInt = parseInt(params.userId, 10);
     const body = await req.json()
-    const { email, username, password, role, department, status, deleted, bio, isActive } = userSchema.parse(body);
+    const { email, username, password, role, department, status, deleted, bio, isActive, imageUrl } = userSchema.parse(body);
 
     const updateData: Record<string, unknown> = {};
     if (username !== undefined) {
@@ -60,6 +61,9 @@ export async function PATCH(req: Request, { params }: { params: { userId: string
     }
     if (isActive !== undefined) {
       updateData.isActive = isActive;
+    }
+    if (imageUrl !== undefined) {
+      updateData.imageUrl = imageUrl;
     }
     if (bio !== undefined) {
       updateData.bio = bio;

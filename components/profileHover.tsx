@@ -17,45 +17,58 @@ interface ProfileHoverProps {
   username?: string | null
   date?: string | null
   userId?: number | null
+  imageUrl?: string | null
 }
 
 
-const ProfileHover: FC<ProfileHoverProps> = ({ username, date, userId }) => {
-  
+const ProfileHover: FC<ProfileHoverProps> = ({ username, date, userId, imageUrl }) => {
+
+  const profile = imageUrl ? imageUrl : undefined
+
+  let initialLetter = ''
+  if (username) {
+    initialLetter = username.charAt(0).toUpperCase();
+  }
+
   return (
     <HoverCard
       openDelay={200}
       closeDelay={100}
     >
       <HoverCardTrigger asChild>
-        <Avatar className='h-9 w-9 dark:border relative group'>
+        <Avatar className='h-9 w-9 dark:border relative group bg-stone-900'>
           <Link
             href={`user/${userId}`}
             className='relative'
           >
             <div className='h-9 w-9 bg-stone-950 absolute z-10 opacity-0 group-hover:opacity-40 transition'></div>
-            <AvatarImage src='https://christian-aeonzz.vercel.app/_next/image?url=%2Fpfp.jpg&w=640&q=75'
+            <AvatarImage
+              src={profile}
               className='object-cover'
             />
-            <AvatarFallback className='h-9 w-9'>
-              <Skeleton />
+            <AvatarFallback className='h-9 w-9' delayMs={3000}>
+              {initialLetter}
             </AvatarFallback>
           </Link>
         </Avatar>
       </HoverCardTrigger>
-      <HoverCardContent className="w-80 z-50">
+      <HoverCardContent className="w-80 z-50" hideWhenDetached={true}>
         <div className="flex justify-between space-x-4">
           <Avatar>
-            <AvatarImage src='https://christian-aeonzz.vercel.app/_next/image?url=%2Fpfp.jpg&w=640&q=75'
+            <AvatarImage
+              src={profile}
               className='object-cover'
             />
-            <AvatarFallback className='h-9 w-9 bg-stone-900'></AvatarFallback>
+            <AvatarFallback className='h-9 w-9 bg-stone-900' delayMs={3000}>{initialLetter}</AvatarFallback>
           </Avatar>
           <div className="space-y-1 w-full">
             <h4 className="text-sm font-semibold"></h4>
-            <p className="text-sm">
+            <Link
+              href={`user/${userId}`}
+              className=' underline-offset-4 hover:underline'
+            >
               {username}
-            </p>
+            </Link>
             <div className="flex items-center pt-2">
               <CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
               <span className="text-xs text-muted-foreground">

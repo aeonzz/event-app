@@ -70,7 +70,7 @@ const options = {
 
 const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationSuccess, }) => {
 
-  const { id, title, content, author, Tag, createdAt, anonymous, images, venue, location, published, deleted, clicks, UserPostInteraction, time } = post;
+  const { id, title, content, author, Tag, createdAt, anonymous, images, venue, location, published, deleted, clicks, UserPostInteraction, timeFrom, timeTo } = post;
   const { id: authorId, username, email } = author
   const { name, tagId } = Tag
   const going = UserPostInteraction.length > 0 ? UserPostInteraction[0].going : false;
@@ -186,7 +186,9 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
       authorId: authorId,
       clicks: 1,
       going: going || undefined,
-      time: time
+      timeFrom: timeFrom || undefined,
+      timeTo: timeTo || undefined,
+      status: 'fw'
     };
     deletePost(data)
   }
@@ -214,7 +216,9 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
       authorId: authorId,
       clicks: click,
       going: going || undefined,
-      time: time
+      timeFrom: timeFrom || undefined,
+      timeTo: timeTo || undefined,
+      status: 'fw'
     };
     updateClicks(data)
   }

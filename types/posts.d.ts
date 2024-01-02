@@ -23,6 +23,7 @@ export type Posts = {
     email: string
     username: string
     createdAt: Date
+    imageUrl: string | null
   }
   Tag: {
     tagId: number

@@ -76,7 +76,7 @@ import { Card } from "../ui/card"
 import {
   MultiFileDropzone,
   type FileState,
-} from '@/components/ui/multi-image-dropdown';
+} from '@/components/ui/multi-image-dropzone';
 import { useEdgeStore } from '@/lib/edgestore';
 import { cn } from "@/lib/utils"
 import { ScrollArea } from "../ui/scroll-area"
@@ -94,6 +94,7 @@ interface TextAreaProps {
   authorId: number | undefined | null
   fwall: boolean
   toggleImageInput: boolean
+  imageUrl: string | undefined
   editData?: Posts
   updateOpenState: (newOpenState: boolean) => void;
   onChangeOptionState: (newOptionState: boolean) => void;
@@ -125,7 +126,7 @@ const PostSchema = z.object({
     .string(),
 })
 
-const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onChangeOptionState, fwall, tag, toggleImageInput, editData, onMutationSuccess, onChangeDropdownState }) => {
+const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onChangeOptionState, fwall, tag, toggleImageInput, editData, onMutationSuccess, onChangeDropdownState, imageUrl }) => {
 
   const router = useRouter()
   const deleted = false
@@ -344,7 +345,9 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                       <AvatarImage src='https://cmsskornpjjalwhyjtgg.supabase.co/storage/v1/object/public/images/EJFa13qXUAEzWpm.png'
                         className='object-cover'
                       />
-                      <AvatarFallback className='h-9 w-9 bg-stone-900'></AvatarFallback>
+                      <AvatarFallback className='h-9 w-9 bg-stone-900'>
+                        <Skeleton />
+                      </AvatarFallback>
                     </Avatar>
                   ) : (
                     <Avatar className='h-9 w-9 dark:border relative group'>
@@ -353,10 +356,12 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                         className='relative'
                       >
                         <div className='h-9 w-9 bg-stone-950 absolute z-10 opacity-0 group-hover:opacity-40 transition'></div>
-                        <AvatarImage src='https://christian-aeonzz.vercel.app/_next/image?url=%2Fpfp.jpg&w=640&q=75'
+                        <AvatarImage src={imageUrl}
                           className='object-cover'
                         />
-                        <AvatarFallback className='h-9 w-9 bg-stone-900'></AvatarFallback>
+                        <AvatarFallback className='h-9 w-9 bg-stone-900'>
+                          <Skeleton />
+                        </AvatarFallback>
                       </Link>
                     </Avatar>
                   )}

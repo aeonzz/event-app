@@ -23,6 +23,8 @@ import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
+import { User } from '@prisma/client'
+import { Session } from 'next-auth'
 
 const FormSchema = z.object({
   bio: z
@@ -33,7 +35,7 @@ const FormSchema = z.object({
     .optional(),
 })
 
-const About = ({ user }: { user: UpdateUser }) => {
+const About = ({ user, session }: { user: User, session: Session }) => {
 
   const router = useRouter()
   const [isEditing, setIsEditing] = useState(false)
@@ -54,9 +56,6 @@ const About = ({ user }: { user: UpdateUser }) => {
       setIsEditing(false)
       setIsLoading(false)
       router.refresh()
-      toast.success("Update Successful", {
-        description: "Post successfully updated.",
-      })
     }
   })
 
@@ -70,9 +69,9 @@ const About = ({ user }: { user: UpdateUser }) => {
   function onSubmit(data: z.infer<typeof FormSchema>) {
     const userData: UpdateUser = {
       bio: data.bio || null,
-      id: user.id,
       username: user.username,
       status: user.status,
+      imageUrl: user.imageUrl,
       deleted: user.deleted,
       email: user.email,
       password: user.password,
@@ -89,21 +88,23 @@ const About = ({ user }: { user: UpdateUser }) => {
     <Form {...form}>
       <div className={cn(
         isEditing ? 'hidden' : 'flex',
-        'flex-col gap-2.5 items-center overflow-hidden'
+        'flex-col h-28'
       )}>
-        <p className='font-light italic text-sm py-5 whitespace-pre-wrap break-words'>"{user.bio}"</p>
-        <Button
-          variant='ghost'
-          size='sm'
-          className='text-xs h-7 w-full'
-          onClick={() => setIsEditing(true)}
-        >
-          {user.bio === '' ? <p>Add bio</p> : <p>Edit bio</p>}
-        </Button>
+        <p className='font-light italic text-center text-sm h-16 whitespace-pre-wrap break-words'>&quot;{user.bio}&quot;</p>
+        {user.email === session.user.email && (
+          <Button
+            variant='ghost'
+            size='sm'
+            className='text-xs h-7 w-full'
+            onClick={() => setIsEditing(true)}
+          >
+            {user.bio === '' ? <p>Add bio</p> : <p>Edit bio</p>}
+          </Button>
+        )}
       </div>
       <form onSubmit={form.handleSubmit(onSubmit)} className={cn(
         isEditing ? 'flex' : 'hidden',
-        'flex-col gap-3'
+        'flex-col gap-3 h-28'
       )}>
         <FormField
           control={form.control}
@@ -113,7 +114,7 @@ const About = ({ user }: { user: UpdateUser }) => {
               <FormControl>
                 <Textarea
                   placeholder="Tell us a little bit about yourself"
-                  className="resize-none text-center font-light text-sm !pb-0 !pt-4 !min-h-[10px] italic"
+                  className="resize-none text-center border-none font-light text-sm !pb-0 !pt-4 !min-h-[10px] italic"
                   {...field}
                 />
               </FormControl>
@@ -140,11 +141,10 @@ const About = ({ user }: { user: UpdateUser }) => {
             type='submit'
             disabled={isLoading}
           >
-            {isLoading ? (
+            {isLoading && (
               <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-            ) : (
-              <p>Confirm</p>
             )}
+            Confirm
           </Button>
         </div>
       </form>

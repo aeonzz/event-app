@@ -105,6 +105,7 @@ function PostStatus({
       {post.Tag.name === 'event' && (
         <Badge
           className={cn(
+            post.status === 'eventDay' && 'text-[#FFA500]',
             post.status === 'upcoming' && 'text-[#3498db]',
             post.status === 'ongoing' && 'text-[#2ecc71] animate-pulse',
             post.status === 'completed' && 'text-[#27ae60]',
@@ -113,7 +114,8 @@ function PostStatus({
             'w-fit'
           )}
           variant='secondary'>
-          {post.status === 'upcoming' && <p>Upcoming</p>}
+          {post.status === 'eventDay' && <p>Today</p>}
+          {post.status === 'upcoming ' && <p>Upcoming</p>}
           {post.status === 'ongoing' && <p>Ongoing</p>}
           {post.status === 'completed' && <p>Completed</p>}
           {post.status === 'cancelled' && <p>Cancelled</p>}

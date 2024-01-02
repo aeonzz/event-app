@@ -266,6 +266,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
         <ProfileHover
           username={post.author.username}
           date={format(authorCreatedAt, 'PP')}
+          imageUrl={post.author.imageUrl}
         />
         <div className='flex flex-col'>
           <Link
@@ -292,7 +293,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                   'w-fit ml-2'
                 )}
                 variant='secondary'>
-                {post.status === 'eventDay' && <p>Upcoming</p>}
+                {post.status === 'eventDay' && <p>Today</p>}
                 {post.status === 'upcoming' && <p>Upcoming</p>}
                 {post.status === 'ongoing' && <p>Ongoing</p>}
                 {post.status === 'completed' && <p>Completed</p>}
@@ -352,6 +353,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                       username={post.author.username}
                       authorId={userIdNumber}
                       fwall={fwall}
+                      imageUrl={session?.user.imageUrl}
                       updateOpenState={setOpen}
                       onChangeOptionState={onChangeOptionState}
                       toggleImageInput={toggleImageInput}

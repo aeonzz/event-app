@@ -38,18 +38,20 @@ import ProfileLoading from './Loading/ProfileLoading';
 
 export default function UserNav() {
 
-
   const { data: session, status } = useSession();
+  const { username, email, department, id, imageUrl } = session?.user || {}
+  console.log(session)
+  if (status === 'loading') {
+    return <ProfileLoading />
+  }
+
+  if (!session) {
+    return null
+  }
 
   let initialLetter = '';
   if (session && session.user.username) {
     initialLetter = session.user.username.charAt(0).toUpperCase();
-  }
-
-  const { username, email, department, id } = session?.user || {}
-
-  if (status === 'loading') {
-    return <ProfileLoading />
   }
 
   return (
@@ -111,7 +113,7 @@ export default function UserNav() {
         <HoverCardTrigger asChild>
           <Button variant="ghost" className='py-8 w-[195px] justify-start gap-3 rounded-xl hover:bg-transparent group'>
             <Avatar className="h-9 w-9 -ml-1">
-              <AvatarImage src="/avatars/01.png" alt="@shadcn" />
+              <AvatarImage src={imageUrl} alt={username} className='object-cover' />
               <AvatarFallback>{initialLetter}</AvatarFallback>
             </Avatar>
             <div className='flex flex-col items-start'>

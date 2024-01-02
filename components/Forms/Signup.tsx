@@ -101,7 +101,7 @@ function SignUpForm(props: { open: boolean; updateOpenState: (newOpenState: bool
       setIsLoading(true);
 
       if (data) {
-        const userData: UpdateUser = { ...values, role, department, status, deleted, id: props.userData?.id, bio: props.userData?.bio || null, isActive: false };
+        const userData: UpdateUser = { ...values, role, department, status, deleted, bio: props.userData?.bio || null, isActive: false };
         if (userData) {
           updateUser(userData);
         }

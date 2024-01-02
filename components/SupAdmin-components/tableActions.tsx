@@ -53,6 +53,8 @@ interface TableActionProps {
     username: string;
     department: string | null;
     status: string
+    bio: string | null
+    isActive: boolean
     deleted: boolean
     password: string;
     role: string;
@@ -139,11 +141,13 @@ const TableActions: FC<TableActionProps> = ({ row }) => {
   const handleRoleUpdate = (value: string) => {
     setOpen(false)
     const uppercaseValue = value.toUpperCase();
-    const { department, username, email, password, status, deleted } = row
+    const { department, username, email, password, status, deleted, id, isActive, bio } = row
     const data: UpdateUser = {
       department: department,
       username: username,
+      bio: bio,
       status: status,
+      isActive: isActive,
       deleted: deleted,
       email: email,
       password: password,
@@ -160,12 +164,13 @@ const TableActions: FC<TableActionProps> = ({ row }) => {
     if (value === 'ban') {
       status += 'ned';
     }
-
-    const { department, username, email, password, role, deleted } = row
+    const { department, username, email, password, deleted, id, isActive, bio, role } = row
     const data: UpdateUser = {
       department: department,
       username: username,
+      bio: bio,
       status: status,
+      isActive: isActive,
       deleted: deleted,
       email: email,
       password: password,
@@ -177,12 +182,14 @@ const TableActions: FC<TableActionProps> = ({ row }) => {
   const handleDelete = () => {
     setOpen(false)
     setIsLoading(true)
-    const { department, username, email, password, status, role } = row
+    const { department, username, email, status, password, deleted, id, isActive, bio, role } = row
     const data: UpdateUser = {
       department: department,
       username: username,
+      bio: bio,
       status: status,
-      deleted: true,
+      isActive: isActive,
+      deleted: deleted,
       email: email,
       password: password,
       role: role

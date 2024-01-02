@@ -33,6 +33,7 @@ const CreatePost: FC<CreatePostProps> = ({ session, tag }) => {
         initalletter={initialLetter}
         username={session?.user.username}
         authorId={userIdNumber}
+        imageUrl={session?.user.imageUrl}
         joined={format(joined, 'PP')}
       />
     </div>

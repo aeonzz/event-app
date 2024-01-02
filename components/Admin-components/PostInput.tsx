@@ -37,9 +37,10 @@ interface PostInput {
   username?: string
   authorId: number | undefined | null
   joined: string
+  imageUrl: string | undefined
 }
 
-const PostInput: React.FC<PostInput> = ({ username, authorId, joined, tag }) => {
+const PostInput: React.FC<PostInput> = ({ username, authorId, joined, tag, imageUrl }) => {
 
   const pathname = usePathname()
   const fwall = pathname === '/freedom-wall'
@@ -63,6 +64,7 @@ const PostInput: React.FC<PostInput> = ({ username, authorId, joined, tag }) => 
         username={username}
         date={joined}
         userId={authorId}
+        imageUrl={imageUrl}
       />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger className='w-full flex items-center gap-3'>
@@ -88,6 +90,7 @@ const PostInput: React.FC<PostInput> = ({ username, authorId, joined, tag }) => 
             updateOpenState={setOpen}
             onChangeOptionState={onChangeOptionState}
             toggleImageInput={toggleImageInput}
+            imageUrl={imageUrl}
           />
         </DialogContent>
       </Dialog>

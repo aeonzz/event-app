@@ -19,7 +19,9 @@ export type User = {
   name: string | null;
   username: string;
   department: string | null;
+  bio: string | null
   status: string
+  isActive: boolean,
   deleted: boolean
   password: string;
   role: string;
