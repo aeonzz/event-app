@@ -174,27 +174,7 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
           <div className='absolute w-full h-full z-10 group-hover:bg-black/20 transition-colors' />
           <div className='z-20 top-1 right-1 absolute h-auto flex flex-col items-end gap-2'>
             {post.Tag.name === 'event' && (
-              <Badge
-                className={cn(
-                  post.status === 'eventDay' && 'text-[#FFA500]',
-                  post.status === 'upcoming' && 'text-[#3498db]',
-                  post.status === 'ongoing' && 'text-[#2ecc71] animate-pulse',
-                  post.status === 'completed' && 'text-[#27ae60]',
-                  post.status === 'cancelled' && 'text-[#e74c3c]',
-                  post.status === 'postponed' && 'text-[#f39c12]',
-                  'w-fit'
-                )}
-                variant='secondary'>
-                {post.status === 'eventDay' && <p>Today</p>}
-                {post.status === 'upcoming' && <p>Upcoming</p>}
-                {post.status === 'ongoing' && <p>Ongoing</p>}
-                {post.status === 'completed' && <p>Completed</p>}
-                {post.status === 'cancelled' && <p>Cancelled</p>}
-                {post.status === 'postponed' && <p>Postponed</p>}
-              </Badge>
-            )}
-            {going && (
-              <Badge className='w-fit text-green-500' variant='secondary'>Listed</Badge>
+              <PostStatus post={post} />
             )}
           </div>
           {post.images && post.images.length > 0 ? (

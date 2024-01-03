@@ -114,7 +114,7 @@ const About = ({ user, session }: { user: User, session: Session }) => {
               <FormControl>
                 <Textarea
                   placeholder="Tell us a little bit about yourself"
-                  className="resize-none text-center border-none font-light text-sm !pb-0 !pt-4 !min-h-[10px] italic"
+                  className="resize-none text-center border-none font-light text-sm !pb-0 !pt-4 !min-h-[10px] italic bg-[#161312]"
                   {...field}
                 />
               </FormControl>

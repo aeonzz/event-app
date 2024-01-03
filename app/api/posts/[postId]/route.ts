@@ -61,10 +61,6 @@ export async function GET(req: Request, context: contextProps) {
       where: {
         id: postId
       },
-      include: {
-        Tag: true,
-        images: true
-      }
     })
 
     return NextResponse.json(post, { status: 200 });

@@ -45,13 +45,13 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({ user, letter }) => {
                   <AvatarFallback>{letter}</AvatarFallback>
                 </Avatar>
               </DialogTrigger>
-              <DialogContent2 className='border overflow-hidden'>
+              <DialogContent2 className='border overflow-hidden !w-auto !h-auto'>
                 <Image
-                  className='object-contain object-center'
+                  className='object-cover'
                   src={profile}
                   alt='post image'
-                  width={1000}
-                  height={1000}
+                  width={500}
+                  height={500}
                   quality={100}
                 />
               </DialogContent2>

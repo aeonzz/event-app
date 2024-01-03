@@ -295,6 +295,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
                         username={username}
                         authorId={userIdNumber}
                         fwall={fwall}
+                        imageUrl={session.user.imageUrl}
                         updateOpenState={setOpen}
                         onChangeOptionState={onChangeOptionState}
                         toggleImageInput={toggleImageInput}

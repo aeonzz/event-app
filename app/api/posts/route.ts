@@ -57,6 +57,7 @@ export async function GET(req: Request) {
         venue: true,
         location: true,
         dateFrom: true,
+        accessibility: true,
         dateTo: true,
         timeFrom: true,
         timeTo: true,

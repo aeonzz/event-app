@@ -55,6 +55,7 @@ interface TableActionProps {
     status: string
     bio: string | null
     isActive: boolean
+    imageUrl: string | null
     deleted: boolean
     password: string;
     role: string;
@@ -141,13 +142,14 @@ const TableActions: FC<TableActionProps> = ({ row }) => {
   const handleRoleUpdate = (value: string) => {
     setOpen(false)
     const uppercaseValue = value.toUpperCase();
-    const { department, username, email, password, status, deleted, id, isActive, bio } = row
+    const { department, username, email, password, status, deleted, id, isActive, bio, imageUrl } = row
     const data: UpdateUser = {
       department: department,
       username: username,
       bio: bio,
       status: status,
       isActive: isActive,
+      imageUrl: imageUrl,
       deleted: deleted,
       email: email,
       password: password,
@@ -164,13 +166,14 @@ const TableActions: FC<TableActionProps> = ({ row }) => {
     if (value === 'ban') {
       status += 'ned';
     }
-    const { department, username, email, password, deleted, id, isActive, bio, role } = row
+    const { department, username, email, password, deleted, id, isActive, bio, role, imageUrl } = row
     const data: UpdateUser = {
       department: department,
       username: username,
       bio: bio,
       status: status,
       isActive: isActive,
+      imageUrl: imageUrl,
       deleted: deleted,
       email: email,
       password: password,
@@ -182,13 +185,14 @@ const TableActions: FC<TableActionProps> = ({ row }) => {
   const handleDelete = () => {
     setOpen(false)
     setIsLoading(true)
-    const { department, username, email, status, password, deleted, id, isActive, bio, role } = row
+    const { department, username, email, status, password, deleted, id, isActive, bio, role, imageUrl } = row
     const data: UpdateUser = {
       department: department,
       username: username,
       bio: bio,
       status: status,
       isActive: isActive,
+      imageUrl: imageUrl,
       deleted: deleted,
       email: email,
       password: password,

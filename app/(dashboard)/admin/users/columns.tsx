@@ -22,6 +22,7 @@ export type User = {
   bio: string | null
   status: string
   isActive: boolean,
+  imageUrl: string | null
   deleted: boolean
   password: string;
   role: string;

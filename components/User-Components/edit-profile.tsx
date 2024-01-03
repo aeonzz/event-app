@@ -28,6 +28,7 @@ const EditProfile = ({ user, letter }: { user: User, letter: string }) => {
   const [isEditing, setIsEditing] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [file, setFile] = useState<File>();
+  const [progress, setProgress] = useState(0);
   const { edgestore } = useEdgeStore();
   const router = useRouter()
   const profile = user.imageUrl ? user.imageUrl : undefined
@@ -52,6 +53,14 @@ const EditProfile = ({ user, letter }: { user: User, letter: string }) => {
     }
   })
 
+  const handleLoadingStatusChange = (status: string, progressValue: number) => {
+    if (status === 'loading') {
+      setProgress(progressValue);
+    } else if (status === 'loaded') {
+      setProgress(0);
+    }
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -66,7 +75,8 @@ const EditProfile = ({ user, letter }: { user: User, letter: string }) => {
         <DialogHeader>
           <DialogTitle>Profile picture</DialogTitle>
         </DialogHeader>
-        <div className='w-full flex flex-col items-center gap-5'>
+        <div className='relative w-full flex flex-col items-center gap-5'>
+          {progress > 0 && <span className='absolute top-0 right-0 text-sm'>Uploading {progress}%</span>}
           <Avatar className={cn(
             isEditing ? 'hidden' : 'block mt-1.5',
             'h-40 w-40'
@@ -106,8 +116,7 @@ const EditProfile = ({ user, letter }: { user: User, letter: string }) => {
                   const res = await edgestore.publicImages.upload({
                     file,
                     onProgressChange: (progress) => {
-                      // you can use this to show a progress bar
-                      // console.log(progress);
+                      handleLoadingStatusChange('loading', progress);
                     },
                   });
 
@@ -124,6 +133,7 @@ const EditProfile = ({ user, letter }: { user: User, letter: string }) => {
                     isActive: user.isActive
                   }
                   addImage(userData)
+                  handleLoadingStatusChange('loaded', 100);
                 }
               }}
             >

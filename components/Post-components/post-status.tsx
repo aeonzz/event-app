@@ -100,7 +100,7 @@ function PostStatus({
   return (
     <div className={cn(
       className,
-      'z-20 absolute h-auto flex flex-col items-end gap-2'
+      'z-20 absolute h-auto flex flex-col items-end gap-2 border'
     )}>
       {post.Tag.name === 'event' && (
         <Badge
@@ -115,7 +115,7 @@ function PostStatus({
           )}
           variant='secondary'>
           {post.status === 'eventDay' && <p>Today</p>}
-          {post.status === 'upcoming ' && <p>Upcoming</p>}
+          {post.status === 'upcoming' && <p>Upcoming</p>}
           {post.status === 'ongoing' && <p>Ongoing</p>}
           {post.status === 'completed' && <p>Completed</p>}
           {post.status === 'cancelled' && <p>Cancelled</p>}

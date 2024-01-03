@@ -41,6 +41,7 @@ model Post {
   anonymous           Boolean               @default(false)
   createdAt           DateTime              @default(now()) @db.Timestamp(6)
   updatedAt           DateTime              @updatedAt @db.Timestamp(6)
+  accessibility       String                @default("public")
   content             String?               @db.Text
   venue               String?               @db.VarChar(255)
   location            String?               @db.VarChar(255)

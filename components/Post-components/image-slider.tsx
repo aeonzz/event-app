@@ -28,12 +28,12 @@ interface ImageSliderProps {
 const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
   return (
     <Carousel className="w-full flex items-center">
-      <CarouselContent>
+      <CarouselContent className='h-[500px] w-[912px]'>
         {images?.map((image) => (
           image.url && (
             <CarouselItem
               key={image.id}
-              className='relative'
+              className='relative w-full flex justify-center items-center'
             >
               <Link
                 href={image.url}
@@ -43,7 +43,7 @@ const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
                 <Expand />
               </Link>
               <Image
-                className='h-full w-full object-contain'
+                className='object-contain object-center rounded-lg'
                 src={image.url}
                 alt='post image'
                 width={1000}

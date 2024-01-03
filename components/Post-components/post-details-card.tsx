@@ -284,12 +284,12 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
             {post.Tag.name === 'event' && (
               <Badge
                 className={cn(
-                  post.status === 'eventDay' && 'text-[#FFA500]',
-                  post.status === 'upcoming' && 'text-[#3498db]',
-                  post.status === 'ongoing' && 'text-[#2ecc71] animate-pulse',
-                  post.status === 'completed' && 'text-[#27ae60]',
-                  post.status === 'cancelled' && 'text-[#e74c3c]',
-                  post.status === 'postponed' && 'text-[#f39c12]',
+                  post.status === 'eventDay' && 'text-yellow-400',
+                  post.status === 'upcoming' && 'text-blue-400',
+                  post.status === 'ongoing' && 'text-teal-400 animate-pulse',
+                  post.status === 'completed' && 'text-green-400 ',
+                  post.status === 'cancelled' && 'text-red-400',
+                  post.status === 'postponed' && 'text-amber-400 ',
                   'w-fit ml-2'
                 )}
                 variant='secondary'>
@@ -442,7 +442,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
         </div>
         <div className='relative w-full flex justify-center rounded-sm'>
           <Dialog>
-            <DialogTrigger>
+            <DialogTrigger className="w-full">
               <div
                 className={cn(
                   images?.length === 1 ? 'grid-cols-1' : 'grid-cols-2',
@@ -556,7 +556,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                   size='sm'
                   className='relative flex-1 transition-colors text-muted-foreground'
                   onClick={() => setStatus('postponed')}
-                  disabled={post.status === 'postponed' || post.status === 'cancelled'}
+                  disabled={post.status !== 'upcoming' && post.status !== 'eventDay'}
                 >
                   <MonitorPause className='absolute left-[25%] h-4 w-4 transition-colors stroke-muted-foreground' />
                   {post.status === 'postponed' ? <p>Postponed</p> : <p>Postpone</p>}
@@ -614,7 +614,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                   size='sm'
                   className='relative flex-1 transition-colors text-muted-foreground'
                   onClick={() => setStatus('cancelled')}
-                  disabled={post.status === 'cancelled'}
+                  disabled={post.status !== 'upcoming' && post.status !== 'eventDay'}
                 >
                   <Ban className='absolute left-[29%] h-4 w-4 transition-colors stroke-muted-foreground' />
                   {post.status === 'cancelled' ? <p>Cancelled</p> : <p>Cancel</p>}
