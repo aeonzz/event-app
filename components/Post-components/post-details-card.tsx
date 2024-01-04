@@ -46,6 +46,7 @@ import { Input } from "../ui/input"
 import copy from "copy-to-clipboard"
 import { toast } from "sonner"
 import PostReview from "./PostReview"
+import PostStatus from "./post-status"
 
 
 interface PostDetailsCardProps {
@@ -216,6 +217,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
       anonymous: post.anonymous,
       venue: post.venue || undefined,
       location: post.location || undefined,
+      accessibility: post.accessibility,
       published: post.published,
       deleted: true,
       category: post.Tag.name,
@@ -237,6 +239,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
       anonymous: post.anonymous,
       venue: post.venue || undefined,
       location: post.location || undefined,
+      accessibility: post.accessibility,
       published: post.published,
       deleted: post.deleted,
       category: post.Tag.name,
@@ -267,10 +270,11 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
           username={post.author.username}
           date={format(authorCreatedAt, 'PP')}
           imageUrl={post.author.imageUrl}
+          userId={post.author.id}
         />
         <div className='flex flex-col'>
           <Link
-            href='/'
+            href={`/user/${post.author.id}`}
             className='hover:underline font-semibold'
           >
             {post.author.username}
@@ -282,24 +286,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
             <Dot />
             <Badge className='w-fit' variant='secondary'>{post.Tag.name}</Badge>
             {post.Tag.name === 'event' && (
-              <Badge
-                className={cn(
-                  post.status === 'eventDay' && 'text-yellow-400',
-                  post.status === 'upcoming' && 'text-blue-400',
-                  post.status === 'ongoing' && 'text-teal-400 animate-pulse',
-                  post.status === 'completed' && 'text-green-400 ',
-                  post.status === 'cancelled' && 'text-red-400',
-                  post.status === 'postponed' && 'text-amber-400 ',
-                  'w-fit ml-2'
-                )}
-                variant='secondary'>
-                {post.status === 'eventDay' && <p>Today</p>}
-                {post.status === 'upcoming' && <p>Upcoming</p>}
-                {post.status === 'ongoing' && <p>Ongoing</p>}
-                {post.status === 'completed' && <p>Completed</p>}
-                {post.status === 'cancelled' && <p>Cancelled</p>}
-                {post.status === 'postponed' && <p>Postponed</p>}
-              </Badge>
+              <PostStatus post={post} hidden="hidden" className="ml-2 !flex-row" />
             )}
           </div>
         </div>
@@ -495,7 +482,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                     goingButtonState ? 'text-primary hover:text-primary' : 'text-muted-foreground',
                     'relative flex-1 transition-colors'
                   )}
-                  disabled={post.status !== 'upcoming'}
+                  disabled={post.status !== 'upcoming' || post.accessibility === 'department'}
                 >
                   <ThumbsUp
                     className={cn(

@@ -8,7 +8,7 @@ import { Suspense } from "react";
 import HomeLoading from "../components/Loading/PostsLoading";
 import FetchDataError from "@/components/FetchDataError";
 import NoPostMessage from "@/components/NoPostMessage";
-import Posts from "@/components/Post-components/Posts";
+import Posts from "@/components/Post-components/Fwall";
 import UsersFeed from "@/components/User-Components/UsersFeed";
 
 

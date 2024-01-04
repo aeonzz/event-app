@@ -57,6 +57,7 @@ function SignUpForm(props: { open: boolean; updateOpenState: (newOpenState: bool
   const deleted = props.userData?.deleted
   const dep = props.userData?.department
   const id = props.userData?.id
+  const imageUrl = props.userData?.imageUrl
   const [isLoading, setIsLoading] = useState(false);
   const [role, setRole] = useState(roles || "USER")
   const [department, setDepartment] = useState(dep || "None")
@@ -101,7 +102,7 @@ function SignUpForm(props: { open: boolean; updateOpenState: (newOpenState: bool
       setIsLoading(true);
 
       if (data) {
-        const userData: UpdateUser = { ...values, role, department, status, deleted, bio: props.userData?.bio || null, isActive: false, imageUrl: null };
+        const userData: UpdateUser = { ...values, role, department, status, deleted, bio: props.userData?.bio || null, isActive: false, imageUrl };
         if (userData) {
           updateUser(userData);
         }

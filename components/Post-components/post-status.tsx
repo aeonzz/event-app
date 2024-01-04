@@ -22,10 +22,12 @@ function convertTimeTo12HourFormat(timeString: string): string {
 
 function PostStatus({
   post,
-  className
+  className,
+  hidden
 }: {
   post: Posts,
   className?: string | undefined
+  hidden?: string
 }) {
 
   const going = post.UserPostInteraction.length > 0 ? post.UserPostInteraction[0].going : false;
@@ -48,7 +50,7 @@ function PostStatus({
   const isDateEqual = dateFrom !== undefined && isEqual(dateFrom, startOfCurrentDay);
   const currentEventTime = isTimeAfterTimeFrom && isTimeBeforeTimeTo;
   const isCurrentTimeAfterEventTime = isTimeAfterCurrentTime(post.timeTo);
-  console.log(isDateEqual)
+
   const eventDay = isDateEqual && currentEventTime && !isCurrentTimeAfterEventTime;
   const eventEnd = isDateEqual && isCurrentTimeAfterEventTime
 
@@ -58,7 +60,7 @@ function PostStatus({
   }
 
   const { mutate: updateStatus } = useMutation({
-    mutationFn: async (updateStatus: FormInputPost) => {  
+    mutationFn: async (updateStatus: FormInputPost) => {
       return axios.patch(`/api/posts/${post.id}`, updateStatus);
     },
     onSuccess: () => {
@@ -72,6 +74,7 @@ function PostStatus({
       content: post.content || undefined,
       anonymous: post.anonymous,
       venue: post.venue || undefined,
+      accessibility: post.accessibility,
       location: post.location || undefined,
       published: post.published,
       deleted: post.deleted,
@@ -100,17 +103,17 @@ function PostStatus({
   return (
     <div className={cn(
       className,
-      'z-20 absolute h-auto flex flex-col items-end gap-2 border'
+      'z-20 h-auto flex flex-col items-end gap-2'
     )}>
-      {post.Tag.name === 'event' && (
+      {post.Tag.name === 'event' && post.published && (
         <Badge
           className={cn(
-            post.status === 'eventDay' && 'text-[#FFA500]',
-            post.status === 'upcoming' && 'text-[#3498db]',
-            post.status === 'ongoing' && 'text-[#2ecc71] animate-pulse',
-            post.status === 'completed' && 'text-[#27ae60]',
-            post.status === 'cancelled' && 'text-[#e74c3c]',
-            post.status === 'postponed' && 'text-[#f39c12]',
+            post.status === 'eventDay' && 'text-yellow-500',
+            post.status === 'upcoming' && 'text-blue-500',
+            post.status === 'ongoing' && 'text-teal-500 animate-pulse',
+            post.status === 'completed' && 'text-green-500 ',
+            post.status === 'cancelled' && 'text-red-500',
+            post.status === 'postponed' && 'text-amber-500',
             'w-fit'
           )}
           variant='secondary'>
@@ -122,8 +125,26 @@ function PostStatus({
           {post.status === 'postponed' && <p>Postponed</p>}
         </Badge>
       )}
+      {post.published === false && <Badge variant='secondary' className='text-slate-500 animate-pulse'>Pending</Badge>}
+      <Badge className={cn(
+        post.accessibility === 'department' && 'text-red-500',
+        post.accessibility === 'public' && 'text-blue-500',
+        'w-fit'
+      )}
+        variant='secondary'
+      >
+        {post.accessibility === 'department' && <p>Exclusive</p>}
+        {post.accessibility === 'public' && <p>Open</p>}
+      </Badge>
       {going && (
-        <Badge className='w-fit text-green-500' variant='secondary'>Listed</Badge>
+        <Badge className={cn(
+          hidden,
+          'w-fit text-green-500'
+        )}
+          variant='secondary'
+        >
+          Listed
+        </Badge>
       )}
     </div>
   )

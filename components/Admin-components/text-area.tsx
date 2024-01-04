@@ -136,7 +136,9 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
   const [selectedEmoji, setSelectedEmoji] = useState<string>("1f60a")
   const [inputValue, setInputValue] = useState<string>("")
   const [anonymous, setAnonymous] = useState(false)
+  const [accessibility, setAccessibility] = useState(false)
   const [published, setPublished] = useState(fwall)
+  console.log(fwall)
   const [urls, setUrls] = useState<string[]>([])
   const [isEditingUrls, setIsEditingUrls] = useState<string[]>([])
   const [fileStates, setFileStates] = useState<FileState[]>([])
@@ -257,6 +259,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
       authorId,
       category,
       published,
+      accessibility: accessibility ? 'department' : 'public',
       anonymous,
       dateFrom: date?.from,
       dateTo: date?.to,
@@ -296,10 +299,16 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
 
     if (editData) {
       setIsEditing(true)
-      setPublished(true)
     }
   }, [editData]);
 
+  useEffect(() => {
+    if (editData?.accessibility === 'department') {
+      setAccessibility(true)
+    } else {
+      setAccessibility(false)
+    }
+  }, [editData])
 
   function toggleOptions(e: any) {
     e.preventDefault()
@@ -412,6 +421,16 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                       disabled={isLoading}
                     />
                   </Card>
+                )}
+                {category === 'event' && (
+                  <div className="flex items-center space-x-4 px-4 py-2">
+                    <Label className="text-xs">{accessibility ? 'Dept. only' : 'Public'}</Label>
+                    <Switch
+                      checked={accessibility}
+                      onCheckedChange={setAccessibility}
+                      disabled={isLoading}
+                    />
+                  </div>
                 )}
               </div>
               {fwall ? null : (

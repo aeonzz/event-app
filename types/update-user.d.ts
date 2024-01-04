@@ -1,7 +1,7 @@
 export type UpdateUser = {
     username: string    
     isActive: boolean
-    imageUrl: string | null
+    imageUrl: string | null | undefined
     status: string | undefined
     bio: string | null
     deleted: boolean | undefined

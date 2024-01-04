@@ -1,5 +1,5 @@
 import CreatePost from '@/components/Admin-components/CreatePost';
-import Posts from '@/components/Post-components/Posts';
+import Posts from '@/components/Post-components/Fwall';
 import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
 import React from 'react'

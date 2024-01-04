@@ -1,5 +1,5 @@
 import NotFound from '@/app/not-found';
-import Posts from '@/components/Post-components/Posts'
+import Posts from '@/components/Post-components/Fwall'
 import PendingPost from '@/components/SupAdmin-components/PendingPost';
 import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';

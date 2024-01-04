@@ -57,6 +57,8 @@ import { Interactions } from '@/types/interactions';
 
 interface PostCardProps {
   post: Posts
+  profile?: boolean
+  profileId?: number
   tag?: string | null
   innerRef?: React.Ref<HTMLDivElement>
   session?: Session | null
@@ -68,9 +70,9 @@ const options = {
   className: 'text-blue-500 hover:underline',
 }
 
-const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationSuccess, }) => {
+const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationSuccess, profile, profileId }) => {
 
-  const { id, title, content, author, Tag, createdAt, anonymous, images, venue, location, published, deleted, clicks, UserPostInteraction, timeFrom, timeTo } = post;
+  const { id, title, content, author, Tag, createdAt, anonymous, images, venue, location, published, deleted, clicks, UserPostInteraction, timeFrom, timeTo, accessibility } = post;
   const { id: authorId, username, email } = author
   const { name, tagId } = Tag
   const going = UserPostInteraction.length > 0 ? UserPostInteraction[0].going : false;
@@ -94,7 +96,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
   const [open, setOpen] = useState(false)
   const [toggleImageInput, setToggleImageInput] = useState(false)
   const contentToDisplay = showFullContent ? content : content?.slice(0, 500);
-  console.log(going)
+  
   const onChangeOptionState = (newChangeOptionState: boolean) => {
     setToggleImageInput(newChangeOptionState)
   }
@@ -180,6 +182,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
       anonymous: anonymous,
       venue: venue || undefined,
       location: location || undefined,
+      accessibility: accessibility, 
       published: published,
       deleted: true,
       category: name,
@@ -210,6 +213,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
       anonymous: anonymous,
       venue: venue || undefined,
       location: location || undefined,
+      accessibility: accessibility, 
       published: published,
       deleted: false,
       category: name,
@@ -227,12 +231,16 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
     return null;
   }
 
+  if (profile && post.author.id !== profileId) {
+    return null
+  }
+
   if (deleted) {
     return null;
   }
 
   return (
-    <div ref={innerRef} className='relative w-full h-auto py-3 px-5 mt-5 border bg-stone-900/50 transition-colors rounded-md overflow-hidden'>
+    <div ref={innerRef} className='relative w-full h-auto py-3 px-5 mb-3 border bg-stone-900/50 transition-colors rounded-md overflow-hidden'>
       {anonymous ? (
         <div className='flex items-center gap-2'>
           <Avatar className='h-9 w-9 dark:border relative group'>
@@ -348,6 +356,8 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
           <ProfileHover
             username={username}
             date={format(authorCreatedAt, 'PP')}
+            userId={post.author.id}
+            imageUrl={post.author.imageUrl}
           />
           <div className='flex flex-col'>
             <Link

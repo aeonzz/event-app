@@ -40,7 +40,7 @@ export default function UserNav() {
 
   const { data: session, status } = useSession();
   const { username, email, department, id, imageUrl } = session?.user || {}
-  console.log(session)
+
   if (status === 'loading') {
     return <ProfileLoading />
   }

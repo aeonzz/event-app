@@ -5,7 +5,7 @@ import NoPostMessage from '@/components/NoPostMessage';
 import PostCard from '@/components/Post-components/PostCard';
 import EventCard from '@/components/Post-components/PostCard';
 import PostGrid from '@/components/Post-components/PostGrid';
-import Posts from '@/components/Post-components/Posts';
+import Posts from '@/components/Post-components/Fwall';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/db';
 import { getServerSession } from 'next-auth';

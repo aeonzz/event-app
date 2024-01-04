@@ -19,16 +19,18 @@ interface PostsProps {
   tag?: string | null
   published?: boolean | null
   session?: Session | null
+  profileId?: number
+  profile?: boolean
 }
 
-const Posts: FC<PostsProps> = ({ tag, published, session }) => {
+const Fwall: FC<PostsProps> = ({ tag, published, session, profileId, profile }) => {
 
 
   const { ref, inView } = useInView();
   const { isMutate, setIsMutate } = useMutationSuccess()
 
   const fetchPosts = async ({ pageParam = 0 }) => {
-    const res = await axios.get(`/api/posts/fwall?cursor=${pageParam}`);
+    const res = await axios.get(`/api/fwall?cursor=${pageParam}`);
     return res.data;
   };
 
@@ -41,7 +43,7 @@ const Posts: FC<PostsProps> = ({ tag, published, session }) => {
     refetch,
     status,
   } = useInfiniteQuery({
-    queryKey: ['posts'],
+    queryKey: ['fwall'],
     queryFn: fetchPosts,
     refetchOnWindowFocus: 'always',
     initialPageParam: 0,
@@ -66,6 +68,8 @@ const Posts: FC<PostsProps> = ({ tag, published, session }) => {
                 key={post.id}
                 post={post}
                 session={session}
+                profile={profile}
+                profileId={profileId}
                 onMutationSuccess={handleRefetch}
               />
             )
@@ -104,4 +108,4 @@ const Posts: FC<PostsProps> = ({ tag, published, session }) => {
   )
 }
 
-export default Posts
+export default Fwall

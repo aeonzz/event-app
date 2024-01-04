@@ -39,6 +39,8 @@ const PostSchema = z.object({
   timeFrom: z
     .string(),
   timeTo: z
+    .string(),
+  accessibility: z
     .string()
 })
 
@@ -93,7 +95,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { content, title, authorId, category, published, anonymous, venue, status, location, dateFrom, dateTo, timeFrom, timeTo } = PostSchema.parse(body);
+    const { content, title, authorId, category, published, anonymous, venue, status, location, dateFrom, dateTo, timeFrom, timeTo, accessibility } = PostSchema.parse(body);
 
     const tag = await prisma.tag.findUnique({
       where: {
@@ -108,6 +110,7 @@ export async function POST(req: Request) {
         published: published,
         status: status,
         anonymous: anonymous,
+        accessibility: accessibility,
         location: location,
         venue: venue,
         dateFrom: dateFrom,

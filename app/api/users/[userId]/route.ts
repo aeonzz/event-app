@@ -17,7 +17,7 @@ const userSchema = z
     deleted: z.boolean(),
     bio: z.string().optional().nullable(),
     isActive: z.boolean(),
-    imageUrl: z.string(),
+    imageUrl: z.string().nullable(),
   })
 
 export async function DELETE(req: Request, { params }: { params: { userId: string } }) {

@@ -25,7 +25,7 @@ interface ProfileHeaderProps {
 const ProfileHeader: FC<ProfileHeaderProps> = ({ user, letter }) => {
 
   const profile = user.imageUrl ? user.imageUrl : undefined
-
+  console.log(profile)
   return (
     <>
       <Card className='relative h-44 w-full'>

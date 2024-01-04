@@ -38,7 +38,7 @@ const PendingPostCard: FC<PendingPostCardProps> = ({ post }) => {
         : 'No date available';
 
   return (
-    <Card className='w-full h-40 flex py-3 px-4 group'>
+    <Card className='w-full h-40 flex py-3 px-4 group bg-[#161312] overflow-hidden'>
       <Link
         href={`/post/${post.id}`}
       >
@@ -98,7 +98,7 @@ const PendingPostCard: FC<PendingPostCardProps> = ({ post }) => {
           <h2 className='font-semibold text-muted-foreground'>{post.title === '' ? <span>---</span> : post.title}</h2>
         </div>
         <div className='flex items-start gap-1 text-xs h-12 relative overflow-hidden'>
-          <div className='absolute w-full h-full bg-gradient-to-t from-background to-transparent' />
+          <div className='absolute w-full h-full bg-gradient-to-t from-[#161312] to-transparent' />
           <p>Description:</p>
           <p className='whitespace-pre-wrap break-words text-xs text-muted-foreground'>{post.content}</p>
         </div>

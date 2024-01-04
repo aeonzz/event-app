@@ -98,7 +98,7 @@ const UserDetails: FC<UserDetailsProps> = async ({ params }) => {
           <div className='mt-24 w-full h-auto flex gap-3'>
             <Card className={cn(
               isUser ? 'h-[350px]' : 'h-[290px]',
-              'w-[350px] sticky top-20 bg-[#161312]'
+              'w-[350px] sticky top-20 bg-[#161312] mb-3'
             )}>
               <CardHeader>
                 <CardTitle>
@@ -136,6 +136,8 @@ const UserDetails: FC<UserDetailsProps> = async ({ params }) => {
               <ProfileFeed
                 eventCount={count}
                 post={post}
+                session={session}
+                profileId={userId}
               />
             </div>
             {/* <ProfileForm /> */}

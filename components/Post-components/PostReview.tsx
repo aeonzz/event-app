@@ -70,6 +70,7 @@ const PostReview: FC<PostReviewProps> = ({ post, style }) => {
       anonymous: false,
       venue: post.venue || undefined,
       location: post.location || undefined,
+      accessibility: post.accessibility,
       published: true,
       status: post.status,
       deleted: post.deleted,

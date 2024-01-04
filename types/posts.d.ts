@@ -3,6 +3,7 @@ export type Posts = {
   title: string
   content: string | null
   published: boolean
+  accessibility: string
   status: string
   deleted: boolean
   venue: string | null
@@ -24,6 +25,7 @@ export type Posts = {
     username: string
     createdAt: Date
     imageUrl: string | null
+    department: string
   }
   Tag: {
     tagId: number

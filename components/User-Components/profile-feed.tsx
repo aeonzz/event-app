@@ -8,9 +8,14 @@ import { Posts } from '@/types/posts';
 import { CircleOff } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
 import EventHistory from './event-history';
+import AdminPostFeed from '../Admin-components/admin-post-feed';
+import { Session } from 'next-auth';
+import Fwall from '../Post-components/Fwall';
 
 interface ProfileFeedProps {
   eventCount: number | undefined;
+  session: Session | null
+  profileId: number 
   post: {
     userId: number;
     postId: number;
@@ -55,17 +60,36 @@ interface ProfileFeedProps {
 }
 
 
-const ProfileFeed: React.FC<ProfileFeedProps> = ({ eventCount, post }) => {
+const ProfileFeed: React.FC<ProfileFeedProps> = ({ eventCount, post, session, profileId }) => {
+
+  const tag = 'fw'
+  const published = true
 
   return (
     <div>
-      <Tabs defaultValue="feed" className="w-full h-auto relative">
+      <Tabs defaultValue="fw" className="w-full h-auto relative">
         <TabsList className='absolute right-0 -top-11 bg-transparent'>
+          <TabsTrigger value="fw" className='w-[100px] text-xs data-[state=active]:bg-stone-900'>Freedom wall</TabsTrigger>
           <TabsTrigger value="feed" className='w-[100px] text-xs data-[state=active]:bg-stone-900'>Feed</TabsTrigger>
           <TabsTrigger value="insights" className='w-[100px] text-xs data-[state=active]:bg-stone-900'>Insights</TabsTrigger>
         </TabsList>
-        <TabsContent value="feed" className='h-auto mb-3'>
-
+        <TabsContent value="fw" className='!mt-0 h-auto mb-3'>
+          <div className='w-full'>
+            <Fwall
+              tag={tag}
+              published={published}
+              session={session}
+              profileId={profileId}
+              profile={true}
+            />
+          </div>
+        </TabsContent>
+        <TabsContent value="feed" className='!mt-0 h-auto mb-3'>
+          <div className='w-full'>
+            <AdminPostFeed
+              sessionId={session?.user.id}
+            />
+          </div>
         </TabsContent>
         <TabsContent value="insights" className='!mt-0 h-auto mb-3'>
           <div className='w-full h-auto grid grid-cols-2 grid-rows-2 gap-3'>

@@ -31,6 +31,7 @@ async function getPost(id: number): Promise<Posts | null> {
       venue: true,
       dateFrom: true,
       dateTo: true,
+      accessibility: true,
       timeFrom: true,
       timeTo: true,
       status: true,

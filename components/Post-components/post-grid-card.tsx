@@ -103,6 +103,7 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
       content: post.content || undefined,
       anonymous: post.anonymous,
       venue: post.venue || undefined,
+      accessibility: post.accessibility,
       location: post.location || undefined,
       published: post.published,
       deleted: false,
@@ -123,6 +124,7 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
       content: post.content || undefined,
       anonymous: post.anonymous,
       venue: post.venue || undefined,
+      accessibility: post.accessibility,
       location: post.location || undefined,
       published: post.published,
       deleted: post.deleted,
@@ -174,7 +176,7 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
           <div className='absolute w-full h-full z-10 group-hover:bg-black/20 transition-colors' />
           <div className='z-20 top-1 right-1 absolute h-auto flex flex-col items-end gap-2'>
             {post.Tag.name === 'event' && (
-              <PostStatus post={post} />
+              <PostStatus post={post} className='absolute' />
             )}
           </div>
           {post.images && post.images.length > 0 ? (
@@ -220,7 +222,7 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
                 >
                   {post.author.username}
                 </Link>
-                <div className='flex items-center'>
+                <div className='flex items-center gap-1'>
                   <p className='text-xs font-light text-muted-foreground'>
                     {post.Tag.name === 'event' ? (
                       date
@@ -228,6 +230,9 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
                       `Posted ${formatDistanceToNow(postedAt, { addSuffix: true })}`
                     )}
                   </p>
+                  <Badge className='text-[10px]'>
+                    {post.Tag.name}
+                  </Badge>
                 </div>
               </div>
             </div>

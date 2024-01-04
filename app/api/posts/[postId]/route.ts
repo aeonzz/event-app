@@ -49,6 +49,8 @@ const PostSchema = z.object({
   timeFrom: z
     .string(),
   timeTo: z
+    .string(),
+  accessibility: z
     .string()
 })
 
@@ -57,16 +59,48 @@ export async function GET(req: Request, context: contextProps) {
     const { params } = context
     const postId = +params.postId;
 
-    const post = await prisma.post.findFirst({
+    const post = await prisma.post.findMany({
       where: {
-        id: postId
+        authorId: postId
+      },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        venue: true,
+        location: true,
+        dateFrom: true,
+        accessibility: true,
+        dateTo: true,
+        timeFrom: true,
+        timeTo: true,
+        author: true,
+        images: true,
+        published: true,
+        status: true,
+        deleted: true,
+        anonymous: true,
+        Tag: true,
+        createdAt: true,
+        clicks: true,
+        UserPostInteraction: {
+          where: {
+            userId: postId,
+          },
+          select: {
+            going: true,
+          },
+        },
+      },
+      orderBy: {
+        id: 'desc',
       },
     })
 
     return NextResponse.json(post, { status: 200 });
   } catch (error) {
     console.error('Error creating post:', error);
-    return NextResponse.json({ message: 'could not create post' }, { status: 500 })
+    return NextResponse.json({ message: 'could not get posts' }, { status: 500 })
   }
 }
 
@@ -78,7 +112,7 @@ export async function PATCH(req: Request, { params }: { params: { postId: string
     const userIdInt = parseInt(session!.user.id, 10);
     const postIdInt = parseInt(params.postId, 10);
     const body = await req.json()
-    const { title, content, category, published, status, anonymous, venue, location, dateFrom, dateTo, deleted, clicks, going, timeFrom, timeTo } = PostSchema.parse(body);
+    const { title, content, category, published, status, anonymous, venue, location, dateFrom, dateTo, deleted, clicks, going, timeFrom, timeTo, accessibility } = PostSchema.parse(body);
 
 
     const tag = await prisma.tag.findUnique({
@@ -94,6 +128,9 @@ export async function PATCH(req: Request, { params }: { params: { postId: string
     }
     if (content !== undefined) {
       updateData.content = content;
+    }
+    if (accessibility !== undefined) {
+      updateData.accessibility = accessibility;
     }
     if (category !== undefined) {
       updateData.Tag = {
@@ -150,7 +187,7 @@ export async function PATCH(req: Request, { params }: { params: { postId: string
         },
       };
     }
-    
+
 
     const updatePost = await prisma.post.update({
       where: { id: postIdInt },

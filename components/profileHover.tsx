@@ -38,7 +38,7 @@ const ProfileHover: FC<ProfileHoverProps> = ({ username, date, userId, imageUrl 
       <HoverCardTrigger asChild>
         <Avatar className='h-9 w-9 dark:border relative group bg-stone-900'>
           <Link
-            href={`user/${userId}`}
+            href={`/user/${userId}`}
             className='relative'
           >
             <div className='h-9 w-9 bg-stone-950 absolute z-10 opacity-0 group-hover:opacity-40 transition'></div>

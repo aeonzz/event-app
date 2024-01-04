@@ -1,5 +1,5 @@
 import CreatePost from '@/components/Admin-components/CreatePost';
-import Posts from '@/components/Post-components/Posts';
+import Fwall from '@/components/Post-components/Fwall';
 import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
 import React from 'react'
@@ -12,12 +12,12 @@ const FreedomWall = async () => {
 
 
   return (
-    <div className='w-[58%] mt-4 px-20 flex flex-col'>
+    <div className='w-[58%] mt-4 px-20 flex flex-col gap-3'>
       <CreatePost
         tag={tag}
         session={session}
       />
-      <Posts
+      <Fwall
         tag={tag}
         published={published}
         session={session}

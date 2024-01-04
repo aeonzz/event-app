@@ -4,6 +4,7 @@ export type FormInputPost = {
     anonymous: boolean | undefined
     deleted?: boolean | undefined
     image?: string | undefined
+    accessibility: string | undefined
     content?: string | undefined
     venue?: string | undefined
     location?: string | undefined

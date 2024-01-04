@@ -33,9 +33,15 @@ import { Button, buttonVariants } from '../ui/button';
 import { cn } from '@/lib/utils';
 import RecentImage from './recent-image';
 import PostStatus from '../Post-components/post-status';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 
 
 async function getRecentEventPost() {
+
+  const session = await getServerSession(authOptions)
+  const sessionUserDepartment = session?.user.department
+
   const recentPost = await prisma.post.findFirst({
     where: {
       Tag: {
@@ -43,6 +49,9 @@ async function getRecentEventPost() {
       },
       published: true,
       deleted: false,
+      author: {
+        department: sessionUserDepartment,
+      },
     },
     include: {
       images: {
@@ -58,6 +67,7 @@ async function getRecentEventPost() {
 }
 
 async function getRecentAnnouncementPost() {
+  const session = await getServerSession(authOptions)
   const recentPost = await prisma.post.findFirst({
     where: {
       Tag: {
@@ -104,7 +114,7 @@ const UsersFeed = async () => {
                   'relative h-full overflow-hidden flex flex-col justify-between group'
                 )}
               >
-                
+
                 {event?.images && event.images.length > 0 ? (
                   <>
                     {event?.images.map((image) => (
