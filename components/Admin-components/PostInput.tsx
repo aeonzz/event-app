@@ -77,7 +77,9 @@ const PostInput: React.FC<PostInput> = ({ username, authorId, joined, tag, image
         <DialogContent className={cn(
           toggleImageInput ? 'max-w-[1000px]' : 'max-w-[600px]',
           'duration-300'
-        )}>
+        )}
+        onInteractOutside={(e) => e.preventDefault()}
+        >
           <DialogHeader>
             <DialogTitle>Create post</DialogTitle>
           </DialogHeader>

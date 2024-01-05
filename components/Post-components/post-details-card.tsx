@@ -26,7 +26,7 @@ import {
   DialogContent2
 } from '../ui/dialog'
 import { Button, buttonVariants } from '../ui/button'
-import { Ban, Bookmark, Calendar, Copy, Dot, Forward, Loader2, MapPin, MonitorPause, MoreHorizontal, Pencil, Theater, ThumbsUp, Trash } from 'lucide-react'
+import { AreaChart, Ban, Bookmark, Calendar, Copy, Dot, Forward, Loader2, MapPin, MonitorPause, MoreHorizontal, Pencil, Theater, ThumbsUp, Trash } from 'lucide-react'
 import { Separator } from '@radix-ui/react-dropdown-menu'
 import TextArea from '../Admin-components/text-area'
 import { format, formatDistance, formatDistanceToNow } from 'date-fns';
@@ -47,6 +47,7 @@ import copy from "copy-to-clipboard"
 import { toast } from "sonner"
 import PostReview from "./PostReview"
 import PostStatus from "./post-status"
+import { Card } from "../ui/card"
 
 
 interface PostDetailsCardProps {
@@ -81,6 +82,8 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
   const [open, setOpen] = useState(false)
   const [toggleImageInput, setToggleImageInput] = useState(false)
   const [attendModal, setAttendModal] = useState(false)
+  const [postponeModal, setPostponeModal] = useState(false)
+  const [cancelModal, setCancelModal] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [goingButtonState, setGoingButtonState] = useState(going)
   const contentToDisplay = showFullContent ? post.content : post.content?.slice(0, 500);
@@ -196,6 +199,12 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
     mutationFn: async (updateGoingStatus: Interactions) => {
       return axios.patch(`/api/interaction/${post.id}`, updateGoingStatus);
     },
+    onError: () => {
+      setIsLoading(false)
+      toast.error("Uh oh! Something went wrong.", {
+        description: "Please Try again later.",
+      })
+    },
     onSuccess: () => {
       setIsLoading(false)
       setAttendModal(false)
@@ -264,7 +273,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
   };
 
   return (
-    <div className='relative w-full h-auto py-3 px-5 my-5 border bg-stone-900/50 transition-colors rounded-md'>
+    <Card className='relative w-full h-auto py-3 px-5 my-5 border transition-colors'>
       <div className='relative flex items-center gap-2'>
         <ProfileHover
           username={post.author.username}
@@ -348,6 +357,14 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                     />
                   </DialogContent>
                 </Dialog>
+                <Link
+                  href={`/insights/post/${post.id}`}
+                >
+                  <DropdownMenuItem className="text-xs">
+                    <AreaChart className="mr-2 h-4 w-4" />
+                    Insights
+                  </DropdownMenuItem>
+                </Link>
                 <DropdownMenuSeparator />
                 <Dialog>
                   <DialogTrigger asChild>
@@ -391,7 +408,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
         </DropdownMenu>
       </div>
       <div className='mt-4'>
-        <h1 className='font-semibold text-3xl mb-3'>{post.title}</h1>
+        <h1 className='font-semibold text-3xl mb-3 tracking-tight'>{post.title}</h1>
         <Linkify options={options}>
           <p className='whitespace-pre-wrap break-words text-stone-200'>
             {contentToDisplay}
@@ -482,7 +499,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                     goingButtonState ? 'text-primary hover:text-primary' : 'text-muted-foreground',
                     'relative flex-1 transition-colors'
                   )}
-                  disabled={post.status !== 'upcoming' || post.accessibility === 'department'}
+                  disabled={post.status !== 'upcoming' || post.accessibility === 'department' && session?.user.department !== post.author.department}
                 >
                   <ThumbsUp
                     className={cn(
@@ -536,7 +553,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
               </DialogContent>
             </Dialog>
           ) : (
-            <Dialog open={attendModal} onOpenChange={setAttendModal}>
+            <Dialog open={postponeModal} onOpenChange={setPostponeModal}>
               <DialogTrigger asChild>
                 <Button
                   variant='ghost'
@@ -690,7 +707,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
           null
         )}
       </div>
-    </div>
+    </Card>
   )
 }
 

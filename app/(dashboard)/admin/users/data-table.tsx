@@ -94,7 +94,7 @@ export function DataTable<TData, TValue>({
   }
 
   return (
-    <Card className='p-5 mt-5'>
+    <div className='p-5 mt-5'>
       <div className='flex items-center justify-between mb-5'>
         <div className='flex items-center space-x-4 w-full'>
           <Input
@@ -291,6 +291,6 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <DataTablePagination table={table} />
-    </Card>
+    </div>
   )
 }

@@ -160,6 +160,10 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
   const [isEditing, setIsEditing] = useState(false)
   const [postId, setPostId] = useState(editData?.id)
   const { setIsMutate } = useMutationSuccess()
+  let initialLetter = ''
+  if (username) {
+    initialLetter = username.charAt(0).toUpperCase();
+  }
 
   const { data: dataTags, isLoading: isLoadingTags } = useQuery<Tag[]>({
     queryKey: ['tags'],
@@ -299,6 +303,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
 
     if (editData) {
       setIsEditing(true)
+      setPublished(true)
     }
   }, [editData]);
 
@@ -355,7 +360,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                         className='object-cover'
                       />
                       <AvatarFallback className='h-9 w-9 bg-stone-900'>
-                        <Skeleton />
+                        {initialLetter}
                       </AvatarFallback>
                     </Avatar>
                   ) : (
@@ -368,8 +373,8 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                         <AvatarImage src={imageUrl}
                           className='object-cover'
                         />
-                        <AvatarFallback className='h-9 w-9 bg-stone-900'>
-                          <Skeleton />
+                        <AvatarFallback className='h-9 w-9 bg-stone-900 pb-1 pr-1'>
+                          {initialLetter}
                         </AvatarFallback>
                       </Link>
                     </Avatar>

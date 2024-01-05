@@ -46,7 +46,7 @@ const ProfileHover: FC<ProfileHoverProps> = ({ username, date, userId, imageUrl 
               src={profile}
               className='object-cover'
             />
-            <AvatarFallback className='h-9 w-9' delayMs={3000}>
+            <AvatarFallback className='h-9 w-9 pb-1 pr-1' delayMs={2000}>
               {initialLetter}
             </AvatarFallback>
           </Link>
@@ -59,7 +59,7 @@ const ProfileHover: FC<ProfileHoverProps> = ({ username, date, userId, imageUrl 
               src={profile}
               className='object-cover'
             />
-            <AvatarFallback className='h-9 w-9 bg-stone-900' delayMs={3000}>{initialLetter}</AvatarFallback>
+            <AvatarFallback className='h-9 w-9 bg-stone-900'>{initialLetter}</AvatarFallback>
           </Avatar>
           <div className="space-y-1 w-full">
             <h4 className="text-sm font-semibold"></h4>

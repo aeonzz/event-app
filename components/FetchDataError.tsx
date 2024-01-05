@@ -17,7 +17,7 @@ export default function FetchDataError() {
   }
 
   return (
-    <div className="flex flex-col w-full h-[400px] items-center justify-center space-y-4">
+    <div className="flex flex-col w-full max-w-screen-lg h-[400px] items-center justify-center space-y-4">
       <svg
         className=" h-8 w-8 text-red-500 dark:text-red-400"
         fill="none"

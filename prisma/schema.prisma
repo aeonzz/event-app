@@ -75,7 +75,9 @@ model UserPostInteraction {
   postId Int
   post   Post @relation(fields: [postId], references: [id])
 
-  going Boolean
+  going     Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([userId, postId])
 }

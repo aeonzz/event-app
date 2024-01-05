@@ -110,7 +110,6 @@ const UsersFeed = async () => {
               href={`/post/${event?.id}`}>
               <Card
                 className={cn(
-                  event?.images.length !== 0 ? 'bg-transparent' : 'bg-stone-900',
                   'relative h-full overflow-hidden flex flex-col justify-between group'
                 )}
               >
@@ -148,7 +147,6 @@ const UsersFeed = async () => {
             <Link href={`/post/${announcement?.id}`}>
               <Card
                 className={cn(
-                  announcement?.images.length !== 0 ? 'bg-transparent' : 'bg-stone-900',
                   'relative h-full overflow-hidden flex flex-col justify-between group'
                 )}
               >
