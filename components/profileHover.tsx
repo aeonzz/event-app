@@ -52,7 +52,7 @@ const ProfileHover: FC<ProfileHoverProps> = ({ username, date, userId, imageUrl 
           </Link>
         </Avatar>
       </HoverCardTrigger>
-      <HoverCardContent className="w-80 z-50" hideWhenDetached={true}>
+      <HoverCardContent className="w-80 z-50 bg-[#161312]" hideWhenDetached={true}>
         <div className="flex justify-between space-x-4">
           <Avatar>
             <AvatarImage
@@ -64,7 +64,7 @@ const ProfileHover: FC<ProfileHoverProps> = ({ username, date, userId, imageUrl 
           <div className="space-y-1 w-full">
             <h4 className="text-sm font-semibold"></h4>
             <Link
-              href={`user/${userId}`}
+              href={`/user/${userId}`}
               className=' underline-offset-4 hover:underline'
             >
               {username}

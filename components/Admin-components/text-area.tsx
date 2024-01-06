@@ -92,7 +92,7 @@ interface TextAreaProps {
   tag: string
   username?: string
   authorId: number | undefined | null
-  fwall: boolean
+  fwall: boolean | null
   toggleImageInput: boolean
   imageUrl: string | undefined
   editData?: Posts

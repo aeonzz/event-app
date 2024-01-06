@@ -17,17 +17,19 @@ interface ParticipantCardProps {
     department: string | null
     createdAt: Date
     updateAt: Date
+    yearLevel: string | null
+    section: string | null
   }
 }
 
 const ParticipantCard: React.FC<ParticipantCardProps> = ({ user }) => {
 
-  
+  const yearAndSection = user.yearLevel && user.section ? user.yearLevel.charAt(0) + user.section : undefined
   const updatedAt = new Date(user.updateAt)
 
   return (
-    <div className='flex items-center justify-between'>
-      <div className='flex items-center gap-4'>
+    <div className='grid grid-cols-4 grid-rows-1 py-2'>
+      <div className='flex items-center gap-4 col-span-2'>
         <ProfileHover
           username={user.username}
           userId={user.id}
@@ -37,15 +39,20 @@ const ParticipantCard: React.FC<ParticipantCardProps> = ({ user }) => {
         <div className='flex flex-col justify-center'>
           <Link
             href={`/user/${user.id}`}
-            className='hover:underline font-semibold'
+            className='hover:underline font-semibold leading-none'
           >
             {user.username}
           </Link>
           <p className='text-xs text-muted-foreground'>{user.email}</p>
         </div>
       </div>
-      <p className='text-xs text-muted-foreground'>{`Listed ${formatDistanceToNow(updatedAt, { addSuffix: true })}`}</p>
-      <Badge className='w-32 justify-center' variant={'secondary'}>{user.department}</Badge>
+      <div className='flex items-center justify-between'>
+        <p className='text-xs'>{yearAndSection}</p>
+        <p className='text-xs text-muted-foreground'>{`Listed ${formatDistanceToNow(updatedAt, { addSuffix: true })}`}</p>
+      </div>
+      <div className='flex items-center justify-end'>
+        <Badge className='w-32 justify-center'>{user.department}</Badge>
+      </div>
     </div>
   )
 }

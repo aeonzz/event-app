@@ -8,7 +8,7 @@ import React from 'react'
 const PendingPosts = async () => {
 
   const session = await getServerSession(authOptions);
-  const published = false
+  const published = null
 
 
   if (session?.user.role === 'SYSTEMADMIN') {

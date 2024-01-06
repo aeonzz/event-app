@@ -36,8 +36,9 @@ const PostReview: FC<PostReviewProps> = ({ post, style }) => {
   const id = post?.id
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const [approved, setApproved] = useState<boolean | undefined>(undefined)
   const { setIsMutate } = useMutationSuccess()
-
+  console.log(approved)
   const { mutate: approval } = useMutation({
     mutationFn: async (approval: FormInputPost) => {
       return axios.patch(`/api/posts/${id}`, approval);
@@ -45,25 +46,30 @@ const PostReview: FC<PostReviewProps> = ({ post, style }) => {
     onError: (error) => {
       setIsLoading(false)
       toast.error("Uh oh! Something went wrong.", {
-        description: "Could not approve post, Try again later.",
-        action: {
-          label: "Try again",
-          onClick: () => handleApproval(),
-        },
+        description: "Could not perform action, Try again later.",
       })
     },
     onSuccess: () => {
       setIsMutate(true)
       style ? router.refresh() : router.back();
+
       const successMsg = post.Tag.name === 'event' ? 'Event' : 'Announcement';
-      toast.success("Successful", {
-        description: `${successMsg} successfully approved.`,
-      });
+
+      if (approved) {
+        toast.success("Successful", {
+          description: `${successMsg} approved.`,
+        });
+      } else {
+        toast.success("Successful", {
+          description: `${successMsg} rejected.`,
+        });
+      }
     }
   })
 
-  const handleApproval = () => {
+  const handleApproval = (value: boolean) => {
     setIsLoading(true)
+    setApproved(value)
     const data: FormInputPost = {
       title: post.title,
       content: post.content || undefined,
@@ -71,7 +77,7 @@ const PostReview: FC<PostReviewProps> = ({ post, style }) => {
       venue: post.venue || undefined,
       location: post.location || undefined,
       accessibility: post.accessibility,
-      published: true,
+      published: value,
       status: post.status,
       deleted: post.deleted,
       category: post.Tag.name || undefined,
@@ -94,14 +100,12 @@ const PostReview: FC<PostReviewProps> = ({ post, style }) => {
                 variant='secondary'
                 size='icon'
                 className='text-green-600 hover:text-green-500 text-xs'
-                onClick={() => handleApproval()}
+                onClick={() => {
+                  handleApproval(true)
+                }}
                 disabled={isLoading}
               >
-                {isLoading ? (
-                  <Loader2 className='h-4 w-4 animate-spin' />
-                ) : (
-                  <Check className='mt-0.5 h-[1.2rem] w-[1.2rem]' />
-                )}
+                <Check className='mt-0.5 h-[1.2rem] w-[1.2rem]' />
               </Button>
             </TooltipTrigger>
             <TooltipContent side='left' sideOffset={5}>
@@ -114,6 +118,10 @@ const PostReview: FC<PostReviewProps> = ({ post, style }) => {
                 variant='secondary'
                 size='icon'
                 className='text-red-600 hover:text-red-500 hover:bg-red-500/20 text-xs'
+                onClick={() => {
+                  handleApproval(false)
+                }}
+                disabled={isLoading}
               >
                 <X className='h-[1.2rem] w-[1.2rem]' />
               </Button>
@@ -132,20 +140,20 @@ const PostReview: FC<PostReviewProps> = ({ post, style }) => {
                 variant='ghost'
                 size='sm'
                 className='text-green-600 hover:text-green-500 text-xs'
-                onClick={() => handleApproval()}
+                onClick={() => handleApproval(true)}
                 disabled={isLoading}
               >
-                {isLoading ? (
-                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                ) : (
-                  <Check className='mt-0.5 h-[1.2rem] w-[1.2rem]' />
-                )}
+                <Check className='mt-0.5 h-[1.2rem] w-[1.2rem]' />
                 Approve
               </Button>
               <Button
                 variant='ghost'
                 size='sm'
                 className='text-red-600 hover:text-red-500 hover:bg-red-500/20 text-xs'
+                onClick={() => {
+                  handleApproval(false)
+                }}
+                disabled={isLoading}
               >
                 <X className='h-[1.2rem] w-[1.2rem]' />
                 Reject

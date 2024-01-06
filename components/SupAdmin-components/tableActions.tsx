@@ -15,6 +15,7 @@ import {
   BarChartHorizontalBig,
   Loader2,
   MoreHorizontal,
+  Pencil,
   Tags,
   Trash,
   User2
@@ -51,6 +52,8 @@ interface TableActionProps {
     email: string;
     name: string | null;
     username: string;
+    yearLevel: string | null
+    section: string | null
     department: string | null;
     status: string
     bio: string | null
@@ -142,9 +145,11 @@ const TableActions: FC<TableActionProps> = ({ row }) => {
   const handleRoleUpdate = (value: string) => {
     setOpen(false)
     const uppercaseValue = value.toUpperCase();
-    const { department, username, email, password, status, deleted, id, isActive, bio, imageUrl } = row
+    const { department, username, email, password, status, deleted, id, isActive, bio, imageUrl, yearLevel, section } = row
     const data: UpdateUser = {
       department: department,
+      yearLevel: yearLevel,
+      section: section,
       username: username,
       bio: bio,
       status: status,
@@ -166,9 +171,11 @@ const TableActions: FC<TableActionProps> = ({ row }) => {
     if (value === 'ban') {
       status += 'ned';
     }
-    const { department, username, email, password, deleted, id, isActive, bio, role, imageUrl } = row
+    const { department, username, email, password, deleted, id, isActive, bio, role, imageUrl, yearLevel, section } = row
     const data: UpdateUser = {
       department: department,
+      yearLevel: yearLevel,
+      section: section,
       username: username,
       bio: bio,
       status: status,
@@ -185,9 +192,11 @@ const TableActions: FC<TableActionProps> = ({ row }) => {
   const handleDelete = () => {
     setOpen(false)
     setIsLoading(true)
-    const { department, username, email, status, password, deleted, id, isActive, bio, role, imageUrl } = row
+    const { department, username, email, status, password, deleted, id, isActive, bio, role, imageUrl, yearLevel, section } = row
     const data: UpdateUser = {
       department: department,
+      yearLevel: yearLevel,
+      section: section,
       username: username,
       bio: bio,
       status: status,
@@ -214,11 +223,11 @@ const TableActions: FC<TableActionProps> = ({ row }) => {
           <Dialog open={openModal} onOpenChange={setOpenModal}>
             <DialogTrigger asChild>
               <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                <User2 className="mr-2 h-4 w-4" />
+                <Pencil className="mr-2 h-4 w-4" />
                 Edit
               </DropdownMenuItem>
             </DialogTrigger>
-            <DialogContent className='h-[450px]'>
+            <DialogContent>
               <DialogHeader>
                 <DialogTitle className="text-2xl font-semibold" >Update user</DialogTitle>
                 <DialogDescription>

@@ -17,6 +17,8 @@ model User {
   name                String?
   username            String                @unique
   department          String?
+  yearLevel           String?
+  section             String?
   bio                 String?               @db.Text
   status              String                @default("active")
   isActive            Boolean               @default(false)
@@ -49,7 +51,7 @@ model Post {
   dateTo              DateTime?
   timeFrom            String                @db.VarChar(255)
   timeTo              String                @db.VarChar(255)
-  published           Boolean               @default(false)
+  published           Boolean?
   status              String                @default("upcoming")
   deleted             Boolean               @default(false)
   authorId            Int

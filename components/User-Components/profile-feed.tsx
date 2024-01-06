@@ -49,7 +49,7 @@ interface ProfileFeedProps {
       dateTo: Date | null;
       timeFrom: string | null;
       timeTo: string | null;
-      published: boolean;
+      published: boolean | null;
       status: string;
       deleted: boolean;
       authorId: number;

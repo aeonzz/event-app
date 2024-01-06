@@ -22,7 +22,8 @@ const PostSchema = z.object({
     .string()
     .min(1),
   published: z
-    .boolean(),
+    .boolean()
+    .nullable(),
   status: z
     .string(),
   anonymous: z

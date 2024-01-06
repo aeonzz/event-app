@@ -18,6 +18,8 @@ export type User = {
   email: string;
   name: string | null;
   username: string;
+  yearLevel: string | null
+  section: string | null
   department: string | null;
   bio: string | null
   status: string

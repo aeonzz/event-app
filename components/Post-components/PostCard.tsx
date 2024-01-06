@@ -254,7 +254,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
         </div>
       ) : (
         <div className='relative flex items-center gap-2'>
-          <DropdownMenu open={actionDropdown} onOpenChange={setActionDropdown}>
+          <DropdownMenu open={actionDropdown} onOpenChange={setActionDropdown} modal={false}>
             <DropdownMenuTrigger
               className='absolute right-0 top-0'
             >

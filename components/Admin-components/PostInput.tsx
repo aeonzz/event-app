@@ -43,7 +43,7 @@ interface PostInput {
 const PostInput: React.FC<PostInput> = ({ username, authorId, joined, tag, imageUrl }) => {
 
   const pathname = usePathname()
-  const fwall = pathname === '/freedom-wall'
+  const fwall = pathname === '/freedom-wall' ? true : null
   const [open, setOpen] = useState(false)
   const [toggleImageInput, setToggleImageInput] = useState(false)
 

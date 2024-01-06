@@ -14,7 +14,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
-import { useToast } from '../ui/use-toast';
 import { ChevronDown, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import {
@@ -31,8 +30,8 @@ import axios from 'axios';
 import LoadingSpinner from '../Loading/Spinner';
 import { User } from '@prisma/client';
 import { departments } from '@/constants';
-import { ToastAction } from '../ui/toast';
 import { UpdateUser } from '@/types/update-user';
+import { toast } from 'sonner';
 
 const FormSchema = z
   .object({
@@ -56,13 +55,16 @@ function SignUpForm(props: { open: boolean; updateOpenState: (newOpenState: bool
   const status = props.userData?.status
   const deleted = props.userData?.deleted
   const dep = props.userData?.department
+  const year = props.userData?.yearLevel
+  const sec = props.userData?.section
   const id = props.userData?.id
   const imageUrl = props.userData?.imageUrl
   const [isLoading, setIsLoading] = useState(false);
   const [role, setRole] = useState(roles || "USER")
   const [department, setDepartment] = useState(dep || "None")
+  const [yearLevel, setYearLevel] = useState(year || "None")
+  const [section, setSection] = useState(sec || "None")
   const router = useRouter();
-  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -79,17 +81,13 @@ function SignUpForm(props: { open: boolean; updateOpenState: (newOpenState: bool
       return axios.patch(`/api/users/${id}`, updateUser)
     },
     onError: (error) => {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+      toast.error("Uh oh! Something went wrong.", {
         description: "Could not update user, Try again later.",
       })
     },
     onSuccess: () => {
       props.updateOpenState(false);
-      toast({
-        variant: "default",
-        title: "Update Successful",
+      toast.success("Update Successful", {
         description: "User successfully updated.",
       })
       router.refresh()
@@ -102,7 +100,7 @@ function SignUpForm(props: { open: boolean; updateOpenState: (newOpenState: bool
       setIsLoading(true);
 
       if (data) {
-        const userData: UpdateUser = { ...values, role, department, status, deleted, bio: props.userData?.bio || null, isActive: false, imageUrl };
+        const userData: UpdateUser = { ...values, role, department, status, deleted, bio: props.userData?.bio || null, isActive: false, imageUrl, yearLevel, section };
         if (userData) {
           updateUser(userData);
         }
@@ -118,6 +116,8 @@ function SignUpForm(props: { open: boolean; updateOpenState: (newOpenState: bool
             password: values.password,
             role: role,
             department: department,
+            yearLevel: yearLevel,
+            section: section,
             isActive: false
           })
         })
@@ -127,31 +127,24 @@ function SignUpForm(props: { open: boolean; updateOpenState: (newOpenState: bool
 
           props.updateOpenState(false);
           router.refresh()
-          toast({
-            variant: "default",
-            title: "Registration Successful",
+          toast.success("Registration Successful", {
             description: data.message,
-          });
+          })
 
         } else if (response.status === 409) {
           const data = await response.json();
 
           setIsLoading(false);
 
-          toast({
-            variant: "destructive",
-            title: "Uh oh! Something went wrong.",
+          toast.error("Uh oh! Something went wrong.", {
             description: data.message,
-          });
+          })
 
         } else {
           setIsLoading(false);
-
-          toast({
-            variant: "destructive",
-            title: "Uh oh! Something went wrong.",
+          toast.error("Uh oh! Something went wrong.", {
             description: "There was a problem with your request.",
-          });
+          })
         }
       }
 
@@ -161,11 +154,9 @@ function SignUpForm(props: { open: boolean; updateOpenState: (newOpenState: bool
 
       console.error("An error occurred while making the request:", error);
 
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+      toast.error("Uh oh! Something went wrong.", {
         description: "An error occurred while making the request.",
-      });
+      })
     }
   };
 
@@ -286,6 +277,56 @@ function SignUpForm(props: { open: boolean; updateOpenState: (newOpenState: bool
                 </DropdownMenuRadioGroup>
               </DropdownMenuContent>
             </DropdownMenu>
+          </div>
+          <div className='flex gap-3'>
+            <div className='flex-1 flex flex-col gap-3'>
+              <FormLabel>Year level</FormLabel>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className='h-8 px-3 w-full rounded-sm text-sm text-muted-foreground flex justify-between'
+                  >
+                    {yearLevel}
+                    <ChevronDown className='w-4 h-4' />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Year levels</DropdownMenuLabel>
+                  <DropdownMenuRadioGroup value={yearLevel} onValueChange={setYearLevel}>
+                    <DropdownMenuRadioItem value="None">None</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="1st">1st year</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="2nd">2nd year</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="3rd">3rd year</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="4th">4th year</DropdownMenuRadioItem>
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            <div className='flex-1 flex flex-col gap-3'>
+              <FormLabel>Section</FormLabel>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className='h-8 px-3 w-full rounded-sm text-sm text-muted-foreground flex justify-between'
+                  >
+                    {section}
+                    <ChevronDown className='w-4 h-4' />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Sections</DropdownMenuLabel>
+                  <DropdownMenuRadioGroup value={section} onValueChange={setSection}>
+                    <DropdownMenuRadioItem value="None">None</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="A">A</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="B">B</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="C">C</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="D">D</DropdownMenuRadioItem>
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </div>
         <Button

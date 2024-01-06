@@ -17,6 +17,8 @@ const userSchema = z
     deleted: z.boolean(),
     bio: z.string().optional().nullable(),
     isActive: z.boolean(),
+    yearLevel: z.string().min(1),
+    section: z.string().min(1),
     imageUrl: z.string().nullable(),
   })
 
@@ -41,7 +43,7 @@ export async function PATCH(req: Request, { params }: { params: { userId: string
 
     const userIdInt = parseInt(params.userId, 10);
     const body = await req.json()
-    const { email, username, password, role, department, status, deleted, bio, isActive, imageUrl } = userSchema.parse(body);
+    const { email, username, password, role, department, status, deleted, bio, isActive, imageUrl, yearLevel, section } = userSchema.parse(body);
 
     const updateData: Record<string, unknown> = {};
     if (username !== undefined) {
@@ -55,6 +57,12 @@ export async function PATCH(req: Request, { params }: { params: { userId: string
     }
     if (department !== undefined) {
       updateData.department = department;
+    }
+    if (yearLevel !== undefined) {
+      updateData.yearLevel = yearLevel;
+    }
+    if (section !== undefined) {
+      updateData.section = section;
     }
     if (status !== undefined) {
       updateData.status = status;

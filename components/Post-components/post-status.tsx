@@ -125,7 +125,9 @@ function PostStatus({
           {post.status === 'postponed' && <p>Postponed</p>}
         </Badge>
       )}
-      {post.published === false && <Badge variant='secondary' className='text-slate-500 animate-pulse'>Pending</Badge>}
+      {post.published === null && (
+        <Badge variant='secondary' className='text-slate-500 animate-pulse'>Pending</Badge>
+      )}
       <Badge className={cn(
         post.accessibility === 'department' && 'text-red-500',
         post.accessibility === 'public' && 'text-blue-500',

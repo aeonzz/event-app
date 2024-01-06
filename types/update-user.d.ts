@@ -9,4 +9,6 @@ export type UpdateUser = {
     password: string 
     role: string
     department: string | null
+    yearLevel: string | null
+    section: string | null
 }

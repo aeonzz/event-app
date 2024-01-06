@@ -273,7 +273,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
   };
 
   return (
-    <Card className='relative w-full h-auto py-3 px-5 my-5 border transition-colors'>
+    <Card className='relative w-full h-auto py-3 px-5 my-5 transition-colors'>
       <div className='relative flex items-center gap-2'>
         <ProfileHover
           username={post.author.username}
@@ -307,7 +307,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
             )}>
             <MoreHorizontal />
           </DropdownMenuTrigger>
-          <DropdownMenuContent className='min-w-[80px]' onCloseAutoFocus={(e) => e.preventDefault()}>
+          <DropdownMenuContent className='min-w-[80px] bg-[#161312]' onCloseAutoFocus={(e) => e.preventDefault()}>
             <DropdownMenuItem
               onClick={() => setsaveButtonState((prev) => !prev)}
               className='text-xs'>
@@ -699,7 +699,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
             </DialogContent>
           </Dialog>
         </div>
-        {post.published === false ? (
+        {post.published === null ? (
           <PostReview
             post={post}
           />

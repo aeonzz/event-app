@@ -17,7 +17,7 @@ import FetchDataError from '../FetchDataError';
 import PendingPostLoading from '../Loading/PendingPostLoading';
 
 interface PendingPostProps {
-  published: boolean
+  published: boolean | null
 }
 
 const PendingPost: FC<PendingPostProps> = ({ published }) => {
