@@ -72,10 +72,11 @@ const PendingPostCard: FC<PendingPostCardProps> = ({ post }) => {
             username={post.author.username}
             date={format(authorCreatedAt, 'PP')}
             imageUrl={post.author.imageUrl}
+            userId={post.author.id}
           />
           <div className='flex flex-col'>
             <Link
-              href='/'
+              href={`/user/${post.author.id}`}
               className='hover:underline font-semibold'
             >
               {post.author.username}

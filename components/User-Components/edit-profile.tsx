@@ -125,6 +125,8 @@ const EditProfile = ({ user, letter }: { user: User, letter: string }) => {
                     username: user.username,
                     status: user.status,
                     imageUrl: res.url,
+                    yearLevel: user.yearLevel,
+                    section: user.section,
                     deleted: user.deleted,
                     email: user.email,
                     password: user.password,

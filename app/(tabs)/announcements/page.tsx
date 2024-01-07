@@ -23,12 +23,12 @@ const Event = async () => {
     <div className='w-[58%] px-10 mt-4 min-h-[400px] flex flex-col'>
       <div className='flex items-center gap-3'>
         <h1 className='font-semibold text-3xl flex-1'>Announcements</h1>
-        {session?.user.role === 'ADMIN' || session?.user.role === 'SYSTEMADMIN' && (
+        {session?.user.role === 'ADMIN' || session?.user.role === 'SYSTEMADMIN' ? (
           <CreatePost
             tag={tag}
             session={session}
           />
-        )}
+        ) : null}
       </div>
       <PostGrid
         tag={tag}

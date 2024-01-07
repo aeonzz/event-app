@@ -162,7 +162,7 @@ const InsightsData: React.FC<InsightsDataProps> = ({ interactions, totalParticip
           </AlertDialogContent>
         </AlertDialog>
       </div>
-      <div ref={componentRef} className='h-auto mt-4 grid grid-cols-4 grid-rows-[repeat(4,_minmax(0,_150px))] gap-3 overflow-hidden '>
+      <div ref={componentRef} className='h-auto mt-4 grid grid-cols-4 grid-rows-[repeat(3,_minmax(0,_150px))] gap-3'>
         <style type="text/css" media="print">
           {`
           @page {
@@ -338,14 +338,26 @@ const InsightsData: React.FC<InsightsDataProps> = ({ interactions, totalParticip
           ) : (
             <>
               {isPrinting ? (
-                <>
+                <div className='mt-3'>
                   {filteredInteractions.map((user) => (
                     <ParticipantCard
                       key={user.userId}
                       user={user.user}
                     />
                   ))}
-                </>
+                  {filteredInteractions.map((user) => (
+                    <ParticipantCard
+                      key={user.userId}
+                      user={user.user}
+                    />
+                  ))}
+                  {filteredInteractions.map((user) => (
+                    <ParticipantCard
+                      key={user.userId}
+                      user={user.user}
+                    />
+                  ))}
+                </div>
               ) : (
                 <ScrollArea className='h-[210px] mt-1 space-y-2'>
                   {filteredInteractions.map((user) => (

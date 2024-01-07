@@ -35,4 +35,5 @@ export type Posts = {
     going: boolean;
   }[]
   createdAt: Date
+  updatedAt: Date
 }

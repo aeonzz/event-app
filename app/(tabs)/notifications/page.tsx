@@ -10,7 +10,7 @@ const Notifications = async () => {
 
 
   return (
-    <div className='w-[58%] mt-4 px-20 flex flex-col'>
+    <div className='w-[58%] border min-h-[400px] mt-4 px-20 flex flex-col'>
     </div>
   )
 }

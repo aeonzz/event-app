@@ -34,9 +34,10 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
 import ProfileLoading from './Loading/ProfileLoading';
+import { cn } from '@/lib/utils';
 
 
-export default function UserNav() {
+export default function UserNav({ className }: { className: string }) {
 
   const { data: session, status } = useSession();
   const { username, email, department, id, imageUrl } = session?.user || {}
@@ -55,61 +56,11 @@ export default function UserNav() {
   }
 
   return (
-    <div className='flex gap-3 items-center fixed bottom-[7%]'>
-      {/* <DropdownMenu modal={false}>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className='py-8 w-fit justify-start gap-3 rounded-xl hover:bg-transparent group'>
-              <Avatar className="h-9 w-9 -ml-1">
-                <AvatarImage src="/avatars/01.png" alt="@shadcn" />
-                <AvatarFallback>{initialLetter}</AvatarFallback>
-              </Avatar>
-              <div className='flex flex-col items-start'>
-                <h2 className='font-semebold text-lg'>{username}</h2>
-                {department === 'one' ? null : <p className='text-xs text-muted-foreground'>{department}</p>}
-              </div>
-              <ChevronRight className='ml-5 group-hover:ml-6 transition-all' />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-48" align="start" side='right'>
-            <DropdownMenuGroup>
-              <Link
-                href='/user/profile'
-              >
-                <DropdownMenuItem>
-                  <User className="mr-2 h-4 w-4" />
-                  Profile
-                </DropdownMenuItem>
-              </Link>
-              {session?.user.role === 'SYSTEMADMIN' ? (
-                <>
-                  <Link
-                    href='/admin'
-                  >
-                    <DropdownMenuItem>
-                      <LayoutDashboard className="mr-2 h-4 w-4" />
-                      Admin panel
-                    </DropdownMenuItem>
-                  </Link>
-                  <Link
-                    href='/pending-post'
-                  >
-                    <DropdownMenuItem>
-                      <LayoutDashboard className="mr-2 h-4 w-4" />
-                      Pending
-                    </DropdownMenuItem>
-                  </Link>
-                </>
-              ) : (
-                <></>
-              )}
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className='p-0 text-destructive'>
-              <Logout />
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu> */}
-      <HoverCard openDelay={100} closeDelay={100}>
+    <div className={cn(
+      className,
+      'flex gap-3 items-center fixed bottom-[7%]'
+    )}>
+      <HoverCard openDelay = { 100} closeDelay = { 100} >
         <HoverCardTrigger asChild>
           <Button variant="ghost" className='py-8 w-[195px] justify-start gap-3 rounded-xl hover:bg-transparent group'>
             <Avatar className="h-9 w-9 -ml-1">
@@ -160,6 +111,6 @@ export default function UserNav() {
           </div>
         </HoverCardContent>
       </HoverCard>
-    </div>
+    </div >
   )
 }

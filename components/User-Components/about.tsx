@@ -72,6 +72,8 @@ const About = ({ user, session }: { user: User, session: Session }) => {
       username: user.username,
       status: user.status,
       imageUrl: user.imageUrl,
+      yearLevel: user.yearLevel,
+      section: user.section,
       deleted: user.deleted,
       email: user.email,
       password: user.password,

@@ -36,7 +36,7 @@ const ProfileHover: FC<ProfileHoverProps> = ({ username, date, userId, imageUrl 
       closeDelay={100}
     >
       <HoverCardTrigger asChild>
-        <Avatar className='h-9 w-9 dark:border relative group bg-stone-900'>
+        <Avatar className='h-9 w-9 dark:border relative group bg-stone-900 border'>
           <Link
             href={`/user/${userId}`}
             className='relative'
@@ -46,7 +46,7 @@ const ProfileHover: FC<ProfileHoverProps> = ({ username, date, userId, imageUrl 
               src={profile}
               className='object-cover'
             />
-            <AvatarFallback className='h-9 w-9 pb-1 pr-1' delayMs={2000}>
+            <AvatarFallback className='h-9 w-9 pb-1 pr-1'>
               {initialLetter}
             </AvatarFallback>
           </Link>

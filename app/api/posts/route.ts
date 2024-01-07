@@ -72,6 +72,7 @@ export async function GET(req: Request) {
         anonymous: true,
         Tag: true,
         createdAt: true,
+        updatedAt: true,
         clicks: true,
         UserPostInteraction: {
           where: {

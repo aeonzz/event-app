@@ -43,7 +43,7 @@ export default async function RootLayout({
                   <>
                     <Topbar />
                     <main className='container h-auto relative flex justify-center px-0'>
-                      <LeftSideBar />
+                      <LeftSideBar session={session} />
 
                       {children}
 

@@ -48,6 +48,7 @@ import { toast } from "sonner"
 import PostReview from "./PostReview"
 import PostStatus from "./post-status"
 import { Card } from "../ui/card"
+import NotFound from "@/app/not-found"
 
 
 interface PostDetailsCardProps {
@@ -271,6 +272,10 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
     };
     updateGoingStatus(data);
   };
+
+  if (post.deleted) {
+    return <NotFound />
+  }
 
   return (
     <Card className='relative w-full h-auto py-3 px-5 my-5 transition-colors'>
@@ -699,7 +704,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
             </DialogContent>
           </Dialog>
         </div>
-        {post.published === null ? (
+        {post.published === null && session?.user.role === 'SYSTEMADMIN' ? (
           <PostReview
             post={post}
           />

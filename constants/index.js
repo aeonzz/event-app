@@ -61,13 +61,13 @@ export const sidebarNav = [
     link: "/freedom-wall",
     alt: "freedom-wall"
   },
-  {
-    title: "Notifications",
-    icon: bell,
-    active: bellSecondary,
-    link: "/notifications",
-    alt: "notifications"
-  },
+  // {
+  //   title: "Notifications",
+  //   icon: bell,
+  //   active: bellSecondary,
+  //   link: "/notifications",
+  //   alt: "notifications"
+  // },
 ]
 
 export const adminNav = [
