@@ -22,7 +22,7 @@ const NotificationCard = ({ post, onChangeOpenState, open, session }: { post: Po
     initialLetter = post.author.username.charAt(0).toUpperCase();
   }
 
-  if (sAdmin && post.published === true || post.published === false) {
+  if (sAdmin && post.published === true || sAdmin && post.published === false) {
     return null
   }
 
@@ -66,9 +66,18 @@ const NotificationCard = ({ post, onChangeOpenState, open, session }: { post: Po
             </div>
           </>
         ) : null}
-        {admin && post.published !== null ? (
+        {admin && post.published === true ? (
           <>
             <h2 className='text-xs'>Post approved</h2>
+            <div className='flex gap-2 items-center mt-1'>
+              <Badge variant='secondary'>{post.Tag.name}</Badge>
+              <p className='text-muted-foreground text-xs'>{formatDistanceToNow(approvedAt, { addSuffix: true })}</p>
+            </div>
+          </>
+        ) : null}
+        {admin && post.published === false as boolean ? (
+          <>
+            <h2 className='text-xs'>Post rejected</h2>
             <div className='flex gap-2 items-center mt-1'>
               <Badge variant='secondary'>{post.Tag.name}</Badge>
               <p className='text-muted-foreground text-xs'>{formatDistanceToNow(approvedAt, { addSuffix: true })}</p>

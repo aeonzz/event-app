@@ -30,7 +30,7 @@ const Fwall: FC<PostsProps> = ({ tag, published, session, profileId, profile }) 
   const { isMutate, setIsMutate } = useMutationSuccess()
 
   const fetchPosts = async ({ pageParam = 0 }) => {
-    const res = await axios.get(`/api/fwall?cursor=${pageParam}`);
+    const res = await axios.get(`/api/posts/fwall?cursor=${pageParam}`);
     return res.data;
   };
 

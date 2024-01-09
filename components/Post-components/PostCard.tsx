@@ -81,6 +81,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
   const userIdNumber = userIdString ? parseInt(userIdString, 10) : null;
   const router = useRouter()
   const pathname = usePathname()
+  const fw = tag === 'fw'
   const click = post.clicks;
   const fwall = pathname === '/freedom-wall'
   const textRef = useRef<HTMLInputElement>(null);
@@ -96,7 +97,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
   const [open, setOpen] = useState(false)
   const [toggleImageInput, setToggleImageInput] = useState(false)
   const contentToDisplay = showFullContent ? content : content?.slice(0, 500);
-  
+
   const onChangeOptionState = (newChangeOptionState: boolean) => {
     setToggleImageInput(newChangeOptionState)
   }
@@ -182,7 +183,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
       anonymous: anonymous,
       venue: venue || undefined,
       location: location || undefined,
-      accessibility: accessibility, 
+      accessibility: accessibility,
       published: published,
       deleted: true,
       category: name,
@@ -213,7 +214,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
       anonymous: anonymous,
       venue: venue || undefined,
       location: location || undefined,
-      accessibility: accessibility, 
+      accessibility: accessibility,
       published: published,
       deleted: false,
       category: name,
@@ -225,6 +226,10 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
       status: 'fw'
     };
     updateClicks(data)
+  }
+
+  if (tag === 'announcement' && post.accessibility === 'department' && session?.user.department !== post.author.department) {
+    return null
   }
 
   if (tag && name !== tag) {
@@ -241,145 +246,141 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
 
   return (
     <div ref={innerRef} className='relative w-full h-auto py-3 px-5 mb-3 border bg-stone-900/50 transition-colors rounded-md overflow-hidden'>
-      {anonymous ? (
-        <div className='flex items-center gap-2'>
-          <Avatar className='h-9 w-9 dark:border relative group'>
-            <div className='h-9 w-9 bg-stone-950 absolute z-10 opacity-0 group-hover:opacity-40 transition'></div>
-            <AvatarImage src='https://cmsskornpjjalwhyjtgg.supabase.co/storage/v1/object/public/images/EJFa13qXUAEzWpm.png'
-              className='object-cover'
+      <div className='flex justify-between'>
+        {anonymous ? (
+          <div className='flex items-center gap-2'>
+            <Avatar className='h-9 w-9 dark:border relative group'>
+              <div className='h-9 w-9 bg-stone-950 absolute z-10 opacity-0 group-hover:opacity-40 transition'></div>
+              <AvatarImage src='https://cmsskornpjjalwhyjtgg.supabase.co/storage/v1/object/public/images/EJFa13qXUAEzWpm.png'
+                className='object-cover'
+              />
+              <AvatarFallback className='h-9 w-9 bg-stone-900'></AvatarFallback>
+            </Avatar>
+            <p className='hover:underline font-semibold'>Anonymous participant</p>
+          </div>
+        ) : (
+          <div className='relative flex items-center gap-2'>
+            <ProfileHover
+              username={username}
+              date={format(authorCreatedAt, 'PP')}
+              userId={post.author.id}
+              imageUrl={post.author.imageUrl}
             />
-            <AvatarFallback className='h-9 w-9 bg-stone-900'></AvatarFallback>
-          </Avatar>
-          <p className='hover:underline font-semibold'>Anonymous participant</p>
-        </div>
-      ) : (
-        <div className='relative flex items-center gap-2'>
-          <DropdownMenu open={actionDropdown} onOpenChange={setActionDropdown} modal={false}>
-            <DropdownMenuTrigger
-              className='absolute right-0 top-0'
-            >
-              <Button
-                variant='ghost'
-                size='icon'
+            <div className='flex flex-col'>
+              <Link
+                href='/'
+                className='hover:underline font-semibold'
               >
-                <MoreHorizontal />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className='min-w-[80px]'>
-              <DropdownMenuItem
-                onClick={() => setsaveButtonState((prev) => !prev)}
-                className='text-xs'>
-                <Bookmark
-                  className={cn(
-                    saveButtonState ? 'fill-current' : 'fill-transparent',
-                    'mr-2 h-4 w-4'
-                  )}
-                />
-                {saveButtonState ? <p>Saved</p> : <p>Save</p>}
-              </DropdownMenuItem>
-              {session?.user.email === email && (
-                <>
-                  <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogTrigger className='w-full'>
-                      <DropdownMenuItem
-                        className='text-xs'
-                        onSelect={(e) => e.preventDefault()}
-                      >
-                        <Pencil className="mr-2 h-4 w-4" />
-                        Edit
-                      </DropdownMenuItem>
-                    </DialogTrigger>
-                    <DialogContent className={cn(
-                      toggleImageInput ? 'sm:max-w-[900px]' : 'sm:max-w-[540px]',
-                      'duration-300'
-                    )}>
-                      <DialogHeader>
-                        <DialogTitle>Edit post</DialogTitle>
-                      </DialogHeader>
-                      <Separator />
-                      <TextArea
-                        tag={name}
-                        editData={post}
-                        username={username}
-                        authorId={userIdNumber}
-                        fwall={fwall}
-                        imageUrl={session.user.imageUrl}
-                        updateOpenState={setOpen}
-                        onChangeOptionState={onChangeOptionState}
-                        toggleImageInput={toggleImageInput}
-                        onMutationSuccess={onMutationSuccess}
-                        onChangeDropdownState={onChangeDropdownState}
-                      />
-                    </DialogContent>
-                  </Dialog>
-                  <DropdownMenuSeparator />
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <DropdownMenuItem
-                        className="text-red-600 text-xs"
-                        onSelect={(e) => e.preventDefault()}
-                      >
-                        <Trash className="mr-2 h-4 w-4" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle className="text-xl font-semibold" >Are you absolutely sure?</DialogTitle>
-                        <DialogDescription>
-                          This action cannot be undone. This will permanently delete the post from our servers.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <DialogFooter>
-                        <DialogClose asChild>
-                          <Button variant="outline">
-                            Close
-                          </Button>
-                        </DialogClose>
-                        <Button
-                          variant="destructive"
-                          onClick={() => handleDelete()}
-                          disabled={isLoading}
-                        >
-                          {isLoading && (
-                            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                          )}
-                          Continue
-                        </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <ProfileHover
-            username={username}
-            date={format(authorCreatedAt, 'PP')}
-            userId={post.author.id}
-            imageUrl={post.author.imageUrl}
-          />
-          <div className='flex flex-col'>
-            <Link
-              href='/'
-              className='hover:underline font-semibold'
-            >
-              {username}
-            </Link>
-            <div className='flex items-center'>
-              <p className='text-xs font-light text-muted-foreground'>
-                {formatDistanceToNow(postedAt, { addSuffix: true })}
-              </p>
-              {/* {fw ? null : (
-                <>
-                  <Dot />
-                  <Badge className='w-fit' variant='secondary'>{name}</Badge>
-                </>
-              )} */}
+                {username}
+              </Link>
+              <div className='flex items-center'>
+                <p className='text-xs font-light text-muted-foreground'>
+                  {formatDistanceToNow(postedAt, { addSuffix: true })}
+                </p>
+                <Dot />
+                <Badge className='w-fit' variant='secondary'>{post.Tag.name}</Badge>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+        <DropdownMenu open={actionDropdown} onOpenChange={setActionDropdown} modal={false}>
+          <DropdownMenuTrigger asChild >
+            <Button
+              variant='ghost'
+              size='icon'
+            >
+              <MoreHorizontal />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className='min-w-[80px]'>
+            <DropdownMenuItem
+              onClick={() => setsaveButtonState((prev) => !prev)}
+              className='text-xs'>
+              <Bookmark
+                className={cn(
+                  saveButtonState ? 'fill-current' : 'fill-transparent',
+                  'mr-2 h-4 w-4'
+                )}
+              />
+              {saveButtonState ? <p>Saved</p> : <p>Save</p>}
+            </DropdownMenuItem>
+            {session?.user.email === email && (
+              <>
+                <Dialog open={open} onOpenChange={setOpen}>
+                  <DialogTrigger className='w-full'>
+                    <DropdownMenuItem
+                      className='text-xs'
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      <Pencil className="mr-2 h-4 w-4" />
+                      Edit
+                    </DropdownMenuItem>
+                  </DialogTrigger>
+                  <DialogContent className={cn(
+                    toggleImageInput ? 'sm:max-w-[900px]' : 'sm:max-w-[540px]',
+                    'duration-300'
+                  )}>
+                    <DialogHeader>
+                      <DialogTitle>Edit post</DialogTitle>
+                    </DialogHeader>
+                    <Separator />
+                    <TextArea
+                      tag={name}
+                      editData={post}
+                      username={username}
+                      authorId={userIdNumber}
+                      fwall={fwall}
+                      imageUrl={session.user.imageUrl}
+                      updateOpenState={setOpen}
+                      onChangeOptionState={onChangeOptionState}
+                      toggleImageInput={toggleImageInput}
+                      onMutationSuccess={onMutationSuccess}
+                      onChangeDropdownState={onChangeDropdownState}
+                    />
+                  </DialogContent>
+                </Dialog>
+                <DropdownMenuSeparator />
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <DropdownMenuItem
+                      className="text-red-600 text-xs"
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      <Trash className="mr-2 h-4 w-4" />
+                      Delete
+                    </DropdownMenuItem>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle className="text-xl font-semibold" >Are you absolutely sure?</DialogTitle>
+                      <DialogDescription>
+                        This action cannot be undone. This will permanently delete the post from our servers.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button variant="outline">
+                          Close
+                        </Button>
+                      </DialogClose>
+                      <Button
+                        variant="destructive"
+                        onClick={() => handleDelete()}
+                        disabled={isLoading}
+                      >
+                        {isLoading && (
+                          <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                        )}
+                        Continue
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
       <div className='mt-4'>
         <h1 className='font-semibold text-2xl mb-3'>{title}</h1>
         <Linkify options={options}>
@@ -417,13 +418,13 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
             )}
           </div>
         )} */}
-        {/* {fw ? null : (
+        {fw ? null : (
           <Link
             href={`/post/${id}`}
             replace={true}
             onClick={() => handleClick()}
           >
-            <div className='relative w-full flex overflow-hidden rounded-sm'>
+            <div className='relative w-full flex overflow-hidden rounded-sm mt-5'>
               <div
                 className={cn(
                   images?.length === 1 ? 'grid-cols-1' : 'grid-cols-2',
@@ -457,8 +458,10 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
               </div>
             </div>
           </Link>
-        )} */}
-        <h3 className='text-muted-foreground text-xs mt-1 text-right'>{clicks} Views</h3>
+        )}
+        {!fw && (
+          <h3 className='text-muted-foreground text-xs mt-1 text-right'>{clicks} Views</h3>
+        )}
         <Separator className='my-2' />
         <div className='w-full flex p-1'>
           {tag === 'event' && (

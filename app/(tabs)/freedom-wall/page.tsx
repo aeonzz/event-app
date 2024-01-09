@@ -12,7 +12,7 @@ const FreedomWall = async () => {
 
 
   return (
-    <div className='w-[58%] mt-4 px-20 flex flex-col gap-3'>
+    <div className='w-[58%] px-10 mt-4 min-h-[400px] flex flex-col gap-3'>
       <CreatePost
         tag={tag}
         session={session}

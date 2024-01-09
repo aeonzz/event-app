@@ -114,6 +114,7 @@ function PostStatus({
             post.status === 'completed' && 'text-green-500 ',
             post.status === 'cancelled' && 'text-red-500',
             post.status === 'postponed' && 'text-amber-500',
+            post.published === false as boolean && 'text-red-500',
             'w-fit'
           )}
           variant='secondary'>
@@ -123,6 +124,7 @@ function PostStatus({
           {post.status === 'completed' && <p>Completed</p>}
           {post.status === 'cancelled' && <p>Cancelled</p>}
           {post.status === 'postponed' && <p>Postponed</p>}
+          {post.published === false as boolean && <p>Rejected</p>}
         </Badge>
       )}
       {post.published === null && (

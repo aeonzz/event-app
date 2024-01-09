@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from '../ui/button'
 import {
   Dialog,
@@ -53,13 +53,11 @@ const EditProfile = ({ user, letter }: { user: User, letter: string }) => {
     }
   })
 
-  const handleLoadingStatusChange = (status: string, progressValue: number) => {
-    if (status === 'loading') {
-      setProgress(progressValue);
-    } else if (status === 'loaded') {
-      setProgress(0);
+  useEffect(() => {
+    if (progress === 100) {
+      setProgress(0)
     }
-  };
+  }, [progress])
 
   return (
     <Dialog>
@@ -76,7 +74,6 @@ const EditProfile = ({ user, letter }: { user: User, letter: string }) => {
           <DialogTitle>Profile picture</DialogTitle>
         </DialogHeader>
         <div className='relative w-full flex flex-col items-center gap-5'>
-          {progress > 0 && <span className='absolute top-0 right-0 text-sm'>Uploading {progress}%</span>}
           <Avatar className={cn(
             isEditing ? 'hidden' : 'block mt-1.5',
             'h-40 w-40'
@@ -100,6 +97,16 @@ const EditProfile = ({ user, letter }: { user: User, letter: string }) => {
               'items-center'
             )}
           />
+          {progress > 0 && (
+            <div className='h-2 w-44 border rounded overflow-hidden transition-all duration-1000'>
+              <div
+                className='h-full bg-white'
+                style={{
+                  width: `${progress}%`
+                }}
+              />
+            </div>
+          )}
           <div className='w-full space-y-2'>
             <Button
               size='sm'
@@ -116,7 +123,7 @@ const EditProfile = ({ user, letter }: { user: User, letter: string }) => {
                   const res = await edgestore.publicImages.upload({
                     file,
                     onProgressChange: (progress) => {
-                      handleLoadingStatusChange('loading', progress);
+                      setProgress(progress);
                     },
                   });
 
@@ -135,7 +142,6 @@ const EditProfile = ({ user, letter }: { user: User, letter: string }) => {
                     isActive: user.isActive
                   }
                   addImage(userData)
-                  handleLoadingStatusChange('loaded', 100);
                 }
               }}
             >

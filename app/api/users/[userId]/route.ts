@@ -17,8 +17,8 @@ const userSchema = z
     deleted: z.boolean(),
     bio: z.string().optional().nullable(),
     isActive: z.boolean(),
-    yearLevel: z.string().min(1),
-    section: z.string().min(1),
+    yearLevel: z.string().nullable(),
+    section: z.string().nullable(),
     imageUrl: z.string().nullable(),
   })
 

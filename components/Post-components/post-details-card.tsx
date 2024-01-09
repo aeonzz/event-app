@@ -362,14 +362,16 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                     />
                   </DialogContent>
                 </Dialog>
-                <Link
-                  href={`/insights/post/${post.id}`}
-                >
-                  <DropdownMenuItem className="text-xs">
-                    <AreaChart className="mr-2 h-4 w-4" />
-                    Insights
-                  </DropdownMenuItem>
-                </Link>
+                {post.Tag.name !== 'event' ? null : (
+                  <Link
+                    href={`/insights/post/${post.id}`}
+                  >
+                    <DropdownMenuItem className="text-xs">
+                      <AreaChart className="mr-2 h-4 w-4" />
+                      Insights
+                    </DropdownMenuItem>
+                  </Link>
+                )}
                 <DropdownMenuSeparator />
                 <Dialog>
                   <DialogTrigger asChild>
@@ -494,215 +496,269 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
         <h3 className='text-muted-foreground text-xs mt-1 text-right'>{post.clicks} Views</h3>
         <Separator className='my-2' />
         <div className='w-full flex p-1'>
-          {post.Tag.name === 'event' && post.author.email !== session?.user.email ? (
-            <Dialog open={attendModal} onOpenChange={setAttendModal}>
-              <DialogTrigger asChild>
+          {post.Tag.name === 'event' ? (
+            <>
+              {post.author.email !== session?.user.email ? (
+                <Dialog open={attendModal} onOpenChange={setAttendModal}>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant='ghost'
+                      size='sm'
+                      className={cn(
+                        goingButtonState ? 'text-primary hover:text-primary' : 'text-muted-foreground',
+                        'relative flex-1 transition-colors'
+                      )}
+                      disabled={post.status !== 'upcoming' || post.accessibility === 'department' && session?.user.department !== post.author.department}
+                    >
+                      <ThumbsUp
+                        className={cn(
+                          goingButtonState ? 'fill-primary stroke-primary' : 'stroke-muted-foreground',
+                          'absolute left-[27%] bottom-[30%] h-4 w-4 transition-colors'
+                        )}
+                      />
+                      Attend
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent forceMount={true}>
+                    <DialogHeader>
+                      <DialogTitle className="text-xl font-semibold" >Confirmation</DialogTitle>
+                      <DialogDescription>
+                        {goingButtonState ? (
+                          <p>Are you sure you want to ditch this event? Aren&apos;t you ashamed that you joined the event and now you&apos;ve changed your mind?</p>
+                        ) : (
+                          <p>Are you sure you want to attend this event?.</p>
+                        )}
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button variant="outline">
+                          Close
+                        </Button>
+                      </DialogClose>
+                      {goingButtonState ? (
+                        <Button
+                          variant='destructive'
+                          onClick={handleGoingClick}
+                          disabled={isLoading}
+                        >
+                          {isLoading && (
+                            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                          )}
+                          Ditch
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={handleGoingClick}
+                          disabled={isLoading}
+                        >
+                          {isLoading && (
+                            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                          )}
+                          Confirm
+                        </Button>
+                      )}
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              ) : (
+                <Dialog open={postponeModal} onOpenChange={setPostponeModal}>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant='ghost'
+                      size='sm'
+                      className='relative flex-1 transition-colors text-muted-foreground'
+                      onClick={() => setStatus('postponed')}
+                      disabled={post.status !== 'upcoming' && post.status !== 'eventDay'}
+                    >
+                      <MonitorPause className='absolute left-[25%] h-4 w-4 transition-colors stroke-muted-foreground' />
+                      {post.status === 'postponed' ? <p>Postponed</p> : <p>Postpone</p>}
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent forceMount={true}>
+                    <DialogHeader>
+                      <DialogTitle className="text-xl font-semibold" >Confirmation</DialogTitle>
+                      <DialogDescription>
+                        <p>Are you certain you wish to postpone this event? This action is irreversible.</p>
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button variant="outline">
+                          Close
+                        </Button>
+                      </DialogClose>
+                      <Button
+                        onClick={handleStatusUpdate}
+                        disabled={isLoading}
+                      >
+                        {isLoading && (
+                          <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                        )}
+                        Confirm
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              )}
+              {post.author.email !== session?.user.email ? (
                 <Button
                   variant='ghost'
                   size='sm'
+                  onClick={() => setsaveButtonState((prev) => !prev)}
                   className={cn(
-                    goingButtonState ? 'text-primary hover:text-primary' : 'text-muted-foreground',
+                    saveButtonState ? 'text-primary hover:text-primary' : 'text-muted-foreground',
                     'relative flex-1 transition-colors'
                   )}
-                  disabled={post.status !== 'upcoming' || post.accessibility === 'department' && session?.user.department !== post.author.department}
                 >
-                  <ThumbsUp
+                  <Bookmark
                     className={cn(
-                      goingButtonState ? 'fill-primary stroke-primary' : 'stroke-muted-foreground',
-                      'absolute left-[27%] bottom-[30%] h-4 w-4 transition-colors'
+                      saveButtonState ? 'fill-primary stroke-primary' : 'stroke-muted-foreground',
+                      'absolute left-[29%] h-4 w-4 transition-colors'
                     )}
                   />
-                  Attend
+                  {saveButtonState ? <p>Saved</p> : <p>Save</p>}
                 </Button>
-              </DialogTrigger>
-              <DialogContent forceMount={true}>
-                <DialogHeader>
-                  <DialogTitle className="text-xl font-semibold" >Confirmation</DialogTitle>
-                  <DialogDescription>
-                    {goingButtonState ? (
-                      <p>Are you sure you want to ditch this event? Aren&apos;t you ashamed that you joined the event and now you&apos;ve changed your mind?</p>
-                    ) : (
-                      <p>Are you sure you want to attend this event?.</p>
-                    )}
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline">
-                      Close
-                    </Button>
-                  </DialogClose>
-                  {goingButtonState ? (
+              ) : (
+                <Dialog open={attendModal} onOpenChange={setAttendModal}>
+                  <DialogTrigger asChild>
                     <Button
-                      variant='destructive'
-                      onClick={handleGoingClick}
-                      disabled={isLoading}
+                      variant='ghost'
+                      size='sm'
+                      className='relative flex-1 transition-colors text-muted-foreground'
+                      onClick={() => setStatus('cancelled')}
+                      disabled={post.status !== 'upcoming' && post.status !== 'eventDay'}
                     >
-                      {isLoading && (
-                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                      )}
-                      Ditch
+                      <Ban className='absolute left-[29%] h-4 w-4 transition-colors stroke-muted-foreground' />
+                      {post.status === 'cancelled' ? <p>Cancelled</p> : <p>Cancel</p>}
                     </Button>
-                  ) : (
-                    <Button
-                      onClick={handleGoingClick}
-                      disabled={isLoading}
-                    >
-                      {isLoading && (
-                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                      )}
-                      Confirm
-                    </Button>
-                  )}
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          ) : (
-            <Dialog open={postponeModal} onOpenChange={setPostponeModal}>
-              <DialogTrigger asChild>
-                <Button
-                  variant='ghost'
-                  size='sm'
-                  className='relative flex-1 transition-colors text-muted-foreground'
-                  onClick={() => setStatus('postponed')}
-                  disabled={post.status !== 'upcoming' && post.status !== 'eventDay'}
-                >
-                  <MonitorPause className='absolute left-[25%] h-4 w-4 transition-colors stroke-muted-foreground' />
-                  {post.status === 'postponed' ? <p>Postponed</p> : <p>Postpone</p>}
-                </Button>
-              </DialogTrigger>
-              <DialogContent forceMount={true}>
-                <DialogHeader>
-                  <DialogTitle className="text-xl font-semibold" >Confirmation</DialogTitle>
-                  <DialogDescription>
-                    <p>Are you certain you wish to postpone this event? This action is irreversible.</p>
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline">
-                      Close
-                    </Button>
-                  </DialogClose>
-                  <Button
-                    onClick={handleStatusUpdate}
-                    disabled={isLoading}
-                  >
-                    {isLoading && (
-                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                    )}
-                    Confirm
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          )}
-          {post.Tag.name === 'event' && post.author.email !== session?.user.email ? (
-            <Button
-              variant='ghost'
-              size='sm'
-              onClick={() => setsaveButtonState((prev) => !prev)}
-              className={cn(
-                saveButtonState ? 'text-primary hover:text-primary' : 'text-muted-foreground',
-                'relative flex-1 transition-colors'
+                  </DialogTrigger>
+                  <DialogContent forceMount={true}>
+                    <DialogHeader>
+                      <DialogTitle className="text-xl font-semibold" >Confirmation</DialogTitle>
+                      <DialogDescription>
+                        <p>Are you certain you wish to postpone this event? This action is irreversible.</p>
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button variant="outline">
+                          Close
+                        </Button>
+                      </DialogClose>
+                      <Button
+                        onClick={handleStatusUpdate}
+                        disabled={isLoading}
+                      >
+                        {isLoading && (
+                          <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                        )}
+                        Confirm
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               )}
-            >
-              <Bookmark
-                className={cn(
-                  saveButtonState ? 'fill-primary stroke-primary' : 'stroke-muted-foreground',
-                  'absolute left-[29%] h-4 w-4 transition-colors'
-                )}
-              />
-              {saveButtonState ? <p>Saved</p> : <p>Save</p>}
-            </Button>
+
+              <Dialog open={openCopyToClipboard} onOpenChange={setOpenCopyToClipboard}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant='ghost'
+                    size='sm'
+                    className='relative flex-1 text-muted-foreground'
+                  >
+                    <Forward className="absolute left-[29%] h-4 w-4" />
+                    Share
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Share link</DialogTitle>
+                    <DialogDescription>
+                      Anyone who has this link will be able to view this.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="flex items-center space-x-2">
+                    <div className="grid flex-1 gap-2">
+                      <Label htmlFor="link" className="sr-only">
+                        Link
+                      </Label>
+                      <Input
+                        id="link"
+                        defaultValue={`localhost:3000/post/${post.id}`}
+                        readOnly
+                        ref={textRef}
+                      />
+                    </div>
+                    <Button
+                      size="sm"
+                      className="px-3"
+                      onClick={() => copyToClipboard()}
+                    >
+                      <span className="sr-only">Copy</span>
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <DialogFooter className="sm:justify-start">
+                    <DialogClose asChild>
+                      <Button type="button" variant="secondary">
+                        Close
+                      </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </>
           ) : (
-            <Dialog open={attendModal} onOpenChange={setAttendModal}>
+            <Dialog open={openCopyToClipboard} onOpenChange={setOpenCopyToClipboard}>
               <DialogTrigger asChild>
                 <Button
                   variant='ghost'
                   size='sm'
-                  className='relative flex-1 transition-colors text-muted-foreground'
-                  onClick={() => setStatus('cancelled')}
-                  disabled={post.status !== 'upcoming' && post.status !== 'eventDay'}
+                  className='relative flex-1 text-muted-foreground'
                 >
-                  <Ban className='absolute left-[29%] h-4 w-4 transition-colors stroke-muted-foreground' />
-                  {post.status === 'cancelled' ? <p>Cancelled</p> : <p>Cancel</p>}
+                  <Forward className="absolute left-[29%] h-4 w-4" />
+                  Share
                 </Button>
               </DialogTrigger>
-              <DialogContent forceMount={true}>
+              <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                  <DialogTitle className="text-xl font-semibold" >Confirmation</DialogTitle>
+                  <DialogTitle>Share link</DialogTitle>
                   <DialogDescription>
-                    <p>Are you certain you wish to postpone this event? This action is irreversible.</p>
+                    Anyone who has this link will be able to view this.
                   </DialogDescription>
                 </DialogHeader>
-                <DialogFooter>
+                <div className="flex items-center space-x-2">
+                  <div className="grid flex-1 gap-2">
+                    <Label htmlFor="link" className="sr-only">
+                      Link
+                    </Label>
+                    <Input
+                      id="link"
+                      defaultValue={`localhost:3000/post/${post.id}`}
+                      readOnly
+                      ref={textRef}
+                    />
+                  </div>
+                  <Button
+                    size="sm"
+                    className="px-3"
+                    onClick={() => copyToClipboard()}
+                  >
+                    <span className="sr-only">Copy</span>
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                </div>
+                <DialogFooter className="sm:justify-start">
                   <DialogClose asChild>
-                    <Button variant="outline">
+                    <Button type="button" variant="secondary">
                       Close
                     </Button>
                   </DialogClose>
-                  <Button
-                    onClick={handleStatusUpdate}
-                    disabled={isLoading}
-                  >
-                    {isLoading && (
-                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                    )}
-                    Confirm
-                  </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
           )}
-          <Dialog open={openCopyToClipboard} onOpenChange={setOpenCopyToClipboard}>
-            <DialogTrigger asChild>
-              <Button
-                variant='ghost'
-                size='sm'
-                className='relative flex-1 text-muted-foreground'
-              >
-                <Forward className="absolute left-[29%] h-4 w-4" />
-                Share
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>Share link</DialogTitle>
-                <DialogDescription>
-                  Anyone who has this link will be able to view this.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="flex items-center space-x-2">
-                <div className="grid flex-1 gap-2">
-                  <Label htmlFor="link" className="sr-only">
-                    Link
-                  </Label>
-                  <Input
-                    id="link"
-                    defaultValue={`localhost:3000/post/${post.id}`}
-                    readOnly
-                    ref={textRef}
-                  />
-                </div>
-                <Button
-                  size="sm"
-                  className="px-3"
-                  onClick={() => copyToClipboard()}
-                >
-                  <span className="sr-only">Copy</span>
-                  <Copy className="h-4 w-4" />
-                </Button>
-              </div>
-              <DialogFooter className="sm:justify-start">
-                <DialogClose asChild>
-                  <Button type="button" variant="secondary">
-                    Close
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
         </div>
         {post.published === null && session?.user.role === 'SYSTEMADMIN' ? (
           <PostReview

@@ -417,25 +417,24 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                   </div>
                 </div>
                 {fwall && (
-                  <Card className="flex items-center space-x-4 px-4 py-2">
-                    <Label htmlFor="airplane-mode">Post anonymously</Label>
+                  <Card className="flex items-center justify-between space-x-4 px-4 py-2 bg-card min-w-[170px]">
+                    <Label className="text-xs">Post anonymously</Label>
                     <Switch
                       checked={anonymous}
                       onCheckedChange={setAnonymous}
-                      id="airplane-mode"
                       disabled={isLoading}
                     />
                   </Card>
                 )}
-                {category === 'event' && (
-                  <div className="flex items-center space-x-4 px-4 py-2">
+                {category !== 'fw' && (
+                  <Card className="flex items-center justify-between space-x-4 px-4 py-2 bg-card min-w-[170px]">
                     <Label className="text-xs">{accessibility ? 'Dept. only' : 'Public'}</Label>
                     <Switch
                       checked={accessibility}
                       onCheckedChange={setAccessibility}
                       disabled={isLoading}
                     />
-                  </div>
+                  </Card>
                 )}
               </div>
               {fwall ? null : (

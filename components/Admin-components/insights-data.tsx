@@ -345,18 +345,6 @@ const InsightsData: React.FC<InsightsDataProps> = ({ interactions, totalParticip
                       user={user.user}
                     />
                   ))}
-                  {filteredInteractions.map((user) => (
-                    <ParticipantCard
-                      key={user.userId}
-                      user={user.user}
-                    />
-                  ))}
-                  {filteredInteractions.map((user) => (
-                    <ParticipantCard
-                      key={user.userId}
-                      user={user.user}
-                    />
-                  ))}
                 </div>
               ) : (
                 <ScrollArea className='h-[210px] mt-1 space-y-2'>
