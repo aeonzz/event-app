@@ -138,6 +138,7 @@ const UserDetails: FC<UserDetailsProps> = async ({ params }) => {
                 post={post}
                 session={session}
                 profileId={userId}
+                user={user}
               />
             </div>
             {/* <ProfileForm /> */}

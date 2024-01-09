@@ -6,6 +6,7 @@ export type FormInputPost = {
     image?: string | undefined
     accessibility: string | undefined
     content?: string | undefined
+    action?: string | null
     venue?: string | undefined
     location?: string | undefined
     status: string

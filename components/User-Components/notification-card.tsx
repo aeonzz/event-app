@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import { Card } from '../ui/card'
 import { Posts } from '@/types/posts'
@@ -9,13 +11,23 @@ import Link from 'next/link'
 import { Skeleton } from '../ui/skeleton'
 import { Session } from 'next-auth'
 
-const NotificationCard = ({ post, onChangeOpenState, open, session }: { post: Posts, onChangeOpenState: (newOpenState: boolean) => void, open: boolean, session: Session }) => {
+interface NotificationCardProps {
+  post: Posts
+  open: boolean
+  session: Session
+  onChangeOpenState: (newOpenState: boolean) => void
+}
+
+const NotificationCard: React.FC<NotificationCardProps> = ({ post, onChangeOpenState, open, session }) => {
 
   const userIdInt = parseInt(session.user.id)
+  const user = session.user.role === 'USER'
+  const a = user && post.published === true && session.user.department === post.author.department
+  console.log(user)
   const admin = session.user.role === 'ADMIN'
   const sAdmin = session.user.role === 'SYSTEMADMIN'
   const postedAt = new Date(post.createdAt)
-  const approvedAt = new Date(post.updatedAt)
+  const approvedAt = post.action ? new Date(post.action) : new Date()
   const profile = post.author.imageUrl ? post.author.imageUrl : undefined
   let initialLetter = ''
   if (post.author.username) {
@@ -78,6 +90,15 @@ const NotificationCard = ({ post, onChangeOpenState, open, session }: { post: Po
         {admin && post.published === false as boolean ? (
           <>
             <h2 className='text-xs'>Post rejected</h2>
+            <div className='flex gap-2 items-center mt-1'>
+              <Badge variant='secondary'>{post.Tag.name}</Badge>
+              <p className='text-muted-foreground text-xs'>{formatDistanceToNow(approvedAt, { addSuffix: true })}</p>
+            </div>
+          </>
+        ) : null}
+        {user && post.published === true && session.user.department === post.author.department ? (
+          <>
+            <h2 className='text-xs'>New event posted</h2>
             <div className='flex gap-2 items-center mt-1'>
               <Badge variant='secondary'>{post.Tag.name}</Badge>
               <p className='text-muted-foreground text-xs'>{formatDistanceToNow(approvedAt, { addSuffix: true })}</p>

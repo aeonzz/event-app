@@ -8,6 +8,7 @@ import { getServerSession } from 'next-auth';
 import React from 'react'
 import { startOfDay, endOfDay } from 'date-fns';
 import InsightsData from '@/components/Admin-components/insights-data';
+import Loadingss from './loading';
 
 interface InsightsProps {
   params: {
@@ -120,12 +121,13 @@ const Insights: React.FC<InsightsProps> = async ({ params }) => {
       }
 
       return (
-        <div className='w-[79.1%] mt-4 min-h-[400px] flex flex-col '>
+        <div className='w-[79.1%] mt-4 min-h-[400px] flex flex-col'>
           <InsightsData 
           interactions={interactions}
           totalParticipantsCountForDay={totalParticipantsCountForDay}
           post={post}
           />
+          {/* <Loadingss /> */}
         </div>
       )
     } else {

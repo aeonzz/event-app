@@ -9,6 +9,7 @@ export type Posts = {
   venue: string | null
   location: string | null
   dateFrom: Date 
+  action: string | null
   dateTo: Date 
   timeTo: string
   timeFrom: string
@@ -26,6 +27,7 @@ export type Posts = {
     createdAt: Date
     imageUrl: string | null
     department: string
+    role: string
   }
   Tag: {
     tagId: number

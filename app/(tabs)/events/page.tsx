@@ -33,6 +33,7 @@ const Event = async () => {
       <PostGrid
         tag={tag}
         published={published}
+        session={session}
       />
       {/* <Posts
         tag={tag}

@@ -20,7 +20,7 @@ import axios from "axios";
 import { User } from "@prisma/client";
 import { Separator } from "../ui/separator";
 import ProfileHover from "../profileHover";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import LoadingSpinner from "../Loading/Spinner";
 import AdminsNavLoading from "../Loading/AdminsNavLoading";
 import { format } from "date-fns";
@@ -39,12 +39,15 @@ import { Posts } from "@/types/posts";
 import PostGridLoading from "../Loading/PostGridLoading";
 import { Skeleton } from "../ui/skeleton";
 import { Session } from "next-auth";
+import UserNotificationCard from "../User-Components/user-notif-card";
+import { useMutationSuccess } from "../Context/mutateContext";
 
 
 const NavMenu = ({ session }: { session: Session }) => {
 
   const pathname = usePathname();
   const [open, setOpen] = useState(false)
+  const { isMutate, setIsMutate } = useMutationSuccess()
 
   const onChangeOpenState = (newChangeOpenState: boolean) => {
     setOpen(newChangeOpenState)
@@ -70,10 +73,28 @@ const NavMenu = ({ session }: { session: Session }) => {
     },
   });
 
+  const handleRefetch = () => {
+    refetch();
+    setIsMutate(false);
+  };
+
+  useEffect(() => {
+    if (isMutate) {
+      handleRefetch();
+    }
+  }, [isMutate, refetch, setIsMutate]);
+
+
   const filteredPosts = dataPosts?.filter(
     post => post.Tag.name !== 'fw' && post.deleted === false
-  );
+  ) || []
 
+  const sortedFilteredPosts = [...filteredPosts].sort((a, b) => {
+    const dateA = a.action ? new Date(a.action) : new Date(0); 
+    const dateB = b.action ? new Date(b.action) : new Date(0); 
+
+    return dateB.getTime() - dateA.getTime();
+  });
   return (
     <>
       {pathname === '/' ||
@@ -143,7 +164,7 @@ const NavMenu = ({ session }: { session: Session }) => {
                     </SheetHeader>
                     <ScrollArea className='h-[85%] pl-3'>
                       {filteredPosts?.length === 0 ? (
-                        <div className="border w-full h-40 flex justify-center items-center">
+                        <div className="w-full h-40 flex justify-center items-center">
                           No notifications
                         </div>
                       ) : (
@@ -165,7 +186,7 @@ const NavMenu = ({ session }: { session: Session }) => {
                           {status !== 'pending' && status !== 'error' && (
                             <>
                               {session.user.role === 'SYSTEMADMIN' || session.user.role === 'ADMIN' ? (
-                                filteredPosts?.map((filteredPost) => (
+                                filteredPosts.map((filteredPost) => (
                                   <NotificationCard
                                     key={filteredPost.id}
                                     post={filteredPost}
@@ -174,7 +195,19 @@ const NavMenu = ({ session }: { session: Session }) => {
                                     session={session}
                                   />
                                 ))
-                              ) : null}
+                              ) : (
+                                <div>
+                                  {sortedFilteredPosts.map((filteredPost) => (
+                                    <UserNotificationCard
+                                      key={filteredPost.id}
+                                      post={filteredPost}
+                                      onChangeOpenState={onChangeOpenState}
+                                      open={open}
+                                      session={session}
+                                    />
+                                  ))}
+                                </div>
+                              )}
                             </>
                           )}
                         </>

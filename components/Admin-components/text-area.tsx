@@ -138,7 +138,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
   const [anonymous, setAnonymous] = useState(false)
   const [accessibility, setAccessibility] = useState(false)
   const [published, setPublished] = useState(fwall)
-  console.log(fwall)
+  // console.log(published)
   const [urls, setUrls] = useState<string[]>([])
   const [isEditingUrls, setIsEditingUrls] = useState<string[]>([])
   const [fileStates, setFileStates] = useState<FileState[]>([])

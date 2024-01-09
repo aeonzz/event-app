@@ -236,11 +236,15 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
     return null;
   }
 
-  if (profile && post.author.id !== profileId) {
+  if (profile && post.author.id !== profileId ) {
     return null
   }
 
   if (deleted) {
+    return null;
+  }
+
+  if (profile && userIdNumber !== profileId && post.anonymous) {
     return null;
   }
 
@@ -277,8 +281,12 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
                 <p className='text-xs font-light text-muted-foreground'>
                   {formatDistanceToNow(postedAt, { addSuffix: true })}
                 </p>
-                <Dot />
-                <Badge className='w-fit' variant='secondary'>{post.Tag.name}</Badge>
+                {fw ? null : (
+                  <>
+                    <Dot />
+                    <Badge className='w-fit' variant='secondary'>{post.Tag.name}</Badge>
+                  </>
+                )}
               </div>
             </div>
           </div>

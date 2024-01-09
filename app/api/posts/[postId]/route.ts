@@ -52,7 +52,10 @@ const PostSchema = z.object({
   timeTo: z
     .string(),
   accessibility: z
+    .string(),
+  action: z
     .string()
+    .nullable().or(z.undefined()),
 })
 
 export async function GET(req: Request, context: contextProps) {
@@ -113,7 +116,7 @@ export async function PATCH(req: Request, { params }: { params: { postId: string
     const userIdInt = parseInt(session!.user.id, 10);
     const postIdInt = parseInt(params.postId, 10);
     const body = await req.json()
-    const { title, content, category, published, status, anonymous, venue, location, dateFrom, dateTo, deleted, clicks, going, timeFrom, timeTo, accessibility } = PostSchema.parse(body);
+    const { title, content, category, published, status, anonymous, venue, location, dateFrom, dateTo, deleted, clicks, going, timeFrom, timeTo, accessibility, action } = PostSchema.parse(body);
 
 
     const tag = await prisma.tag.findUnique({
@@ -132,6 +135,9 @@ export async function PATCH(req: Request, { params }: { params: { postId: string
     }
     if (accessibility !== undefined) {
       updateData.accessibility = accessibility;
+    }
+    if (action !== undefined) {
+      updateData.action = action;
     }
     if (category !== undefined) {
       updateData.Tag = {

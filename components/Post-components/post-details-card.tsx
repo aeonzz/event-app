@@ -49,6 +49,7 @@ import PostReview from "./PostReview"
 import PostStatus from "./post-status"
 import { Card } from "../ui/card"
 import NotFound from "@/app/not-found"
+import { useMutationSuccess } from "../Context/mutateContext"
 
 
 interface PostDetailsCardProps {
@@ -64,17 +65,17 @@ const options = {
 const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
 
   const { UserPostInteraction, images } = post;
+  const { isMutate, setIsMutate } = useMutationSuccess()
   const pathname = usePathname()
   const router = useRouter()
   const textRef = useRef<HTMLInputElement>(null);
   const userIdString = session?.user.id;
   const userIdNumber = userIdString ? parseInt(userIdString, 10) : null;
-  const fwall = pathname === '/freedom-wall'
+  const fwall = pathname === '/freedom-wall' ? true : null
   const postedAt = new Date(post.createdAt)
   const authorCreatedAt = new Date(post.author.createdAt)
   const going = UserPostInteraction.length > 0 ? UserPostInteraction[0].going : false;
-
-
+  const formattedActionDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ssxxx");
   const [actionDropdown, setActionDropdown] = useState(false)
   const [saveButtonState, setsaveButtonState] = useState(false)
   const [showFullContent, setShowFullContent] = useState(false);
@@ -120,6 +121,10 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
     setShowFullContent(!showFullContent);
   };
 
+  const handleRefetch = () => {
+    router.refresh()
+    setIsMutate(false);
+  };
 
   useEffect(() => {
     if (!open) {
@@ -130,6 +135,12 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
   useEffect(() => {
     setGoingButtonState(going);
   }, [going]);
+
+  useEffect(() => {
+    if (isMutate) {
+      handleRefetch();
+    }
+  }, [isMutate, setIsMutate]);
 
 
   const copyToClipboard = () => {
@@ -190,9 +201,14 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
     },
     onSuccess: () => {
       setIsLoading(false)
-      setAttendModal(false)
       router.refresh()
-      toast("Event Postponed")
+      if (status === 'postponed') {
+        setPostponeModal(false)
+        toast("Event Postponed")
+      } else {
+        setCancelModal(false)
+        toast("Event Cancelled")
+      }
     }
   })
 
@@ -250,6 +266,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
       venue: post.venue || undefined,
       location: post.location || undefined,
       accessibility: post.accessibility,
+      action: formattedActionDate,
       published: post.published,
       deleted: post.deleted,
       category: post.Tag.name,
@@ -327,14 +344,11 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
             {session!.user.email === post.author.email && (
               <>
                 <Dialog open={open} onOpenChange={setOpen}>
-                  <DialogTrigger
-                    className='w-full'
-                    disabled={post.status !== 'upcoming' && post.status !== 'postponed'}
-                  >
+                  <DialogTrigger asChild>
                     <DropdownMenuItem
                       className='text-xs'
                       onSelect={(e) => e.preventDefault()}
-                      disabled={post.status !== 'upcoming' && post.status !== 'postponed'}
+                      disabled={post.status !== 'upcoming' && post.status !== 'postponed' || post.published === null}
                     >
                       <Pencil className="mr-2 h-4 w-4" />
                       {post.status === 'postponed' ? <p>Reschedule</p> : <p>Edit</p>}
@@ -620,7 +634,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                   {saveButtonState ? <p>Saved</p> : <p>Save</p>}
                 </Button>
               ) : (
-                <Dialog open={attendModal} onOpenChange={setAttendModal}>
+                <Dialog open={cancelModal} onOpenChange={setCancelModal}>
                   <DialogTrigger asChild>
                     <Button
                       variant='ghost'
@@ -637,7 +651,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                     <DialogHeader>
                       <DialogTitle className="text-xl font-semibold" >Confirmation</DialogTitle>
                       <DialogDescription>
-                        <p>Are you certain you wish to postpone this event? This action is irreversible.</p>
+                        <p>Are you certain you wish to cancel this event? This action is irreversible.</p>
                       </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>

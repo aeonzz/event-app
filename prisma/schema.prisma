@@ -53,6 +53,7 @@ model Post {
   timeTo              String                @db.VarChar(255)
   published           Boolean?
   status              String                @default("upcoming")
+  action              String?
   deleted             Boolean               @default(false)
   authorId            Int
   author              User                  @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)

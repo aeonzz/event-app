@@ -18,9 +18,10 @@ interface PostsProps {
   tag?: string | null
   fw?: boolean | null
   published?: boolean | null
+  session: Session | null
 }
 
-const PostGrid: FC<PostsProps> = ({ tag, fw, published }) => {
+const PostGrid: FC<PostsProps> = ({ tag, fw, published, session }) => {
 
   const { isMutate, setIsMutate } = useMutationSuccess()
 
@@ -64,6 +65,7 @@ const PostGrid: FC<PostsProps> = ({ tag, fw, published }) => {
                 <PostGridCard
                   key={post.id}
                   post={post}
+                  session={session}
                 />
               ))}
             </div>

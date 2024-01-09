@@ -106,7 +106,7 @@ export default function UserNav({ className }: { className: string }) {
             <></>
           )}
           <DropdownMenuSeparator />
-          <div className='relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground hover:bg-accent/50 text-destructive'>
+          <div className='relative flex cursor-default select-none items-center rounded-sm text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground hover:bg-accent/50 text-destructive'>
             <Logout />
           </div>
         </HoverCardContent>

@@ -24,6 +24,7 @@ export async function GET(req: Request) {
           dateFrom: true,
           dateTo: true,
           author: true,
+          action: true,
           images: true,
           accessibility: true,
           published: true,

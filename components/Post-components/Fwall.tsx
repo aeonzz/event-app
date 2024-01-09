@@ -56,7 +56,7 @@ const Fwall: FC<PostsProps> = ({ tag, published, session, profileId, profile }) 
   };
   
   const content = data?.pages.map((group, i) => (
-    <React.Fragment key={i}>
+    <div key={i}>
       {group.data.length === 0 ? (
         <NoPostMessage />
       ) : (
@@ -76,7 +76,7 @@ const Fwall: FC<PostsProps> = ({ tag, published, session, profileId, profile }) 
           ))}
         </>
       )}
-    </React.Fragment>
+    </div>
   ));
   
   useEffect(() => {

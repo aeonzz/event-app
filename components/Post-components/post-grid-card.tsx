@@ -21,9 +21,11 @@ import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { useMutationSuccess } from '../Context/mutateContext';
 import { Button } from '../ui/button';
+import { Session } from 'next-auth';
 
 interface PostGridCard {
   post: Posts
+  session?: Session | null
 }
 
 function convertTimeTo12HourFormat(timeString: string): string {
@@ -32,7 +34,7 @@ function convertTimeTo12HourFormat(timeString: string): string {
   return timeIn12HourFormat;
 }
 
-const PostGridCard: FC<PostGridCard> = ({ post }) => {
+const PostGridCard: FC<PostGridCard> = ({ post, session }) => {
   const { UserPostInteraction } = post
   const going = post.UserPostInteraction.length > 0 ? post.UserPostInteraction[0].going : false;
   const authorCreatedAt = new Date(post.author.createdAt)
@@ -98,24 +100,26 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
   })
 
   function handleClick() {
-    const data: FormInputPost = {
-      title: post.title,
-      content: post.content || undefined,
-      anonymous: post.anonymous,
-      venue: post.venue || undefined,
-      accessibility: post.accessibility,
-      location: post.location || undefined,
-      published: post.published,
-      deleted: false,
-      category: post.Tag.name,
-      authorId: post.author.id,
-      clicks: post.clicks + 1,
-      status: post.status,
-      going: undefined,
-      timeFrom: post.timeFrom,
-      timeTo: post.timeTo
-    };
-    updateClicks(data)
+    if (session?.user.role === "USER") {
+      const data: FormInputPost = {
+        title: post.title,
+        content: post.content || undefined,
+        anonymous: post.anonymous,
+        venue: post.venue || undefined,
+        accessibility: post.accessibility,
+        location: post.location || undefined,
+        published: post.published,
+        deleted: false,
+        category: post.Tag.name,
+        authorId: post.author.id,
+        clicks: post.clicks + 1,
+        status: post.status,
+        going: undefined,
+        timeFrom: post.timeFrom,
+        timeTo: post.timeTo
+      };
+      updateClicks(data)
+    }
   }
 
   function handleStatusUpdate() {
@@ -153,11 +157,11 @@ const PostGridCard: FC<PostGridCard> = ({ post }) => {
       handleStatusUpdate();
       setIsMutate(true);
     }, 3000);
-  
+
     return () => clearTimeout(timerId);
-  
+
   }, [isEventDay, eventStart, eventEnd, status, handleStatusUpdate, setIsMutate]);
-  
+
 
   if (post.deleted) {
     return null

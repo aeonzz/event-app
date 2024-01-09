@@ -24,6 +24,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { useMutationSuccess } from '../Context/mutateContext';
+import { format } from 'date-fns';
 
 
 interface PostReviewProps {
@@ -38,7 +39,8 @@ const PostReview: FC<PostReviewProps> = ({ post, style }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [approved, setApproved] = useState<boolean | undefined>(undefined)
   const { setIsMutate } = useMutationSuccess()
-  console.log(approved)
+  const formattedActionDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ssxxx");
+  
   const { mutate: approval } = useMutation({
     mutationFn: async (approval: FormInputPost) => {
       return axios.patch(`/api/posts/${id}`, approval);
@@ -79,6 +81,7 @@ const PostReview: FC<PostReviewProps> = ({ post, style }) => {
       accessibility: post.accessibility,
       published: value,
       status: post.status,
+      action: formattedActionDate,
       deleted: post.deleted,
       category: post.Tag.name || undefined,
       authorId: post.author.id || undefined,
