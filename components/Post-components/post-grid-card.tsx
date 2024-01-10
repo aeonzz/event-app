@@ -43,28 +43,8 @@ const PostGridCard: FC<PostGridCard> = ({ post, session }) => {
   const router = useRouter()
   const { setIsMutate } = useMutationSuccess()
 
-  // date functions hhahhhahahah fuck this 
-
   const dateFrom = post.dateFrom ? new Date(post.dateFrom) : undefined;
   const dateTo = post.dateTo ? new Date(post.dateTo) : undefined;
-  const currentDate = new Date();
-  const currentTime = new Date();
-  const startOfCurrentDay = startOfDay(currentDate);
-
-  const formattedCurrentTime = format(currentTime, 'h:mm a');
-  const formattedTimeFrom = post.timeFrom ? convertTimeTo12HourFormat(post.timeFrom) : undefined
-  const formattedTimeTo = post.timeTo ? convertTimeTo12HourFormat(post.timeTo) : undefined
-
-  const isTimeAfterTimeFrom = formattedTimeFrom ? isAfter(currentTime, parse(formattedTimeFrom, 'h:mm a', new Date())) : undefined
-  const isTimeBeforeTimeTo = formattedTimeTo ? isBefore(currentTime, parse(formattedTimeTo, 'h:mm a', new Date())) : undefined
-
-  const isDateEqual = dateFrom !== undefined && isEqual(dateFrom, startOfCurrentDay);
-  const currentEventTime = isTimeAfterTimeFrom && isTimeBeforeTimeTo;
-  const isCurrentTimeAfterEventTime = isTimeAfterCurrentTime(post.timeTo);
-
-  const isEventDay = isDateEqual && !isCurrentTimeAfterEventTime
-  const eventStart = isDateEqual && currentEventTime && !isCurrentTimeAfterEventTime;
-  const eventEnd = isDateEqual && isCurrentTimeAfterEventTime
 
   const date =
     dateTo
@@ -76,12 +56,6 @@ const PostGridCard: FC<PostGridCard> = ({ post, session }) => {
         ? `On ${format(dateFrom, 'PP')}` +
         (post.timeTo ? `, ${convertTimeTo12HourFormat(post.timeFrom)} - ${convertTimeTo12HourFormat(post.timeTo)}` : `, ${convertTimeTo12HourFormat(post.timeFrom)}`)
         : 'No date available';
-
-
-  function isTimeAfterCurrentTime(eventTime: string): boolean {
-    const currentHourMinute = format(currentTime, 'HH:mm');
-    return currentHourMinute >= eventTime;
-  }
 
   const { mutate: updateClicks } = useMutation({
     mutationFn: async (updateClicks: FormInputPost) => {
@@ -122,46 +96,6 @@ const PostGridCard: FC<PostGridCard> = ({ post, session }) => {
     }
   }
 
-  function handleStatusUpdate() {
-    const data: FormInputPost = {
-      title: post.title,
-      content: post.content || undefined,
-      anonymous: post.anonymous,
-      venue: post.venue || undefined,
-      accessibility: post.accessibility,
-      location: post.location || undefined,
-      published: post.published,
-      deleted: post.deleted,
-      category: post.Tag.name,
-      authorId: post.author.id,
-      clicks: post.clicks,
-      status: status,
-      going: going || undefined,
-      timeFrom: post.timeFrom,
-      timeTo: post.timeTo
-    };
-    updateStatus(data)
-  }
-
-  useEffect(() => {
-    const timerId = setTimeout(() => {
-      if (isEventDay) {
-        setStatus('eventDay');
-      }
-      if (eventStart) {
-        setStatus('ongoing');
-      }
-      if (eventEnd) {
-        setStatus('completed');
-      }
-      handleStatusUpdate();
-      setIsMutate(true);
-    }, 3000);
-
-    return () => clearTimeout(timerId);
-
-  }, [isEventDay, eventStart, eventEnd, status, handleStatusUpdate, setIsMutate]);
-
 
   if (post.deleted) {
     return null
@@ -170,7 +104,6 @@ const PostGridCard: FC<PostGridCard> = ({ post, session }) => {
   return (
     <Link
       href={`/post/${post.id}`}
-      replace={true}
       key={post.id}
       onClick={() => handleClick()}
       className='group'

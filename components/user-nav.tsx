@@ -58,7 +58,7 @@ export default function UserNav({ className }: { className: string }) {
   return (
     <div className={cn(
       className,
-      'flex gap-3 items-center fixed bottom-[7%]'
+      'flex gap-3 items-center fixed bottom-[5%]'
     )}>
       <HoverCard openDelay = { 100} closeDelay = { 100} >
         <HoverCardTrigger asChild>

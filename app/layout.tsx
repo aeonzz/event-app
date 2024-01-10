@@ -56,7 +56,7 @@ export default async function RootLayout({
                   </>
                 )}
 
-                <Toaster richColors expand={true} />
+                <Toaster richColors />
               </ThemeProvider>
             </QueryProvider>
           </EdgeStoreProvider>

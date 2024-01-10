@@ -12,7 +12,7 @@ import { sidebarNav } from '@/constants/index';
 import Link from "next/link";
 import { Button, buttonVariants } from "../ui/button";
 import Image from "next/image";
-import { Bell, Home, Loader2 } from "lucide-react";
+import { Bell, Home, LayoutDashboard, Loader, Loader2, Search, User2 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -41,13 +41,18 @@ import { Skeleton } from "../ui/skeleton";
 import { Session } from "next-auth";
 import UserNotificationCard from "../User-Components/user-notif-card";
 import { useMutationSuccess } from "../Context/mutateContext";
+import { useSession } from "next-auth/react";
+import { Input } from "../ui/input";
 
 
 const NavMenu = ({ session }: { session: Session }) => {
 
   const pathname = usePathname();
   const [open, setOpen] = useState(false)
+  const [openSearch, setOpenSearch] = useState(false)
   const { isMutate, setIsMutate } = useMutationSuccess()
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredUsers, setFilteredUsers] = useState<User[] | undefined>([]);
 
   const onChangeOpenState = (newChangeOpenState: boolean) => {
     setOpen(newChangeOpenState)
@@ -57,11 +62,7 @@ const NavMenu = ({ session }: { session: Session }) => {
     queryKey: ['user'],
     queryFn: async () => {
       const response = await axios.get('/api/users');
-      const data = response.data.map((user: User) => ({
-        ...user,
-        createdAt: new Date(user.createdAt),
-      }));
-      return data;
+      return response.data
     },
   });
 
@@ -72,6 +73,17 @@ const NavMenu = ({ session }: { session: Session }) => {
       return response.data
     },
   });
+
+  const handleSearch = () => {
+    if (searchQuery.trim() === '') {
+      setFilteredUsers(undefined);
+    } else {
+      const filteredUsers = dataUser?.filter((user) =>
+        user.username.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredUsers(filteredUsers);
+    }
+  };
 
   const handleRefetch = () => {
     refetch();
@@ -84,14 +96,21 @@ const NavMenu = ({ session }: { session: Session }) => {
     }
   }, [isMutate, refetch, setIsMutate]);
 
+  useEffect(() => {
+    setSearchQuery('');
+  }, [openSearch]);
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchQuery]);
 
   const filteredPosts = dataPosts?.filter(
     post => post.Tag.name !== 'fw' && post.deleted === false
   ) || []
 
   const sortedFilteredPosts = [...filteredPosts].sort((a, b) => {
-    const dateA = a.action ? new Date(a.action) : new Date(0); 
-    const dateB = b.action ? new Date(b.action) : new Date(0); 
+    const dateA = a.action ? new Date(a.action) : new Date(0);
+    const dateB = b.action ? new Date(b.action) : new Date(0);
 
     return dateB.getTime() - dateA.getTime();
   });
@@ -108,8 +127,8 @@ const NavMenu = ({ session }: { session: Session }) => {
         pathname.startsWith('/insights') ? (
         <div>
           <aside className={cn(
-            open ? 'opacity-0 -translate-x-[70%]' : 'opacity-100 translate-x-0',
-            'sticky top-16 h-fit w-60 flex flex-col gap-4 items-start pt-7 transition-all duration-500'
+            open || openSearch ? 'opacity-0 -translate-x-[70%]' : 'opacity-100 translate-x-0',
+            'sticky top-16 h-fit w-60 flex flex-col gap-4 items-start pt-7 transition-all duration-300'
           )}>
             <div className='w-full h-auto flex flex-col items-start gap-4'>
               <>
@@ -120,9 +139,9 @@ const NavMenu = ({ session }: { session: Session }) => {
                     className={cn(
                       buttonVariants({ variant: "ghost" }),
                       pathname === item.link
-                        ? 'font-semibold text-primary hover:text-primary'
-                        : 'font-light',
-                      'w-[90%] flex justify-start text-base py-6 group active:text-slate-400'
+                        ? 'text-primary hover:text-primary'
+                        : undefined,
+                      'w-[90%] flex justify-start text-base py-6 group active:text-slate-400 tracking-tight'
                     )}
                   >
                     {pathname === item.link ? (
@@ -149,7 +168,7 @@ const NavMenu = ({ session }: { session: Session }) => {
                   <SheetTrigger asChild>
                     <Button
                       variant='ghost'
-                      className='w-[90%] flex justify-start text-base py-6 group font-light active:text-slate-400 group'
+                      className='w-[90%] flex justify-start text-base py-6 group active:text-slate-400 group tracking-tight'
                     >
                       <Bell className='mr-4 w-7 h-7 group-active:scale-95' />
                       Notifications
@@ -162,6 +181,7 @@ const NavMenu = ({ session }: { session: Session }) => {
                         Stay updated with personalized notifications.
                       </SheetDescription>
                     </SheetHeader>
+                    <Separator className='my-5' />
                     <ScrollArea className='h-[85%] pl-3'>
                       {filteredPosts?.length === 0 ? (
                         <div className="w-full h-40 flex justify-center items-center">
@@ -215,6 +235,84 @@ const NavMenu = ({ session }: { session: Session }) => {
                     </ScrollArea>
                   </SheetContent>
                 </Sheet>
+                <Link
+                  href={`/user/${session.user.id}`}
+                  className={cn(
+                    buttonVariants({ variant: "ghost" }),
+                    pathname === `/user/${session.user.id}`
+                      ? 'text-primary hover:text-primary'
+                      : undefined,
+                    'w-[90%] flex justify-start text-base py-6 group active:text-slate-400 tracking-tight'
+                  )}
+                >
+                  <User2 className='mr-4 w-7 h-7 group-active:scale-95' />
+                  Profile
+                </Link>
+                <Sheet open={openSearch} onOpenChange={setOpenSearch}>
+                  <SheetTrigger asChild>
+                    <Button
+                      variant='ghost'
+                      className='w-[90%] flex justify-start text-base py-6 group active:text-slate-400 group tracking-tight'
+                    >
+                      <Search className='mr-4 w-7 h-7 group-active:scale-95' />
+                      Search
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side='left' className='w-[30%] pt-16'>
+                    <SheetHeader className='px-6 pb-3'>
+                      <SheetTitle className='text-2xl'>Search users</SheetTitle>
+                    </SheetHeader>
+                    <div>
+                      <div className="pl-5">
+                        <Input
+                          type="text"
+                          placeholder="Search"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                        <Separator className='my-5' />
+                      </div>
+                      {filteredUsers?.length === 0 && (
+                        <div className="text-semibold text-center">No matching users found</div>
+                      )}
+                      {filteredUsers ? (
+                        <ScrollArea className="min-h-[100px]">
+                          {filteredUsers.map((user) => (
+                            <Link
+                              key={user.id}
+                              href={`/user/${user.id}`}
+                              className={cn(
+                                buttonVariants({ variant: "ghost" }),
+                                "flex gap-2 justify-start py-7"
+                              )}
+                              onClick={() => setOpenSearch(!openSearch)}
+                            >
+                              <ProfileHover
+                                username={user.username}
+                                date={format(new Date(user.createdAt), 'PP')}
+                                userId={user.id}
+                                imageUrl={user.imageUrl}
+                              />
+                              <div className='flex flex-col'>
+                                <Link
+                                  href={`/user/${user.id}`}
+                                  className='hover:underline font-semibold'
+                                >
+                                  {user.username}
+                                </Link>
+                                <p className='text-xs'>{user.department}</p>
+                              </div>
+                            </Link>
+                          ))}
+                        </ScrollArea>
+                      ) : (
+                        <div>
+                          <h3 className='text-semibold text-center'>No user</h3>
+                        </div>
+                      )}
+                    </div>
+                  </SheetContent>
+                </Sheet>
               </>
             </div>
             {/* <Separator className='ml-4' /> */}
@@ -249,7 +347,7 @@ const NavMenu = ({ session }: { session: Session }) => {
           </aside >
           <UserNav
             className={cn(
-              open ? 'opacity-0 -translate-x-[70%]' : 'opacity-100 translate-x-0',
+              open || openSearch ? 'opacity-0 -translate-x-[70%]' : 'opacity-100 translate-x-0',
               'transition-all duration-500'
             )}
           />

@@ -113,7 +113,7 @@ const UserDetails: FC<UserDetailsProps> = async ({ params }) => {
                 <div className='mt-2 space-y-2'>
                   <div className='flex items-center gap-3'>
                     <UserSquareIcon className='text-muted-foreground h-5 w-5' />
-                    <p className='text-sm'>{user.department}</p>
+                    <p className='text-sm'>{user.department} {user.yearLevel && user.yearLevel.charAt(0)}{user.section}</p>
                   </div>
                   <div className='flex items-center gap-3'>
                     <AtSign className='text-muted-foreground h-5 w-5' />

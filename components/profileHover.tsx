@@ -52,7 +52,7 @@ const ProfileHover: FC<ProfileHoverProps> = ({ username, date, userId, imageUrl 
           </Link>
         </Avatar>
       </HoverCardTrigger>
-      <HoverCardContent className="w-80 z-50 bg-[#161312]" hideWhenDetached={true}>
+      <HoverCardContent className="w-[250px] z-50 bg-[#161312]" hideWhenDetached={true}>
         <div className="flex justify-between space-x-4">
           <Avatar>
             <AvatarImage

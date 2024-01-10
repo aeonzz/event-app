@@ -43,7 +43,6 @@ import { Session } from 'next-auth';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import copy from "copy-to-clipboard";
-import { toast } from '../ui/use-toast';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { ToastAction } from '../ui/toast';
@@ -53,6 +52,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import TextArea from '../Admin-components/text-area';
 import { useMutationSuccess } from '../Context/mutateContext';
 import { Interactions } from '@/types/interactions';
+import { toast } from 'sonner';
 
 
 interface PostCardProps {
@@ -126,9 +126,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
       let isCopy = copy(copyText);
       if (isCopy) {
         setOpenCopyToClipboard(false)
-        toast({
-          description: "Copied to clipboard",
-        })
+        toast("Copied to clipboard")
       }
     }
   }
@@ -139,20 +137,19 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
     },
     onError: (error) => {
       setIsLoading(false)
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+      toast.error("Uh oh! Something went wrong.", {
         description: "Could not delete post, Try again later.",
-        action: <ToastAction altText="Try again" onClick={() => handleDelete()}>Try again</ToastAction>,
+        action: {
+          label: "Try again",
+          onClick: () => handleDelete(),
+        },
       })
     },
     onSuccess: () => {
       setActionDropdown(false)
       onMutationSuccess && onMutationSuccess();
-      toast({
-        variant: "default",
-        title: "Delete Successful",
-        description: "Post successfully deleted.",
+      toast.success("Delete Successful", {
+        description: "post successfully deleted.",
       })
     }
   })

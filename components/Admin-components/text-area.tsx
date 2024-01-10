@@ -195,8 +195,8 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
         })
       );
 
+      setIsMutate(true)
       if (fwall) {
-        setIsMutate(true)
         toast("Posted.")
       } else if (category === 'event') {
         toast("Event Created", {

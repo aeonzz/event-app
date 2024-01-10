@@ -16,9 +16,9 @@ import { Button } from '../ui/button';
 import Link from 'next/link';
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from 'next/navigation';
-import { useToast } from "@/components/ui/use-toast"
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 
 const FormSchema = z.object({
@@ -32,7 +32,6 @@ const FormSchema = z.object({
 const SignInForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { toast } = useToast()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -57,19 +56,15 @@ const SignInForm = () => {
 
     if (signInData?.error) {
       setIsLoading(false);
-    
+
       if (signInData.error === "Your account has been banned.") {
-        toast({
-          variant: "destructive",
-          title: "Account Banned",
+        toast.error("Account Banned.", {
           description: "Your account has been banned. Please contact support for assistance.",
-        });
+        })
       } else {
-        toast({
-          variant: "destructive",
-          title: "Unauthorized",
+        toast.error("Unauthorized.", {
           description: "Invalid email or password. Please try again.",
-        });
+        })
       }
     } else {
       router.refresh();
@@ -78,8 +73,11 @@ const SignInForm = () => {
   };
 
   return (
-    <div className='relative w-[270px]'>
-      <h2 className='text-center text-2xl font-semibold mb-7'>Signin</h2>
+    <div className='relative w-[270px] mb-10'>
+      <div className='mb-7'>
+        <h2 className='text-center text-xl font-semibold'>Welcome to Rendezvy</h2>
+        <p className='text-muted-foreground text-xs text-center'>Please login your account</p>
+      </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='w-full'>
           <div className='space-y-2'>

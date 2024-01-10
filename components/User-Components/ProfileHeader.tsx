@@ -32,7 +32,7 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({ user, letter }) => {
         <Image
           fill
           className='object-cover rounded-sm object-center'
-          src={gg}
+          src='https://cmsskornpjjalwhyjtgg.supabase.co/storage/v1/object/public/images/324429893_692617042404789_8825582010059206302_n.jpg'
           alt='profile-picture'
         />
         <div className='absolute -bottom-20 left-5 h-32 w-auto flex items-end gap-5'>

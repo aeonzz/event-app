@@ -76,12 +76,12 @@ export const columns: ColumnDef<User>[] = [
       const status = row.original.status
 
       return (
-        <div className='flex gap-3 items-cente'>
+        <div className='flex gap-3 items-center'>
           <Badge
           variant="outline"
           className={cn(
             status === 'banned' && 'text-red-500',
-            'w-16 justify-center text-[10px]'
+            'w-14 justify-center text-[10px]'
           )}
           >
             {status}
@@ -104,7 +104,7 @@ export const columns: ColumnDef<User>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="ml-[-40px]">{row.getValue("email")}</div>,
+    cell: ({ row }) => <div className="ml-[-30px]">{row.getValue("email")}</div>,
   },
   {
     accessorKey: "username",
@@ -113,6 +113,14 @@ export const columns: ColumnDef<User>[] = [
   {
     accessorKey: "department",
     header: "Department",
+  },
+  {
+    accessorKey: "yearLevel",
+    header: "Year Level",
+  },
+  {
+    accessorKey: "section",
+    header: "Section",
   },
   {
     accessorKey: "role",

@@ -68,13 +68,13 @@ const ProfileFeed: React.FC<ProfileFeedProps> = ({ eventCount, post, session, pr
 
   return (
     <div>
-      <Tabs defaultValue="fw" className="w-full h-auto relative">
+      <Tabs defaultValue="insights" className="w-full h-auto relative">
         <TabsList className='absolute right-0 -top-11 bg-transparent'>
+          <TabsTrigger value="insights" className='w-[100px] text-xs data-[state=active]:bg-stone-900'>Insights</TabsTrigger>
           <TabsTrigger value="fw" className='w-[100px] text-xs data-[state=active]:bg-stone-900'>Freedom wall</TabsTrigger>
-          {user.role !== 'USER'  && (
+          {user.role !== 'USER' && (
             <TabsTrigger value="feed" className='w-[100px] text-xs data-[state=active]:bg-stone-900'>Feed</TabsTrigger>
           )}
-          <TabsTrigger value="insights" className='w-[100px] text-xs data-[state=active]:bg-stone-900'>Insights</TabsTrigger>
         </TabsList>
         <TabsContent value="fw" className='!mt-0 h-auto mb-3'>
           <div className='w-full'>

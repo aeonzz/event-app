@@ -51,6 +51,7 @@ function PostStatus({
   const currentEventTime = isTimeAfterTimeFrom && isTimeBeforeTimeTo;
   const isCurrentTimeAfterEventTime = isTimeAfterCurrentTime(post.timeTo);
 
+  const isEventDay = isDateEqual && !isCurrentTimeAfterEventTime
   const eventDay = isDateEqual && currentEventTime && !isCurrentTimeAfterEventTime;
   const eventEnd = isDateEqual && isCurrentTimeAfterEventTime
 
@@ -95,6 +96,9 @@ function PostStatus({
       handleStatusUpdate()
     } else if (eventEnd) {
       setStatus('completed');
+      handleStatusUpdate()
+    } else if (isEventDay) {
+      setStatus('eventDay');
       handleStatusUpdate()
     }
   }, [eventDay, eventEnd, status]);

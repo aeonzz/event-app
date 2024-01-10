@@ -43,7 +43,7 @@ const PostGrid: FC<PostsProps> = ({ tag, fw, published, session }) => {
     if (isMutate) {
       handleRefetch();
     }
-  }, [isMutate, refetch, setIsMutate]);
+  }, [isMutate]);
 
   const filteredPosts = dataPosts?.filter(
     post => post.published === published && post.Tag.name === tag

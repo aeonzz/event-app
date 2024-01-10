@@ -54,11 +54,13 @@ const Fwall: FC<PostsProps> = ({ tag, published, session, profileId, profile }) 
     refetch();
     setIsMutate(false);
   };
-  
+
   const content = data?.pages.map((group, i) => (
     <div key={i}>
       {group.data.length === 0 ? (
-        <NoPostMessage />
+        status === 'success' ? (
+          <NoPostMessage />
+        ) : null
       ) : (
         <>
           {group.data.map((post: Posts) => (
@@ -78,7 +80,7 @@ const Fwall: FC<PostsProps> = ({ tag, published, session, profileId, profile }) 
       )}
     </div>
   ));
-  
+
   useEffect(() => {
     if (isMutate) {
       handleRefetch();
@@ -103,7 +105,7 @@ const Fwall: FC<PostsProps> = ({ tag, published, session, profileId, profile }) 
       <div className='h-24 mt-10 flex justify-center' ref={ref}>
         {isFetchingNextPage ? <LoadingSpinner /> : null}
       </div>
-       {/* <div ref={ref}></div>  */}
+      {/* <div ref={ref}></div>  */}
     </div>
   )
 }
