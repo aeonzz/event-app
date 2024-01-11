@@ -94,7 +94,7 @@ const RightSideBar = () => {
                 <CarouselContent>
                   {status === 'pending' && (
                     <div className='flex gap-2 w-full h-24'>
-                      <Skeleton className='w-28 h-full' />
+                      <Skeleton className='w-24 h-full ml-4 rounded-md' />
                       <div className='flex flex-col gap-2 flex-1'>
                         <Skeleton className='w-[30%] h-3' />
                         <Skeleton className='w-[100%] h-3' />
@@ -123,6 +123,7 @@ const RightSideBar = () => {
                                   alt={`${post.Tag.name} image`}
                                   objectFit="cover"
                                   fill
+                                  quality={10}
                                   objectPosition='center'
                                   className='group-hover:scale-[1.03] transition-transform duration-300 ease-in-out rounded-md'
                                 />
@@ -226,8 +227,8 @@ const RightSideBar = () => {
                 )}
               </div>
             </div>
-            <Separator />
-            <div className='w-full h-fit flex justfy-start'>
+            <Separator className='my-4' />
+            <div className='w-full h-fit flex justify-center'>
               <CalendarOfEvents />
             </div>
           </aside >

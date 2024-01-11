@@ -11,7 +11,7 @@ import {
 } from './ui/avatar'
 import Link from 'next/link'
 import { Skeleton } from './ui/skeleton'
-import { CalendarDays } from 'lucide-react'
+import { BadgeCheck, CalendarDays } from 'lucide-react'
 
 interface ProfileHoverProps {
   username?: string | null
@@ -65,7 +65,7 @@ const ProfileHover: FC<ProfileHoverProps> = ({ username, date, userId, imageUrl 
             <h4 className="text-sm font-semibold"></h4>
             <Link
               href={`/user/${userId}`}
-              className=' underline-offset-4 hover:underline'
+              className=' underline-offset-4 hover:underline flex items-center gap-1'
             >
               {username}
             </Link>

@@ -26,7 +26,7 @@ import {
   DialogContent2
 } from '../ui/dialog'
 import { Button, buttonVariants } from '../ui/button'
-import { AreaChart, Ban, Bookmark, Calendar, Copy, Dot, Forward, Loader2, MapPin, MonitorPause, MoreHorizontal, Pencil, Theater, ThumbsUp, Trash } from 'lucide-react'
+import { AreaChart, BadgeCheck, Ban, Bookmark, Calendar, Copy, Dot, Forward, Loader2, MapPin, MonitorPause, MoreHorizontal, Pencil, Theater, ThumbsUp, Trash } from 'lucide-react'
 import { Separator } from '@radix-ui/react-dropdown-menu'
 import TextArea from '../Admin-components/text-area'
 import { format, formatDistance, formatDistanceToNow } from 'date-fns';
@@ -306,9 +306,12 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
         <div className='flex flex-col'>
           <Link
             href={`/user/${post.author.id}`}
-            className='hover:underline font-semibold'
+            className='hover:underline font-semibold flex items-center gap-1'
           >
             {post.author.username}
+            {post.author.role === 'SYSTEMADMIN' && (
+              <BadgeCheck className='h-4 w-4 text-primary' />
+            )}
           </Link>
           <div className='flex items-center'>
             <p className='text-xs font-light text-muted-foreground'>
@@ -699,7 +702,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                       </Label>
                       <Input
                         id="link"
-                        defaultValue={`localhost:3000/post/${post.id}`}
+                        defaultValue={`https://event-app-aeonzz.vercel.app/post/${post.id}`}
                         readOnly
                         ref={textRef}
                       />

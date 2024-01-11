@@ -53,8 +53,7 @@ const PostReview: FC<PostReviewProps> = ({ post, style }) => {
     },
     onSuccess: () => {
       setIsMutate(true)
-      style ? router.refresh() : router.back();
-
+      router.refresh()
       const successMsg = post.Tag.name === 'event' ? 'Event' : 'Announcement';
 
       if (approved) {

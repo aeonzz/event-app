@@ -22,42 +22,16 @@ interface OverviewTabProps {
   announcementCount: number
   usersCount: number
   completedEvents: number
-  users: User[]
 }
 
 
-const OverviewTab: React.FC<OverviewTabProps> = ({ eventCount, announcementCount, usersCount, completedEvents, users }) => {
+const OverviewTab: React.FC<OverviewTabProps> = ({ eventCount, announcementCount, usersCount, completedEvents }) => {
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-
-  useEffect(() => {
-    setFilteredUsers(users);
-  }, [users]);
-
-
-
-  const handleSearch = () => {
-    const filteredUsers = users.filter((user) =>
-      user.username.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setFilteredUsers(filteredUsers);
-  };
 
   return (
     <>
       <div className='w-full h-auto py-4 flex flex-col gap-5'>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Input
-            type="text"
-            placeholder="Search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <Button onClick={handleSearch}>Search</Button>
-          {filteredUsers.map((user) => (
-            <div key={user.id}>{user.username}</div>
-          ))}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">

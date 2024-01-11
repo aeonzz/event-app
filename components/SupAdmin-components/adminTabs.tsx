@@ -90,7 +90,6 @@ export default async function AdminTabs() {
           announcementCount={announcementPostCount}
           usersCount={usersCount}
           completedEvents={completedEvents}
-          users={users}
         />
       </TabsContent>
       <TabsContent value="password">

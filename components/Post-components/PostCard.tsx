@@ -28,7 +28,7 @@ import {
 } from '../ui/dialog'
 import ProfileHover from '../profileHover';
 import { Badge } from '../ui/badge';
-import { Bookmark, Calendar, Check, Copy, Dot, Forward, Hand, Loader2, MapPin, MoreHorizontal, Pencil, Plus, Theater, ThumbsUp, Trash, X } from 'lucide-react';
+import { BadgeCheck, Bookmark, Calendar, Check, Copy, Dot, Forward, Hand, Loader2, MapPin, MoreHorizontal, Pencil, Plus, Theater, ThumbsUp, Trash, X } from 'lucide-react';
 import { Separator } from '../ui/separator';
 import Image from 'next/image';
 import gg from '@/public/peakpx (1).jpg'
@@ -233,7 +233,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
     return null;
   }
 
-  if (profile && post.author.id !== profileId ) {
+  if (profile && post.author.id !== profileId) {
     return null
   }
 
@@ -270,9 +270,12 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
             <div className='flex flex-col'>
               <Link
                 href='/'
-                className='hover:underline font-semibold'
+                className='hover:underline font-semibold flex items-center gap-1'
               >
                 {username}
+                {post.author.role === 'SYSTEMADMIN' && (
+                  <BadgeCheck className='h-4 w-4 text-primary' />
+                )}
               </Link>
               <div className='flex items-center'>
                 <p className='text-xs font-light text-muted-foreground'>

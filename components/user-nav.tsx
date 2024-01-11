@@ -68,8 +68,8 @@ export default function UserNav({ className }: { className: string }) {
               <AvatarFallback>{initialLetter}</AvatarFallback>
             </Avatar>
             <div className='flex flex-col items-start'>
-              <h2 className='font-semebold text-lg'>{username}</h2>
-              {department === 'one' ? null : <p className='text-xs text-muted-foreground'>{department}</p>}
+              <h2 className='font-semibold text-sm leading-none text-left'>{username}</h2>
+              {department === 'None' ? null : <p className='text-xs text-muted-foreground'>{department}</p>}
             </div>
             <ChevronRight className='group-hover:ml-1 transition-all' />
           </Button>

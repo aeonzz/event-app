@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { BadgeCheck } from 'lucide-react';
 
 
 interface ProfileHeaderProps {
@@ -63,7 +64,11 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({ user, letter }) => {
             </Avatar>
           )}
           <div className='mb-5'>
-            <h2 className='text-4xl font-semibold'>{user.username}</h2>
+            <h2 className='text-4xl font-semibold inline-flex items-center gap-3'>
+              {user.username}
+              {user.role === 'SYSTEMADMIN' && (
+                <BadgeCheck className='h-6 w-6 text-primary' />
+              )}</h2>
             <h4 className='text-muted-foreground text-sm'>{user.department}</h4>
             <h4 className='text-muted-foreground text-xs'>{user.email}</h4>
           </div>

@@ -5,6 +5,7 @@ import LoadingSpinner from '@/components/Loading/Spinner';
 import LoginLoading from '@/components/Loading/login-loading';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -31,7 +32,11 @@ const Signin = () => {
       <div className='w-full h-screen flex items-center'>
         <div className='flex-1 h-screen relative'>
           <h2 className='text-2xl text-start font-bold m-7 absolute top-0 left-0'>Rendezvy</h2 >
-          <Suspense fallback={<LoadingSpinner />}>
+          <Suspense fallback={
+            <div className='h-screen flex justify-center items-center'>
+              <Loader2 className='h-10 w-10 animate-spin stroke-1' />
+            </div>
+          }>
             <Spline scene="https://prod.spline.design/gY66HRDPB629JDgX/scene.splinecode" />
           </Suspense>
         </div >

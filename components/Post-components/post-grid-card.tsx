@@ -6,7 +6,7 @@ import { format, formatDistanceToNow, formatDuration, intervalToDuration, isAfte
 import { Posts } from '@/types/posts';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
-import { Calendar, Dot, MapPin, Theater } from 'lucide-react';
+import { BadgeCheck, Calendar, Dot, MapPin, Theater } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -155,9 +155,12 @@ const PostGridCard: FC<PostGridCard> = ({ post, session }) => {
               <div className='flex flex-col'>
                 <Link
                   href={`/user/${post.author.id}`}
-                  className='hover:underline font-semibold'
+                  className='hover:underline font-semibold flex items-center gap-1'
                 >
                   {post.author.username}
+                  {post.author.role === 'SYSTEMADMIN' && (
+                    <BadgeCheck className='h-4 w-4 text-primary' />
+                  )}
                 </Link>
                 <div className='flex items-center gap-1'>
                   <p className='text-xs font-light text-muted-foreground'>
