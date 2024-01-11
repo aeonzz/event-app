@@ -11,6 +11,7 @@ import QueryProvider from '@/components/Providers/query-provider'
 import { EdgeStoreProvider } from '@/lib/edgestore'
 import LeftSideBar from '@/components/Navigation/LeftSideBar'
 import { Toaster } from '@/components/ui/sonner'
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const inter = Inter({ subsets: ['latin'] });
 
