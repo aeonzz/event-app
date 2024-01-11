@@ -883,7 +883,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
           <div className='h-auto flex flex-col gap-5'>
             <div className='flex flex-col gap-5 h-auto'>
               {post.Comment.map((comment) => (
-                <CommentBox comment={comment} />
+                <CommentBox key={comment.id} comment={comment} />
               ))}
             </div>
             <Form {...form}>
