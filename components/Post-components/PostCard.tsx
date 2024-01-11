@@ -577,7 +577,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
                   </Label>
                   <Input
                     id="link"
-                    defaultValue={`localhost:3000/post/${id}`}
+                    defaultValue={`event-app-aeonzz.vercel.app/post/${id}`}
                     readOnly
                     ref={textRef}
                   />
