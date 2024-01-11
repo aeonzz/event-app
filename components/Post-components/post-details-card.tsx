@@ -702,7 +702,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                       </Label>
                       <Input
                         id="link"
-                        defaultValue={`https://event-app-aeonzz.vercel.app/post/${post.id}`}
+                        defaultValue={`event-app-aeonzz.vercel.app/post/${post.id}`}
                         readOnly
                         ref={textRef}
                       />
