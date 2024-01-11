@@ -57,45 +57,6 @@ const PostGridCard: FC<PostGridCard> = ({ post, session }) => {
         (post.timeTo ? `, ${convertTimeTo12HourFormat(post.timeFrom)} - ${convertTimeTo12HourFormat(post.timeTo)}` : `, ${convertTimeTo12HourFormat(post.timeFrom)}`)
         : 'No date available';
 
-  const { mutate: updateClicks } = useMutation({
-    mutationFn: async (updateClicks: FormInputPost) => {
-      return axios.patch(`/api/posts/${post.id}`, updateClicks);
-    },
-  })
-
-  const { mutate: updateStatus } = useMutation({
-    mutationFn: async (updateStatus: FormInputPost) => {
-      return axios.patch(`/api/posts/${post.id}`, updateStatus);
-    },
-    onSuccess: () => {
-      router.refresh()
-      setIsMutate(true)
-    }
-  })
-
-  function handleClick() {
-    if (session?.user.role === "USER") {
-      const data: FormInputPost = {
-        title: post.title,
-        content: post.content || undefined,
-        anonymous: post.anonymous,
-        venue: post.venue || undefined,
-        accessibility: post.accessibility,
-        location: post.location || undefined,
-        published: post.published,
-        deleted: false,
-        category: post.Tag.name,
-        authorId: post.author.id,
-        clicks: post.clicks + 1,
-        status: post.status,
-        going: undefined,
-        timeFrom: post.timeFrom,
-        timeTo: post.timeTo
-      };
-      updateClicks(data)
-    }
-  }
-
 
   if (post.deleted) {
     return null
@@ -105,7 +66,6 @@ const PostGridCard: FC<PostGridCard> = ({ post, session }) => {
     <Link
       href={`/post/${post.id}`}
       key={post.id}
-      onClick={() => handleClick()}
       className='group'
     >
       <Card className='h-[400px] flex justify-center flex-col gap-3 p-5 bg-[#161312]'>
@@ -159,6 +119,9 @@ const PostGridCard: FC<PostGridCard> = ({ post, session }) => {
                 >
                   {post.author.username}
                   {post.author.role === 'SYSTEMADMIN' && (
+                    <BadgeCheck className='h-4 w-4 text-red-500' />
+                  )}
+                  {post.author.role === 'ADMIN' && (
                     <BadgeCheck className='h-4 w-4 text-primary' />
                   )}
                 </Link>

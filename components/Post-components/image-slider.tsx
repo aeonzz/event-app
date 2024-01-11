@@ -27,7 +27,7 @@ interface ImageSliderProps {
 
 const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
   return (
-    <Carousel className="w-full flex items-center">
+    <Carousel className=" flex items-center">
       <CarouselContent className='h-[500px] w-[912px]'>
         {images?.map((image) => (
           image.url && (

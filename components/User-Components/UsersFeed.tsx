@@ -139,8 +139,8 @@ const UsersFeed = async () => {
                 <CardHeader className='z-10'>
                   <CardTitle className='text-xl'>Recent Event</CardTitle>
                 </CardHeader>
-                <CardContent className='flex flex-col justify-end bg-gradient-to-t from-black/30 z-10 w-full h-full absolute group-hover:bg-black/50 transition-all duration-300 ease-in-out'>
-                  <p className='whitespace-pre-wrap break-words text-sm'>{event?.content?.slice(0, 300)} ...</p>
+                <CardContent className='flex flex-col justify-end bg-gradient-to-t from-black/60 z-10 w-full h-full absolute group-hover:bg-black/50 transition-all duration-300 ease-in-out'>
+                  <p className='whitespace-pre-wrap break-words text-sm leading-snug tracking-tight'>{event?.content?.slice(0, 200)} ...See more</p>
                 </CardContent>
               </Card>
             </Link>
@@ -175,8 +175,8 @@ const UsersFeed = async () => {
                 <CardHeader className='z-10'>
                   <CardTitle className='text-xl'>Recent Announcement</CardTitle>
                 </CardHeader>
-                <CardContent className='flex flex-col justify-end bg-gradient-to-t from-black/30 z-10 w-full h-full absolute group-hover:bg-black/50 transition-all duration-300 ease-in-out'>
-                  <p className='whitespace-pre-wrap break-words text-sm'>{announcement?.content?.slice(0, 300)} ...</p>
+                <CardContent className='flex flex-col justify-end bg-gradient-to-t from-black/60 z-10 w-full h-full absolute group-hover:bg-black/50 transition-all duration-300 ease-in-out'>
+                  <p className='whitespace-pre-wrap break-words text-sm leading-snug tracking-tight'>{announcement?.content?.slice(0, 200)} ...See more</p>
                 </CardContent>
               </Card>
             </Link>

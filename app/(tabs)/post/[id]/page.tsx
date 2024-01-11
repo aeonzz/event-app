@@ -17,7 +17,7 @@ async function getPost(id: number): Promise<Posts | null> {
   const session = await getServerSession(authOptions);
   const userId = session!.user.id;
   const userIdInt = parseInt(userId, 10);
-  
+
   const response = await prisma.post.findFirst({
     where: {
       id: id,
@@ -41,6 +41,27 @@ async function getPost(id: number): Promise<Posts | null> {
       createdAt: true,
       author: true,
       images: true,
+      Comment: {
+        select: {
+          id: true,
+          comment: true,
+          userId: true,
+          createdAt: true,
+          updatedAt: true,
+          user: {
+            select: {
+              id: true,
+              username: true,
+              imageUrl: true,
+              role: true,
+              createdAt: true,
+            },
+          },
+        },
+        orderBy: {
+          id: 'desc'
+        }
+      },
       UserPostInteraction: {
         where: {
           userId: userIdInt,

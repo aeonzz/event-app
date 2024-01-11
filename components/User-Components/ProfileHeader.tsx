@@ -67,8 +67,12 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({ user, letter }) => {
             <h2 className='text-4xl font-semibold inline-flex items-center gap-3'>
               {user.username}
               {user.role === 'SYSTEMADMIN' && (
-                <BadgeCheck className='h-6 w-6 text-primary' />
-              )}</h2>
+                <BadgeCheck className='h-4 w-4 text-red-500' />
+              )}
+              {user.role === 'ADMIN' && (
+                <BadgeCheck className='h-4 w-4 text-primary' />
+              )}
+            </h2>
             <h4 className='text-muted-foreground text-sm'>{user.department}</h4>
             <h4 className='text-muted-foreground text-xs'>{user.email}</h4>
           </div>

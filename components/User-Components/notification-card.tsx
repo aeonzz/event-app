@@ -48,7 +48,7 @@ const NotificationCard: React.FC<NotificationCardProps> = ({ post, onChangeOpenS
 
   return (
     <Link
-      href={`/post/${post.id}`}
+      href={session.user.role === 'SYSTEMADMIN' ? `/pending-post` : `/post/${post.id}`}
       className='p-3 rounded-md flex items-center gap-3 hover:bg-accent/30 relative'
       onClick={() => onChangeOpenState(!open)}
     >

@@ -25,6 +25,7 @@ import { useMutationSuccess } from "../Context/mutateContext";
 import { Separator } from "../ui/separator";
 import { Button, buttonVariants } from "../ui/button";
 import { cn } from "@/lib/utils";
+import { BadgeCheck } from "lucide-react";
 
 const RightSideBar = () => {
 
@@ -72,7 +73,7 @@ const RightSideBar = () => {
         pathname.startsWith('/post/') ? (
         <div>
           <aside className='sticky top-16 h-fit w-72 flex flex-col pt-7'>
-            <div className='min-h-[96px] w-full flex flex-col gap-5 '>
+            <div className='min-h-[96px] w-full flex flex-col gap-10'>
               <div className="flex items-center justify-between w-full">
                 <h2 className="text-xl font-semibold leading-none tracking-tight">Upcoming events</h2>
                 <Link
@@ -156,7 +157,13 @@ const RightSideBar = () => {
                                     </AvatarFallback>
                                   </Link>
                                 </Avatar>
-                                <p className='text-sm'>{post.author.username}</p>
+                                <p className='text-xs'>{post.author.username}</p>
+                                {post.author.role === 'SYSTEMADMIN' && (
+                                  <BadgeCheck className='h-4 w-4 text-red-500' />
+                                )}
+                                {post.author.role === 'ADMIN' && (
+                                  <BadgeCheck className='h-4 w-4 text-primary' />
+                                )}
                               </div>
                               <div className='relative overflow-hidden  h-full'>
                                 <div className='absolute w-full h-full z-50 bg-gradient-to-t from-background to-transparent' />
@@ -171,7 +178,7 @@ const RightSideBar = () => {
                 </CarouselContent>
               </Carousel>
             </div>
-            <Separator className='my-4' />
+            {/* <Separator className='my-4' />
             <div className='h-auto w-full flex flex-col gap-5'>
               <h2 className="text-xl font-semibold leading-none tracking-tight">New announcement</h2>
               <div className='h-auto w-full'>
@@ -226,8 +233,8 @@ const RightSideBar = () => {
                   )
                 )}
               </div>
-            </div>
-            <Separator className='my-4' />
+            </div> */}
+            <Separator className='my-10' />
             <div className='w-full h-fit flex justify-center'>
               <CalendarOfEvents />
             </div>

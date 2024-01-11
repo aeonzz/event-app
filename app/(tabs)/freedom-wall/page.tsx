@@ -12,11 +12,13 @@ const FreedomWall = async () => {
 
 
   return (
-    <div className='w-[58%] px-10 mt-4 min-h-[400px] flex flex-col gap-3'>
-      <CreatePost
-        tag={tag}
-        session={session}
-      />
+    <div className='w-[58%] pr-10 mt-4 min-h-[400px] flex flex-col'>
+      <div className='mb-3'>
+        <CreatePost
+          tag={tag}
+          session={session}
+        />
+      </div>
       <Fwall
         tag={tag}
         published={published}

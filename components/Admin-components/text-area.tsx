@@ -388,7 +388,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
                         <DropdownMenuTrigger asChild>
                           <Button
                             variant="secondary"
-                            className='h-6 px-3 min-w-[50px] rounded-sm text-xs font-light '
+                            className='h-6 px-3 w-[100px] rounded-sm text-xs font-light '
                             disabled={isEditing}
                           >
                             {category}

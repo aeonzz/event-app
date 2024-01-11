@@ -14,10 +14,26 @@ export type Posts = {
   timeTo: string
   timeFrom: string
   clicks: number
+  Comment: {
+    id: number
+    comment: string
+    userId: number
+    updatedAt: Date
+    createdAt: Date
+    user: {
+      id: number,
+      username: string,
+      imageUrl: string,
+      role: string
+      createdAt: Date
+    }
+  }[]
   images: {
     id: number
     url: string
     postId: number
+    userId: number
+    createdAt: Date
   }[] | null;
   anonymous: boolean
   author: {

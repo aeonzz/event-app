@@ -12,16 +12,18 @@ import {
 import Link from 'next/link'
 import { Skeleton } from './ui/skeleton'
 import { BadgeCheck, CalendarDays } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface ProfileHoverProps {
   username?: string | null
   date?: string | null
   userId?: number | null
   imageUrl?: string | null
+  className?: string | null
 }
 
 
-const ProfileHover: FC<ProfileHoverProps> = ({ username, date, userId, imageUrl }) => {
+const ProfileHover: FC<ProfileHoverProps> = ({ username, date, userId, imageUrl, className }) => {
 
   const profile = imageUrl ? imageUrl : undefined
 
@@ -36,7 +38,10 @@ const ProfileHover: FC<ProfileHoverProps> = ({ username, date, userId, imageUrl 
       closeDelay={100}
     >
       <HoverCardTrigger asChild>
-        <Avatar className='h-9 w-9 dark:border relative group bg-stone-900 border'>
+        <Avatar className={cn(
+          className,
+          'h-9 w-9 dark:border relative group bg-stone-900 border'
+        )}>
           <Link
             href={`/user/${userId}`}
             className='relative'
@@ -65,7 +70,7 @@ const ProfileHover: FC<ProfileHoverProps> = ({ username, date, userId, imageUrl 
             <h4 className="text-sm font-semibold"></h4>
             <Link
               href={`/user/${userId}`}
-              className=' underline-offset-4 hover:underline flex items-center gap-1'
+              className=' underline-offset-4 hover:underline flex items-center gap-1 text-sm'
             >
               {username}
             </Link>

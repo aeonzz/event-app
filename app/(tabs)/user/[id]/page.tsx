@@ -83,6 +83,8 @@ const UserDetails: FC<UserDetailsProps> = async ({ params }) => {
     const post = await getPosts(userId);
     const session = await getServerSession(authOptions);
     const isUser = user?.email === session?.user.email
+    const yearLevel = user?.yearLevel === 'None' ? undefined : user?.yearLevel?.charAt(0)
+    const section = user?.section === 'None' ? undefined : user?.section
 
     let initialLetter = '';
     if (user && user.username) {
@@ -113,7 +115,7 @@ const UserDetails: FC<UserDetailsProps> = async ({ params }) => {
                 <div className='mt-2 space-y-2'>
                   <div className='flex items-center gap-3'>
                     <UserSquareIcon className='text-muted-foreground h-5 w-5' />
-                    <p className='text-sm'>{user.department} {user.yearLevel && user.yearLevel.charAt(0)}{user.section}</p>
+                    <p className='text-sm'>{user.department} {yearLevel}{section}</p>
                   </div>
                   <div className='flex items-center gap-3'>
                     <AtSign className='text-muted-foreground h-5 w-5' />

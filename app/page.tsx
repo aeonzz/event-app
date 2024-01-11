@@ -18,7 +18,7 @@ export default async function Home() {
   const published = true
   
   return (
-    <div className='w-[58%] h-auto mt-4 px-10 flex flex-col'>
+    <div className='w-[58%] pr-10 mt-4 min-h-[400px] flex flex-col'>
       {/* {session?.user.role === 'ADMIN' || session?.user.role === 'SYSTEMADMIN' ?
         <CreatePost />
         : null

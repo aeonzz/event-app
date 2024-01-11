@@ -78,6 +78,7 @@ export async function GET(req: Request, context: contextProps) {
         dateTo: true,
         timeFrom: true,
         timeTo: true,
+        Comment: true,
         author: true,
         images: true,
         published: true,

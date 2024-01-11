@@ -28,14 +28,14 @@ import {
 } from '../ui/dialog'
 import ProfileHover from '../profileHover';
 import { Badge } from '../ui/badge';
-import { BadgeCheck, Bookmark, Calendar, Check, Copy, Dot, Forward, Hand, Loader2, MapPin, MoreHorizontal, Pencil, Plus, Theater, ThumbsUp, Trash, X } from 'lucide-react';
+import { BadgeCheck, Bookmark, Calendar, Check, Copy, Dot, Forward, Hand, Loader2, MapPin, MessageCircle, MoreHorizontal, Pencil, Plus, SendHorizonal, Theater, ThumbsUp, Trash, X } from 'lucide-react';
 import { Separator } from '../ui/separator';
 import Image from 'next/image';
 import gg from '@/public/peakpx (1).jpg'
 import Linkify from "linkify-react";
 import { format, formatDistance, formatDistanceToNow } from 'date-fns';
 import { Posts } from '@/types/posts';
-import { Button } from '../ui/button';
+import { Button, buttonVariants } from '../ui/button';
 import PostReview from './PostReview';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { cn } from '@/lib/utils';
@@ -53,7 +53,6 @@ import TextArea from '../Admin-components/text-area';
 import { useMutationSuccess } from '../Context/mutateContext';
 import { Interactions } from '@/types/interactions';
 import { toast } from 'sonner';
-
 
 interface PostCardProps {
   post: Posts
@@ -109,7 +108,6 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
   const toggleContentVisibility = () => {
     setShowFullContent(!showFullContent);
   };
-
   useEffect(() => {
     if (!open) {
       setToggleImageInput(false);
@@ -154,24 +152,6 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
     }
   })
 
-  const { mutate: updateClicks } = useMutation({
-    mutationFn: async (updateClicks: FormInputPost) => {
-      return axios.patch(`/api/posts/${id}`, updateClicks);
-    },
-  })
-
-  const { mutate: updateGoingStatus } = useMutation({
-    mutationFn: async (updateGoingStatus: Interactions) => {
-      return axios.patch(`/api/interaction/${id}`, updateGoingStatus);
-    },
-    onSuccess: () => {
-      setIsLoading(false)
-      setAttendModal(false)
-      setGoingButtonState((prev) => !prev);
-      onMutationSuccess && onMutationSuccess();
-    },
-  });
-
   function handleDelete() {
     setIsLoading(true)
     const data: FormInputPost = {
@@ -192,37 +172,6 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
       status: 'fw'
     };
     deletePost(data)
-  }
-
-  const handleGoingClick = () => {
-    setIsLoading(true)
-    const data: Interactions = {
-      postId: id,
-      userId: userIdNumber,
-      going: !goingButtonState,
-    };
-    updateGoingStatus(data);
-  };
-
-  function handleClick() {
-    const data: FormInputPost = {
-      title: title,
-      content: content || undefined,
-      anonymous: anonymous,
-      venue: venue || undefined,
-      location: location || undefined,
-      accessibility: accessibility,
-      published: published,
-      deleted: false,
-      category: name,
-      authorId: authorId,
-      clicks: click,
-      going: going || undefined,
-      timeFrom: timeFrom || undefined,
-      timeTo: timeTo || undefined,
-      status: 'fw'
-    };
-    updateClicks(data)
   }
 
   if (tag === 'announcement' && post.accessibility === 'department' && session?.user.department !== post.author.department) {
@@ -274,6 +223,9 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
               >
                 {username}
                 {post.author.role === 'SYSTEMADMIN' && (
+                  <BadgeCheck className='h-4 w-4 text-red-500' />
+                )}
+                {post.author.role === 'ADMIN' && (
                   <BadgeCheck className='h-4 w-4 text-primary' />
                 )}
               </Link>
@@ -404,33 +356,10 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
             )}
           </p>
         </Linkify>
-        {/* {fw ? null : (
-          <div className='flex w-full items-center my-5 gap-3'>
-            {date && (
-              <Badge variant='secondary' className='flex items-center p-2'>
-                <Calendar className='stroke-primary h-4 w-4 mr-2' />
-                <p className='text-xs text-muted-foreground'>{date}</p>
-              </Badge>
-            )}
-            {location && (
-              <Badge variant='secondary' className='flex items-center p-2'>
-                <MapPin className='stroke-primary h-4 w-4 mr-2' />
-                <p className='text-xs text-muted-foreground'>{location}</p>
-              </Badge>
-            )}
-            {venue && (
-              <Badge variant='secondary' className='flex items-center p-2'>
-                <Theater className='stroke-primary h-4 w-4 mr-2' />
-                <p className='text-xs text-muted-foreground'>{venue}</p>
-              </Badge>
-            )}
-          </div>
-        )} */}
         {fw ? null : (
           <Link
             href={`/post/${id}`}
             replace={true}
-            onClick={() => handleClick()}
           >
             <div className='relative w-full flex overflow-hidden rounded-sm mt-5'>
               <div
@@ -470,97 +399,26 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
         {!fw && (
           <h3 className='text-muted-foreground text-xs mt-1 text-right'>{clicks} Views</h3>
         )}
-        <Separator className='my-2' />
-        <div className='w-full flex p-1'>
-          {tag === 'event' && (
-            <Dialog open={attendModal} onOpenChange={setAttendModal}>
-              <DialogTrigger asChild>
-                <Button
-                  variant='ghost'
-                  size='sm'
-                  className={cn(
-                    goingButtonState ? 'text-primary hover:text-primary' : 'text-muted-foreground',
-                    'relative flex-1 transition-colors'
-                  )}
-                >
-                  <ThumbsUp
-                    className={cn(
-                      goingButtonState ? 'fill-primary stroke-primary' : 'stroke-muted-foreground',
-                      'absolute left-[27%] bottom-[30%] h-4 w-4 transition-colors'
-                    )}
-                  />
-                  Attend
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle className="text-xl font-semibold" >Confirmation</DialogTitle>
-                  <DialogDescription>
-                    {goingButtonState ? (
-                      <p>Are you sure you want to ditch this event? Aren&apos;t you ashamed that you joined the event and now you&apos;ve changed your mind?</p>
-                    ) : (
-                      <p>Are you sure you want to attend this event?.</p>
-                    )}
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline">
-                      Close
-                    </Button>
-                  </DialogClose>
-                  {goingButtonState ? (
-                    <Button
-                      variant='destructive'
-                      onClick={handleGoingClick}
-                      disabled={isLoading}
-                    >
-                      {isLoading && (
-                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                      )}
-                      Ditch
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={handleGoingClick}
-                      disabled={isLoading}
-                    >
-                      {isLoading && (
-                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                      )}
-                      Confirm
-                    </Button>
-                  )}
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          )}
-          <Button
-            variant='ghost'
-            size='sm'
-            onClick={() => setsaveButtonState((prev) => !prev)}
+        <Separator className='mt-2' />
+        <div className='w-full flex justify-end gap-1 p-1'>
+          <Link
+            href={`/post/${post.id}`}
             className={cn(
-              saveButtonState ? 'text-primary hover:text-primary' : 'text-muted-foreground',
-              'relative flex-1 transition-colors'
+              buttonVariants({ variant: 'ghost', size: 'sm' }),
+              'relative text-muted-foreground group'
             )}
           >
-            <Bookmark
-              className={cn(
-                saveButtonState ? 'fill-primary stroke-primary' : 'stroke-muted-foreground',
-                'absolute left-[29%] h-4 w-4 transition-colors'
-              )}
-            />
-            {saveButtonState ? <p>Saved</p> : <p>Save</p>}
-          </Button>
+            <MessageCircle className="h-5 w-5 mr-1 group-active:scale-95" />
+            <p>{post.Comment.length}</p>
+          </Link>
           <Dialog open={openCopyToClipboard} onOpenChange={setOpenCopyToClipboard}>
             <DialogTrigger asChild>
               <Button
                 variant='ghost'
                 size='sm'
-                className='relative flex-1 text-muted-foreground'
+                className='relative text-muted-foreground'
               >
-                <Forward className="absolute left-[29%] h-4 w-4" />
-                Share
+                <Forward className="h-5 w-5" />
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
@@ -601,6 +459,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
             </DialogContent>
           </Dialog>
         </div>
+        <Separator className='mb-2' />
         {post.published === false ? (
           <PostReview
             post={post}
