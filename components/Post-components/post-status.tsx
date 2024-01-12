@@ -51,9 +51,10 @@ function PostStatus({
   const currentEventTime = isTimeAfterTimeFrom && isTimeBeforeTimeTo;
   const isCurrentTimeAfterEventTime = isTimeAfterCurrentTime(post.timeTo);
 
-  const isEventDay = isDateEqual && !isCurrentTimeAfterEventTime
+  const isEventDay = isDateEqual
   const eventDay = isDateEqual && currentEventTime && !isCurrentTimeAfterEventTime;
   const eventEnd = isDateEqual && isCurrentTimeAfterEventTime
+
 
   function isTimeAfterCurrentTime(eventTime: string): boolean {
     const currentHourMinute = format(currentTime, 'HH:mm');

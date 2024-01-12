@@ -212,6 +212,12 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
     mutationFn: async (updateClicks: FormInputPost) => {
       return axios.patch(`/api/posts/${post.id}`, updateClicks);
     },
+    onError: () => {
+      router.refresh()
+    },
+    onSuccess: async () => {
+      router.refresh()
+    } 
   })
 
   function handleClick() {
@@ -419,8 +425,12 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
               <p className='text-xs font-light text-muted-foreground'>
                 {formatDistanceToNow(postedAt, { addSuffix: true })}
               </p>
-              <Dot />
-              <Badge className='w-fit' variant='secondary'>{post.Tag.name}</Badge>
+              {post.Tag.name !== 'fw' && (
+                <>
+                  <Dot />
+                  <Badge className='w-fit' variant='secondary'>{post.Tag.name}</Badge>
+                </>
+              )}
               {post.Tag.name === 'event' && (
                 <PostStatus post={post} hidden="hidden" className="ml-2 !flex-row" />
               )}
@@ -497,6 +507,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                       <DropdownMenuItem
                         className="text-red-600 text-xs"
                         onSelect={(e) => e.preventDefault()}
+                        disabled={post.status !== 'upcoming'}
                       >
                         <Trash className="mr-2 h-4 w-4" />
                         Delete
