@@ -61,7 +61,7 @@ function PostStatus({
     return currentHourMinute >= eventTime;
   }
 
-  const { mutate: updateStatus } = useMutation({
+  const { mutate: updateStatus, re } = useMutation({
     mutationFn: async (updateStatus: FormInputPost) => {
       return axios.patch(`/api/posts/${post.id}`, updateStatus);
     },

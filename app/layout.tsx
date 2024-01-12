@@ -11,7 +11,7 @@ import QueryProvider from '@/components/Providers/query-provider'
 import { EdgeStoreProvider } from '@/lib/edgestore'
 import LeftSideBar from '@/components/Navigation/LeftSideBar'
 import { Toaster } from '@/components/ui/sonner'
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -45,9 +45,9 @@ export default async function RootLayout({
                     <Topbar />
                     <main className='container h-auto relative flex justify-center px-0'>
                       <LeftSideBar session={session} />
-                      
-                      {children}
 
+                      {children}
+                      <SpeedInsights />
                       <RightSideBar />
                     </main>
                   </>
