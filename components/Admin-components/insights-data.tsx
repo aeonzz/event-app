@@ -118,7 +118,7 @@ const InsightsData: React.FC<InsightsDataProps> = ({ interactions, totalParticip
   const marginRight = '1cm';
   const marginBottom = '1cm';
   const marginLeft = '1cm';
-  const printing = isPrinting ? 'border !bg-transparent' : undefined
+  const printing = isPrinting ? 'border' : undefined
 
   const filteredInteractions = interactions.filter(user =>
     (!value || user.user.yearLevel === value) &&

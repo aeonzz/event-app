@@ -61,7 +61,7 @@ function PostStatus({
     return currentHourMinute >= eventTime;
   }
 
-  const { mutate: updateStatus, re } = useMutation({
+  const { mutate: updateStatus } = useMutation({
     mutationFn: async (updateStatus: FormInputPost) => {
       return axios.patch(`/api/posts/${post.id}`, updateStatus);
     },
@@ -135,6 +135,7 @@ function PostStatus({
       {post.published === null && (
         <Badge variant='secondary' className='text-slate-500 animate-pulse'>Pending</Badge>
       )}
+      
       <Badge className={cn(
         post.accessibility === 'department' && 'text-red-500',
         post.accessibility === 'public' && 'text-blue-500',

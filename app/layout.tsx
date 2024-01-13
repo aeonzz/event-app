@@ -31,6 +31,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <SpeedInsights />
         <Provider>
           <EdgeStoreProvider>
             <QueryProvider>
@@ -47,7 +48,6 @@ export default async function RootLayout({
                       <LeftSideBar session={session} />
 
                       {children}
-                      <SpeedInsights />
                       <RightSideBar />
                     </main>
                   </>

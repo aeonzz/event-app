@@ -165,8 +165,8 @@ const RightSideBar = () => {
                                   <BadgeCheck className='h-4 w-4 text-primary' />
                                 )}
                               </div>
-                              <div className='relative overflow-hidden  h-full'>
-                                <div className='absolute w-full h-full z-50 bg-gradient-to-t from-background to-transparent' />
+                              <div className='relative overflow-hidden h-full'>
+                                <div className='absolute right-0 w-[50%] h-full z-50 bg-gradient-to-l from-background to-transparent' />
                                 <p className='whitespace-pre-wrap break-words text-xs font-bold text-muted-foreground'>{post.title}</p>
                                 <p className='whitespace-pre-wrap break-words text-xs text-muted-foreground'>{post.content}</p>
                               </div>

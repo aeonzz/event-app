@@ -95,7 +95,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
   const textRef = useRef<HTMLInputElement>(null);
   const userIdString = session?.user.id;
   const userIdNumber = userIdString ? parseInt(userIdString, 10) : null;
-  const fwall = pathname === '/freedom-wall' ? true : null
+  const fwall = pathname === '/freedom-wall' || post.Tag.name === 'fw' ? true : null
   const postedAt = new Date(post.createdAt)
   const authorCreatedAt = new Date(post.author.createdAt)
   const going = UserPostInteraction.length > 0 ? UserPostInteraction[0].going : false;
@@ -431,7 +431,7 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
                   <Badge className='w-fit' variant='secondary'>{post.Tag.name}</Badge>
                 </>
               )}
-              {post.Tag.name === 'event' && (
+              {post.Tag.name !== 'fw' && (
                 <PostStatus post={post} hidden="hidden" className="ml-2 !flex-row" />
               )}
             </div>
