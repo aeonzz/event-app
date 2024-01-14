@@ -108,7 +108,7 @@ function PostStatus({
   return (
     <div className={cn(
       className,
-      'z-20 h-auto flex flex-col items-end gap-2'
+      'h-auto flex flex-col items-end gap-2'
     )}>
       {post.Tag.name === 'event' && post.published && (
         <Badge

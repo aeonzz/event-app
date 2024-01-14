@@ -30,7 +30,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ eventCount, announcementCount
 
   return (
     <>
-      <div className='w-full h-auto py-4 flex flex-col gap-5'>
+      <div className='w-full h-auto flex flex-col gap-5'>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -102,9 +102,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ eventCount, announcementCount
             </CardContent>
           </Card>
         </div>
-        <div>
-          <Calendar />
-        </div>
+        
       </div>
     </>
   )

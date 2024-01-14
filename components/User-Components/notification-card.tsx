@@ -30,6 +30,8 @@ const NotificationCard: React.FC<NotificationCardProps> = ({ post, onChangeOpenS
   const approvedAt = post.action ? new Date(post.action) : new Date()
   const profile = post.author.imageUrl ? post.author.imageUrl : undefined
   let initialLetter = ''
+
+  
   if (post.author.username) {
     initialLetter = post.author.username.charAt(0).toUpperCase();
   }

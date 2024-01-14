@@ -73,7 +73,7 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({ user, letter }) => {
                 <BadgeCheck className='h-4 w-4 text-primary' />
               )}
             </h2>
-            <h4 className='text-muted-foreground text-sm'>{user.department}</h4>
+            <h4 className='text-muted-foreground text-sm'>{user.department === 'None' ? 'Developer' : user.department}</h4>
             <h4 className='text-muted-foreground text-xs'>{user.email}</h4>
           </div>
         </div>

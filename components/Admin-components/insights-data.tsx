@@ -19,7 +19,7 @@ import { format, formatDistanceToNow } from 'date-fns';
 import { Badge } from '../ui/badge';
 import { ScrollArea } from '../ui/scroll-area';
 import Link from 'next/link';
-import { Button } from '../ui/button';
+import { Button, buttonVariants } from '../ui/button';
 import { useReactToPrint } from 'react-to-print';
 import {
   AlertDialog,
@@ -45,6 +45,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { cn } from '@/lib/utils';
+import { CSVLink } from 'react-csv';
 
 interface InsightsDataProps {
   interactions: {
@@ -104,6 +105,13 @@ const sections = [
   },
 ]
 
+const csvData = [
+  ["username", "email", "year", "section", "department"],
+  ["Ahmed", "Tomi", "ah@smthing.co.com"],
+  ["Raed", "Labes", "rl@smthing.co.com"],
+  ["Yezzi", "Min l3b", "ymin@cocococo.com"]
+];
+
 const InsightsData: React.FC<InsightsDataProps> = ({ interactions, totalParticipantsCountForDay, post }) => {
 
   const postedAt = new Date(post.createdAt)
@@ -134,33 +142,58 @@ const InsightsData: React.FC<InsightsDataProps> = ({ interactions, totalParticip
   });
 
 
+
+  const headers = [
+    { label: "Username", key: "username" },
+    { label: "Email", key: "email" },
+    { label: "Year", key: "yearLevel" },
+    { label: "Section", key: "section" },
+    { label: "Department", key: "department" },
+  ];
+
+  const mappedData = filteredInteractions.map((interaction) => ({
+    username: interaction.user.username,
+    email: interaction.user.email,
+    yearLevel: interaction.user.yearLevel,
+    section: interaction.user.section,
+    department: interaction.user.department,
+  }));
+
   return (
     <div>
       <div className='flex items-center justify-between'>
         <h1 className='text-3xl font-semibold tracking-tight'>Event insights</h1>
-        <AlertDialog open={isPrinting} onOpenChange={setIsPrinting}>
-          <AlertDialogTrigger >
-            <Button
-              variant='secondary'
-              size='sm'
-              className='!h-7 !px-10 text-xs'
-            >
-              export
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Print data?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Confirm your decision to print or export data. This action will generate a PDF containing the selected information.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handlePrint}>Continue</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <div className='flex gap-2'>
+          <CSVLink data={mappedData} headers={headers} className={cn(
+            buttonVariants({ variant: 'secondary', size: 'sm' }),
+            '!h-7 !px-5 text-xs'
+          )}>
+            export csv
+          </CSVLink>
+          <AlertDialog open={isPrinting} onOpenChange={setIsPrinting}>
+            <AlertDialogTrigger >
+              <Button
+                variant='secondary'
+                size='sm'
+                className='!h-7 !px-5 text-xs'
+              >
+                export pdf
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Print data?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Confirm your decision to print or export data. This action will generate a PDF containing the selected information.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handlePrint}>Continue</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       </div>
       <div ref={componentRef} className='h-auto mt-4 grid grid-cols-4 grid-rows-[repeat(3,_minmax(0,_150px))] gap-3'>
         <style type="text/css" media="print">

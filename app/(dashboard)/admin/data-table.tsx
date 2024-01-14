@@ -50,6 +50,8 @@ import SignUpForm from "@/components/Forms/Signup"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { CSVLink } from "react-csv";
+
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -86,15 +88,19 @@ export function DataTable<TData, TValue>({
   })
 
   const roleFilter = table.getColumn("role")?.getFilterValue() as string ?? ""
-  const statusFilter = table.getColumn("status")?.getFilterValue() as string ?? ""
+  const departmentFilter = table.getColumn("department")?.getFilterValue() as string ?? ""
+  const yearFilter = table.getColumn("yearLevel")?.getFilterValue() as string ?? ""
+  const sectionFilter = table.getColumn("section")?.getFilterValue() as string ?? ""
 
   const handleReset = () => {
     table.getColumn("role")?.setFilterValue("");
-    table.getColumn("status")?.setFilterValue("");
+    table.getColumn("department")?.setFilterValue("");
+    table.getColumn("yearLevel")?.setFilterValue("");
+    table.getColumn("section")?.setFilterValue("");
   }
 
   return (
-    <div className='p-5 mt-5'>
+    <Card className='p-5 mt-5'>
       <div className='flex items-center justify-between mb-5'>
         <div className='flex items-center space-x-4 w-full'>
           <Input
@@ -103,11 +109,11 @@ export function DataTable<TData, TValue>({
             onChange={(event) =>
               table.getColumn("email")?.setFilterValue(event.target.value)
             }
-            className="max-w-sm"
+            className="max-w-xs bg-[#161312] text-xs"
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline">
+              <Button variant="outline" className="bg-[#161312] text-xs">
                 <UserCog className='h-4 w-4 mr-1' />
                 Roles
                 {roleFilter === "" ? (
@@ -148,23 +154,23 @@ export function DataTable<TData, TValue>({
           </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline">
+              <Button variant="outline" className="bg-[#161312] text-xs">
                 <UserCog className='h-4 w-4 mr-1' />
-                Status
-                {statusFilter === "" ? (
+                Year
+                {yearFilter === "" ? (
                   null
                 ) : (
                   <>
                     <Separator
                       className='ml-2 mr-2'
                       orientation="vertical" />
-                    {statusFilter === "" ? (
+                    {yearFilter === "" ? (
                       null
                     ) : (
                       <Badge
                         variant="secondary"
                       >
-                        {statusFilter}
+                        {yearFilter}
                       </Badge>
                     )}
                   </>
@@ -172,23 +178,107 @@ export function DataTable<TData, TValue>({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>User statuses</DropdownMenuLabel>
+              <DropdownMenuLabel>Year levels</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuRadioGroup
-                value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
+                value={(table.getColumn("yearLevel")?.getFilterValue() as string) ?? ""}
                 onValueChange={(newValue) =>
-                  table.getColumn("status")?.setFilterValue(newValue)
+                  table.getColumn("yearLevel")?.setFilterValue(newValue)
                 }
               >
                 <DropdownMenuRadioItem value="">All</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="banned">Banned</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="active">Active</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="1st">1st year</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="2nd">2nd year</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="3rd">3rd year</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="4th">4th year</DropdownMenuRadioItem>
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
+              <Button variant="outline" className="bg-[#161312] text-xs">
+                <UserCog className='h-4 w-4 mr-1' />
+                Section
+                {sectionFilter === "" ? (
+                  null
+                ) : (
+                  <>
+                    <Separator
+                      className='ml-2 mr-2'
+                      orientation="vertical" />
+                    {sectionFilter === "" ? (
+                      null
+                    ) : (
+                      <Badge
+                        variant="secondary"
+                      >
+                        {sectionFilter}
+                      </Badge>
+                    )}
+                  </>
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>Sections</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup
+                value={(table.getColumn("section")?.getFilterValue() as string) ?? ""}
+                onValueChange={(newValue) =>
+                  table.getColumn("section")?.setFilterValue(newValue)
+                }
+              >
+                <DropdownMenuRadioItem value="">All</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="A">A</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="B">B</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="C">C</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="D">D</DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="bg-[#161312] text-xs">
+                <UserCog className='h-4 w-4 mr-1' />
+                Department
+                {departmentFilter === "" ? (
+                  null
+                ) : (
+                  <>
+                    <Separator
+                      className='ml-2 mr-2'
+                      orientation="vertical" />
+                    {departmentFilter === "" ? (
+                      null
+                    ) : (
+                      <Badge
+                        variant="secondary"
+                      >
+                        {departmentFilter}
+                      </Badge>
+                    )}
+                  </>
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>Departments</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup
+                value={(table.getColumn("department")?.getFilterValue() as string) ?? ""}
+                onValueChange={(newValue) =>
+                  table.getColumn("department")?.setFilterValue(newValue)
+                }
+              >
+                <DropdownMenuRadioItem value="">All</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="BSIT">BSIT</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="BSESM">BSESM</DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto bg-[#161312] text-xs">
                 Columns <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -212,7 +302,7 @@ export function DataTable<TData, TValue>({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          {roleFilter === "" && statusFilter === "" ? (
+          {roleFilter === "" && departmentFilter === "" && yearFilter === "" && sectionFilter === "" ? (
             null
           ) : (
             <Button
@@ -221,7 +311,7 @@ export function DataTable<TData, TValue>({
               className="flex items-center"
             >
               reset
-              <X className="ml-2 h-4 w-4"  />
+              <X className="ml-2 h-4 w-4" />
             </Button>
           )}
         </div>
@@ -291,6 +381,6 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <DataTablePagination table={table} />
-    </div>
+    </Card>
   )
 }

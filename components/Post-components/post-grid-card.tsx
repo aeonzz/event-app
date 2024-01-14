@@ -71,11 +71,9 @@ const PostGridCard: FC<PostGridCard> = ({ post, session }) => {
       <Card className='h-[400px] flex justify-center flex-col gap-3 p-5 bg-[#161312]'>
         <div className='relative w-full h-44 overflow-hidden rounded-md flex justify-center items-center border'>
           <div className='absolute w-full h-full z-10 group-hover:bg-black/20 transition-colors' />
-          <div className='z-20 top-1 right-1 absolute h-auto flex flex-col items-end gap-2'>
-            {post.Tag.name === 'event' && (
-              <PostStatus post={post} className='absolute' />
-            )}
-          </div>
+          {post.Tag.name === 'event' && (
+            <PostStatus post={post} className='absolute right-1 top-1 z-10' />
+          )}
           {post.images && post.images.length > 0 ? (
             <Image
               src={post.images[0].url}

@@ -79,22 +79,11 @@ export default async function AdminTabs() {
   const completedEvents = eventPostsCompleted.length
 
   return (
-    <Tabs defaultValue="account" className="w-full mt-5">
-      <TabsList className="grid w-[250px] grid-cols-2">
-        <TabsTrigger value="account">Overview</TabsTrigger>
-        <TabsTrigger value="password">Analytics</TabsTrigger>
-      </TabsList>
-      <TabsContent value="account">
-        <OverviewTab
-          eventCount={eventPostCount}
-          announcementCount={announcementPostCount}
-          usersCount={usersCount}
-          completedEvents={completedEvents}
-        />
-      </TabsContent>
-      <TabsContent value="password">
-
-      </TabsContent>
-    </Tabs>
+    <OverviewTab
+      eventCount={eventPostCount}
+      announcementCount={announcementPostCount}
+      usersCount={usersCount}
+      completedEvents={completedEvents}
+    />
   )
 }

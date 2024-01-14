@@ -99,8 +99,8 @@ const UsersFeed = async () => {
     <>
       <Tabs defaultValue="department" className="w-full h-auto relative">
         <TabsList className='absolute right-0 bg-transparent'>
-          <TabsTrigger value="department" className='w-[100px] text-xs data-[state=active]:bg-stone-900'>Feed</TabsTrigger>
-          <TabsTrigger value="about" className='w-[100px] text-xs data-[state=active]:bg-stone-900'>About</TabsTrigger>
+          <TabsTrigger value="department" className='w-[100px] text-xs data-[state=active]:bg-accent/30'>Feed</TabsTrigger>
+          <TabsTrigger value="about" className='w-[100px] text-xs data-[state=active]:bg-accent/30'>About</TabsTrigger>
         </TabsList>
         <TabsContent value="department" className='h-auto '>
           <h1 className='text-3xl font-semibold mb-2'>Your Feed.</h1>
@@ -173,7 +173,7 @@ const UsersFeed = async () => {
                   />
                 )}
                 <CardHeader className='z-10'>
-                  <CardTitle className='text-xl'>Recent Announcement</CardTitle>
+                  <CardTitle className='text-xl'>New Announcement</CardTitle>
                 </CardHeader>
                 <CardContent className='flex flex-col justify-end bg-gradient-to-t from-black/60 z-10 w-full h-full absolute group-hover:bg-black/50 transition-all duration-300 ease-in-out'>
                   <p className='whitespace-pre-wrap break-words text-sm leading-snug tracking-tight'>{announcement?.content?.slice(0, 200)} ...See more</p>

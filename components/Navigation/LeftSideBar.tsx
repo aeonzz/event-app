@@ -12,7 +12,7 @@ import { sidebarNav } from '@/constants/index';
 import Link from "next/link";
 import { Button, buttonVariants } from "../ui/button";
 import Image from "next/image";
-import { Bell, Home, LayoutDashboard, Loader, Loader2, Search, User2 } from "lucide-react";
+import { BadgeCheck, Bell, Home, LayoutDashboard, Loader, Loader2, Search, User2 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -296,11 +296,17 @@ const NavMenu = ({ session }: { session: Session }) => {
                               <div className='flex flex-col'>
                                 <Link
                                   href={`/user/${user.id}`}
-                                  className='hover:underline font-semibold'
+                                  className='hover:underline font-semibold flex items-center gap-1'
                                 >
                                   {user.username}
+                                  {user.role === 'SYSTEMADMIN' && (
+                                    <BadgeCheck className='h-4 w-4 text-red-500' />
+                                  )}
+                                  {user.role === 'ADMIN' && (
+                                    <BadgeCheck className='h-4 w-4 text-primary' />
+                                  )}
                                 </Link>
-                                <p className='text-xs'>{user.department}</p>
+                                <p className='text-xs'>{user.department === 'None' ? 'Developer' : user.department}</p>
                               </div>
                             </Link>
                           ))}

@@ -37,7 +37,7 @@ const Signin = () => {
               <Loader2 className='h-10 w-10 animate-spin stroke-1' />
             </div>
           }>
-            <Spline scene="https://prod.spline.design/gY66HRDPB629JDgX/scene.splinecode" />
+            <Spline scene="https://prod.spline.design/AhPAZeCbZGLq0-lr/scene.splinecode" />
           </Suspense>
         </div >
         <div className='relative w-[40%] h-screen grid place-items-center shadow-xl'>

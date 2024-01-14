@@ -234,7 +234,7 @@ const RightSideBar = () => {
                 )}
               </div>
             </div> */}
-            <Separator className='my-10' />
+            <Separator className='my-7' />
             <div className='w-full h-fit flex justify-center'>
               <CalendarOfEvents />
             </div>

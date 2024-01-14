@@ -75,14 +75,6 @@ export const adminNav = [
     title: "Overview",
     link: "/admin",
   },
-  {
-    title: "Users",
-    link: "/admin/users",
-  },
-  {
-    title: "Notifications",
-    link: "/admin/notifications",
-  }
 ]
 
 export const sidebarNavItems = [
