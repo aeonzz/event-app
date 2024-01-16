@@ -48,9 +48,11 @@ const PostSchema = z.object({
     .boolean()
     .nullable().or(z.undefined()),
   timeFrom: z
-    .string(),
+    .string()
+    .optional(),
   timeTo: z
-    .string(),
+    .string()
+    .optional(),
   accessibility: z
     .string(),
   action: z
