@@ -46,6 +46,9 @@ export async function PATCH(req: Request, { params }: { params: { userId: string
     const { email, username, password, role, department, status, deleted, bio, isActive, imageUrl, yearLevel, section } = userSchema.parse(body);
 
     const updateData: Record<string, unknown> = {};
+    if (email !== undefined) {
+      updateData.email = email;
+    }
     if (username !== undefined) {
       updateData.username = username;
     }
