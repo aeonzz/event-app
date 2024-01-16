@@ -265,10 +265,17 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
         toast.success("Delete Successful", {
           description: "Event successfully deleted.",
         })
-      } else {
+      }
+      if (post.Tag.name === 'announcement') {
         router.push('/announcements')
         toast.success("Delete Successful", {
           description: "Announcement successfully deleted.",
+        })
+      }
+      if (post.Tag.name === 'fw') {
+        router.push('/freedom-wall')
+        toast.success("Delete Successful", {
+          description: "Post successfully deleted.",
         })
       }
     }
@@ -402,56 +409,61 @@ const PostDetailsCard: FC<PostDetailsCardProps> = ({ session, post }) => {
         null
       )}
       <Card className='relative w-full h-auto py-3 px-5 my-5 transition-colors'>
-        {post.anonymous ? (
-          <div className='flex items-center gap-2'>
-            <Avatar className='h-9 w-9 dark:border relative group'>
-              <div className='h-9 w-9 bg-stone-950 absolute z-10 opacity-0 group-hover:opacity-40 transition'></div>
-              <AvatarImage src='https://cmsskornpjjalwhyjtgg.supabase.co/storage/v1/object/public/images/EJFa13qXUAEzWpm.png'
-                className='object-cover'
-              />
-              <AvatarFallback className='h-9 w-9 bg-stone-900'></AvatarFallback>
-            </Avatar>
-            <p className='hover:underline font-semibold'>Anonymous participant</p>
-          </div>
-        ) : (
-          <div className="relative flex items-center gap-2">
-            <ProfileHover
-              username={post.author.username}
-              date={format(authorCreatedAt, 'PP')}
-              imageUrl={post.author.imageUrl}
-              userId={post.author.id}
-            />
-            <div className='flex flex-col'>
-              <Link
-                href={`/user/${post.author.id}`}
-                className='hover:underline font-semibold flex items-center gap-1'
-              >
-                {post.author.username}
-                {post.author.role === 'SYSTEMADMIN' && (
-                  <BadgeCheck className='h-4 w-4 text-red-500' />
-                )}
-                {post.author.role === 'ADMIN' && (
-                  <BadgeCheck className='h-4 w-4 text-primary' />
-                )}
-              </Link>
-              <div className='flex items-center'>
+        <div className='relative flex items-center gap-2'>
+          {post.anonymous ? (
+            <div className='flex items-center gap-2'>
+              <Avatar className='h-9 w-9 dark:border relative group'>
+                <div className='h-9 w-9 bg-stone-950 absolute z-10 opacity-0 group-hover:opacity-40 transition'></div>
+                <AvatarImage src='https://cmsskornpjjalwhyjtgg.supabase.co/storage/v1/object/public/images/EJFa13qXUAEzWpm.png'
+                  className='object-cover'
+                />
+                <AvatarFallback className='h-9 w-9 bg-stone-900'></AvatarFallback>
+              </Avatar>
+              <div className='flex-col gap-1'>
+                <p className='hover:underline font-semibold'>Anonymous participant</p>
                 <p className='text-xs font-light text-muted-foreground'>
                   {formatDistanceToNow(postedAt, { addSuffix: true })}
                 </p>
-                {post.Tag.name !== 'fw' && (
-                  <>
-                    <Dot />
-                    <Badge className='w-fit' variant='secondary'>{post.Tag.name}</Badge>
-                  </>
-                )}
-                {post.Tag.name !== 'fw' && (
-                  <PostStatus post={post} hidden="hidden" className="ml-2 !flex-row" />
-                )}
               </div>
             </div>
-          </div>
-        )}
-        <div className='relative flex items-center gap-2'>
+          ) : (
+            <div className='relative flex items-center gap-2'>
+              <ProfileHover
+                username={post.author.username}
+                date={format(authorCreatedAt, 'PP')}
+                imageUrl={post.author.imageUrl}
+                userId={post.author.id}
+              />
+              <div className='flex flex-col'>
+                <Link
+                  href={`/user/${post.author.id}`}
+                  className='hover:underline font-semibold flex items-center gap-1'
+                >
+                  {post.author.username}
+                  {post.author.role === 'SYSTEMADMIN' && (
+                    <BadgeCheck className='h-4 w-4 text-red-500' />
+                  )}
+                  {post.author.role === 'ADMIN' && (
+                    <BadgeCheck className='h-4 w-4 text-primary' />
+                  )}
+                </Link>
+                <div className='flex items-center'>
+                  <p className='text-xs font-light text-muted-foreground'>
+                    {formatDistanceToNow(postedAt, { addSuffix: true })}
+                  </p>
+                  {post.Tag.name !== 'fw' && (
+                    <>
+                      <Dot />
+                      <Badge className='w-fit' variant='secondary'>{post.Tag.name}</Badge>
+                    </>
+                  )}
+                  {post.Tag.name !== 'fw' && (
+                    <PostStatus post={post} hidden="hidden" className="ml-2 !flex-row" />
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
           <DropdownMenu open={actionDropdown} onOpenChange={setActionDropdown} modal={false}>
             <DropdownMenuTrigger
               className={cn(

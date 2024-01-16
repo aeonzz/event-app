@@ -135,7 +135,7 @@ const TextArea: FC<TextAreaProps> = ({ username, authorId, updateOpenState, onCh
   const [isLoading, setIsLoading] = useState(false)
   const [selectedEmoji, setSelectedEmoji] = useState<string>("1f60a")
   const [inputValue, setInputValue] = useState<string>("")
-  const [anonymous, setAnonymous] = useState(false)
+  const [anonymous, setAnonymous] = useState(editData ? editData.anonymous : false)
   const [accessibility, setAccessibility] = useState(false)
   const [published, setPublished] = useState(fwall)
   // console.log(published)

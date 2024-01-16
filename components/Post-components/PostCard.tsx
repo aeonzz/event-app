@@ -80,7 +80,7 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
   const userIdNumber = userIdString ? parseInt(userIdString, 10) : null;
   const router = useRouter()
   const pathname = usePathname()
-  const fw = tag === 'fw'
+  const fw = name === 'fw'
   const click = post.clicks;
   const fwall = pathname === '/freedom-wall'
   const textRef = useRef<HTMLInputElement>(null);
@@ -206,7 +206,12 @@ const PostCard: FC<PostCardProps> = ({ post, tag, innerRef, session, onMutationS
               />
               <AvatarFallback className='h-9 w-9 bg-stone-900'></AvatarFallback>
             </Avatar>
-            <p className='hover:underline font-semibold'>Anonymous participant</p>
+            <div className='flex-col gap-1'>
+              <p className='hover:underline font-semibold'>Anonymous participant</p>
+              <p className='text-xs font-light text-muted-foreground'>
+                {formatDistanceToNow(postedAt, { addSuffix: true })}
+              </p>
+            </div>
           </div>
         ) : (
           <div className='relative flex items-center gap-2'>
