@@ -112,5 +112,17 @@ export const departments = [
   {
     title: "Energy Systems and Management",
     value: "BSESM"
+  },
+  {
+    title: "Naval Architecture and Marine Engineering",
+    value: "BSNAME"
+  },
+  {
+    title: "Mechanical Engineering Technology",
+    value: "BSMET"
+  },
+  {
+    title: "Technology Communication Management",
+    value: "BSTCM"
   }
 ]
