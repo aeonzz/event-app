@@ -136,7 +136,7 @@ const UsersFeed = async () => {
                     className='absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] group-hover:scale-[1.03] transition-transform duration-300 ease-in-out'
                   />
                 )}
-                <CardHeader className='z-10'>
+                <CardHeader className='z-20'>
                   <CardTitle className='text-xl'>Recent Event</CardTitle>
                 </CardHeader>
                 <CardContent className='flex flex-col justify-end bg-gradient-to-t from-black/60 z-10 w-full h-full absolute group-hover:bg-black/50 transition-all duration-300 ease-in-out'>
@@ -172,7 +172,7 @@ const UsersFeed = async () => {
                     className='absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] group-hover:scale-[1.03] transition-transform duration-300 ease-in-out'
                   />
                 )}
-                <CardHeader className='z-10'>
+                <CardHeader className='z-20'>
                   <CardTitle className='text-xl'>New Announcement</CardTitle>
                 </CardHeader>
                 <CardContent className='flex flex-col justify-end bg-gradient-to-t from-black/60 z-10 w-full h-full absolute group-hover:bg-black/50 transition-all duration-300 ease-in-out'>
